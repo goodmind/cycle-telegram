@@ -37,3 +37,8 @@ run(main, {
   Bot: makeTelegramDriver('<YOUR_TOKEN_HERE>')
 });
 ```
+
+- - -
+
+[![Dependency Status](https://david-dm.org/goodmind/cycle-telegram.svg)](https://david-dm.org/goodmind/cycle-telegram)
+[![devDependency Status](https://david-dm.org/goodmind/cycle-telegram/dev-status.svg)](https://david-dm.org/goodmind/cycle-telegram#info=devDependencies)
