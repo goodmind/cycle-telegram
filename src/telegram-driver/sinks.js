@@ -1,7 +1,7 @@
 import { Request } from './types/types'
-import { merge, map, assoc, curry } from 'ramda'
+import { merge, map, assoc, curryN } from 'ramda'
 
-export let reply = curry((options = {}, update) => Request({
+export let reply = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: merge(options, {
@@ -12,7 +12,7 @@ export let reply = curry((options = {}, update) => Request({
   })
 }))
 
-export let answerInlineQuery = curry((options = {}, update) => {
+export let answerInlineQuery = curryN(2, (options = {}, update) => {
   let results
 
   if (!options.results[0].id) {
@@ -20,6 +20,8 @@ export let answerInlineQuery = curry((options = {}, update) => {
   } else {
     results = options.results || []
   }
+
+  console.log(options, update)
 
   return Request({
     type: 'sink',

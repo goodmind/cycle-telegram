@@ -1,11 +1,11 @@
-import { find, takeLast, curry } from 'ramda'
+import { find, takeLast, curryN } from 'ramda'
 import { getEntityFirst } from './telegram-driver/index'
 
 export let commandName = (update) => {
   return getEntityFirst('bot_command')(update)
 }
 
-export let findCommandIn = curry((commands, path) => {
+export let findCommandIn = curryN(2, (commands, path) => {
   let match = find(([r, _]) => path.match(r), commands)
 
   if (!match) {
