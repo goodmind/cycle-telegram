@@ -1,6 +1,6 @@
-import { makeTelegramDriver } from './telegram-driver';
-import { reply, answerInlineQuery } from './sinks';
-import { getEntityFirst, entityIs } from './entities';
+import { makeTelegramDriver } from './telegram-driver'
+import { reply, answerInlineQuery } from './sinks'
+import { getEntityFirst, entityIs } from './entities'
 
 export {
   makeTelegramDriver,
@@ -10,4 +10,4 @@ export {
   entityIs
 }
 
-export * from './types/types';
+export * from './types/types'

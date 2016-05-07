@@ -1,7 +1,7 @@
-import { Request } from './types/types';
-import { merge, map, assoc } from 'ramda';
+import { Request } from './types/types'
+import { merge, map, assoc, curry } from 'ramda'
 
-export let reply = (options = {}) => (update) => Request({
+export let reply = curry((options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: merge(options, {
@@ -10,15 +10,15 @@ export let reply = (options = {}) => (update) => Request({
     text: options.text || 'Null-catch: no text provided',
     reply_markup: JSON.stringify(options.reply_markup)
   })
-});
+}))
 
-export let answerInlineQuery = (options = {}) => (update) => {
-  let results;
+export let answerInlineQuery = curry((options = {}, update) => {
+  let results
 
   if (!options.results[0].id) {
     results = map(answer => assoc('id', Math.random().toString(36).substring(2), answer), options.results)
   } else {
-    results = options.results || [];
+    results = options.results || []
   }
 
   return Request({
@@ -28,5 +28,5 @@ export let answerInlineQuery = (options = {}) => (update) => {
       inline_query_id: update.inline_query.id,
       results: JSON.stringify(results)
     })
-  });
-};
+  })
+})

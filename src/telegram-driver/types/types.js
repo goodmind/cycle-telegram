@@ -1,14 +1,13 @@
-import t from 'tcomb';
-
-import * as m from './multimedia-types';
-import * as k from './keyboard-types';
+import t from 'tcomb'
+import * as m from './multimedia-types'
+import * as k from './keyboard-types'
 
 export const User = t.struct({
   id: t.Number,
   first_name: t.String,
   last_name: t.maybe(t.String),
   username: t.maybe(t.String)
-});
+})
 
 export const Chat = t.struct({
   id: t.Number,
@@ -17,7 +16,7 @@ export const Chat = t.struct({
   username: t.maybe(t.String),
   first_name: t.maybe(t.String),
   last_name: t.maybe(t.String)
-});
+})
 
 export const InlineQuery = t.struct({
   id: t.String,
@@ -25,7 +24,7 @@ export const InlineQuery = t.struct({
   location: t.maybe(m.Location),
   query: t.String,
   offset: t.String
-});
+})
 
 export const ChosenInlineResult = t.struct({
   result_id: t.String,
@@ -33,17 +32,17 @@ export const ChosenInlineResult = t.struct({
   location: t.maybe(m.Location),
   inline_message_id: t.maybe(t.String),
   query: t.String
-});
+})
 
 export const InputMessageContent = t.struct({
   message_text: t.String,
   parse_mode: t.maybe(t.String),
   disable_web_page_preview: t.maybe(t.Boolean)
-});
+})
 
 export const InlineQueryResult = t.struct({
 
-});
+})
 
 export const InlineQueryResultArticle = InlineQueryResult.extend({
   type: t.String,
@@ -57,16 +56,16 @@ export const InlineQueryResultArticle = InlineQueryResult.extend({
   thumb_url: t.maybe(t.String),
   thumb_width: t.maybe(t.Number),
   thumb_height: t.maybe(t.Number)
-});
+})
 
 export const MessageEntity = t.struct({
   type: t.enums.of(['mention', 'hashtag', 'bot_command', 'url', 'email', 'bold', 'italic', 'code', 'pre', 'text_link']),
   offset: t.Number,
   length: t.Number,
   url: t.maybe(t.String)
-});
+})
 
-export const Message = t.declare('Message');
+export const Message = t.declare('Message')
 
 Message.define(t.struct({
   message_id: t.Number,
@@ -99,7 +98,7 @@ Message.define(t.struct({
   migrate_to_chat_id: t.maybe(t.Number),
   migrate_from_chat_id: t.maybe(t.Number),
   pinned_message: t.maybe(Message)
-}));
+}))
 
 export const Update = t.struct({
   update_id: t.Number,
@@ -107,16 +106,16 @@ export const Update = t.struct({
   inline_query: t.maybe(InlineQuery),
   chosen_inline_result: t.maybe(ChosenInlineResult),
   callback_query: t.maybe(k.CallbackQuery)
-});
+})
 
 export const UpdatesState = t.struct({
   startDate: t.Number,
   offset: t.Number,
   updates: t.list(Update)
-});
+})
 
 export const Request = t.struct({
   type: t.enums.of(['sink']),
   method: t.String,
   options: t.Object
-});
+})

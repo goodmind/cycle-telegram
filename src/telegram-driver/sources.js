@@ -1,30 +1,30 @@
-import Rx from 'rx';
-import chalk from 'chalk';
+import Rx from 'rx'
+import chalk from 'chalk'
 
-import { reduce, propIs } from 'ramda';
-import { makeAPIRequest } from './api-request';
+import { reduce, propIs } from 'ramda'
+import { makeAPIRequest } from './api-request'
 
-import { UpdatesState, Message, InlineQuery, ChosenInlineResult } from './types/types';
-import { CallbackQuery } from './types/keyboard-types';
+import { UpdatesState, Message, InlineQuery, ChosenInlineResult } from './types/types'
+import { CallbackQuery } from './types/keyboard-types'
 
-let max = (property) => (acc, current) => current[property] > acc ? current[property] : acc;
+let max = (property) => (acc, current) => current[property] > acc ? current[property] : acc
 
 let makeUpdatesResolver = (token) => (offset) => makeAPIRequest({
   httpMethod: 'GET',
   token,
   method: 'getUpdates',
   query: { offset }
-}).flatMapLatest(res => Rx.Observable.fromArray(res));
+}).flatMapLatest(res => Rx.Observable.fromArray(res))
 
-export function makeUpdates(token) {
-  const resolve = makeUpdatesResolver(token);
-  const initialState = UpdatesState({
+export function makeUpdates (token) {
+  let resolve = makeUpdatesResolver(token)
+  let initialState = UpdatesState({
     startDate: Date.now(),
     offset: 0,
     updates: []
-  });
+  })
 
-  console.log(chalk.green(`Uptime is ${new Date(initialState.startDate)}`));
+  console.log(chalk.green(`Uptime is ${new Date(initialState.startDate)}`))
 
   return Rx.Observable.return(initialState).expand(({offset}) => resolve(offset)
     .toArray()
@@ -32,21 +32,25 @@ export function makeUpdates(token) {
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
       updates
-    })));
+    })))
 }
 
-export function makeSources(state) {
-  const updates = state
+export function makeWebHook (token, webHook) {
+  return Rx.Observable.create((obs) => webHook(obs))
+}
+
+export function makeSources (state) {
+  let updates = state
     .pluck('updates')
     .map(u => Rx.Observable.fromArray(u))
     .switch()
-    .share();
+    .share()
 
-  const startDate = state
+  let startDate = state
     .pluck('startDate')
-    .share();
+    .share()
 
-  const sources = {
+  return {
     message: Rx.Observable.zip(updates, startDate)
       .filter(([update, startDate]) => Message.is(update.message))
       .filter(([update, startDate]) => (update.message.date * 1000) >= startDate)
@@ -64,7 +68,5 @@ export function makeSources(state) {
     callbackQuery: updates
       .filter(propIs(CallbackQuery, 'callback_query'))
       .share()
-  };
-
-  return sources;
+  }
 }
