@@ -1,6 +1,6 @@
 {
   "name": "cycle-telegram",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "CycleJS Telegram Driver",
   "main": "index.js",
   "directories": {},
@@ -9,7 +9,8 @@
     "compile-lib": "babel -d lib/ src/",
     "lint": "eslint src/",
     "test-node": "mocha --compilers js:babel-register test",
-    "test": "npm run eslint && npm run test-node"
+    "test": "npm run eslint && npm run test-node",
+    "prepublish": "npm run precompile-lib && npm run compile-lib"
   },
   "author": "goodmind",
   "license": "MIT",
