@@ -10,6 +10,30 @@ npm install cycle-telegram
 
 # Usage
 
-```
+```js
+import {makeTelegramDriver, reply} from 'cycle-telegram';
+import {run} from '@cycle/core';
 
+import Rx from 'rx';
+
+let main = (sources) => {
+  let intents = {
+    messages: sources.Bot.events('message')
+      .share()
+  }
+
+  let request = Rx.Observable.from([
+    intents.map(reply({
+      text: 'Reply to message'
+    }))
+  ]);
+
+  return {
+    Bot: request
+  };
+}
+
+run(main, {
+  Bot: makeTelegramDriver('<YOUR_TOKEN_HERE>')
+});
 ```
