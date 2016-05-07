@@ -11,10 +11,10 @@ npm install cycle-telegram
 # Usage
 
 ```js
-import {makeTelegramDriver, reply} from 'cycle-telegram';
-import {run} from '@cycle/core';
+import {makeTelegramDriver, reply} from 'cycle-telegram'
+import {run} from '@cycle/core'
 
-import Rx from 'rx';
+import Rx from 'rx'
 
 let main = (sources) => {
   let intents = {
@@ -30,12 +30,12 @@ let main = (sources) => {
 
   return {
     Bot: request
-  };
+  }
 }
 
 run(main, {
   Bot: makeTelegramDriver('<YOUR_TOKEN_HERE>')
-});
+})
 ```
 
 - - -
