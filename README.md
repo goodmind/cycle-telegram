@@ -28,7 +28,7 @@ let main = (sources) => {
     intents.map(reply({
       text: 'Reply to message'
     }))
-  ]);
+  ])
 
   return {
     Bot: request
