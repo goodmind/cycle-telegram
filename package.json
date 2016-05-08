@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "description": "CycleJS Telegram Driver",
   "main": "index.js",
+  "keywords": ["cyclejs", "telegram"],
   "directories": {},
   "scripts": {
     "precompile-lib": "rm -rf lib/ && mkdir -p lib",
