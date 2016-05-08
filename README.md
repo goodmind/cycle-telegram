@@ -29,7 +29,7 @@ let main = (sources) => {
   }
 
   let request = Rx.Observable.from([
-    intents.map(reply({
+    intents.messages.map(reply({
       text: 'Reply to message'
     }))
   ])
