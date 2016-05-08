@@ -1,20 +1,19 @@
 import Rx from 'rx'
 import chalk from 'chalk'
 
-import { reduce, propIs } from 'ramda'
+import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
 
 import { UpdatesState, Message, InlineQuery, ChosenInlineResult } from './types/types'
 import { CallbackQuery } from './types/keyboard-types'
 
-let max = (property) => (acc, current) => current[property] > acc ? current[property] : acc
-
-let makeUpdatesResolver = (token) => (offset) => makeAPIRequest({
+let max = curryN(3, (property, acc, current) => current[property] > acc ? current[property] : acc)
+let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
   httpMethod: 'GET',
   token,
   method: 'getUpdates',
   query: { offset }
-}).flatMapLatest(res => Rx.Observable.fromArray(res))
+}))
 
 export function makeUpdates (token) {
   let resolve = makeUpdatesResolver(token)
@@ -27,7 +26,6 @@ export function makeUpdates (token) {
   console.log(chalk.green(`Uptime is ${new Date(initialState.startDate)}`))
 
   return Rx.Observable.return(initialState).expand(({offset}) => resolve(offset)
-    .toArray()
     .combineLatest(Rx.Observable.interval(100).take(1), (updates, _) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,

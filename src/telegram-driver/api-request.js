@@ -2,13 +2,9 @@ import Rx from 'rx'
 import { makeHTTPDriver } from '@cycle/http'
 import { v4 } from 'node-uuid'
 
-let prepareOptions = (options, query) => {
-  if (options.httpMethod === 'POST') {
-    return Object.assign(options, { send: query })
-  }
-
-  return Object.assign(options, { query })
-}
+let prepareOptions = (options, query) => Object.assign(
+  options, options.httpMethod === 'POST' ? { send: query } : { query }
+)
 
 export function makeAPIRequest ({token, method, query, httpMethod = 'POST', httpDriver = makeHTTPDriver()}) {
   let endpoint = `https://api.telegram.org/bot${token}`

@@ -13,15 +13,11 @@ export let reply = curryN(2, (options = {}, update) => Request({
 }))
 
 export let answerInlineQuery = curryN(2, (options = {}, update) => {
-  let results
-
-  if (!options.results[0].id) {
-    results = map(answer => assoc('id', Math.random().toString(36).substring(2), answer), options.results)
-  } else {
-    results = options.results || []
-  }
-
-  console.log(options, update)
+  let results = options.results[0].id ? options.results
+    : map(answer =>
+        assoc('id', Math.random().toString(36).substring(2), answer),
+        options.results || []
+      )
 
   return Request({
     type: 'sink',

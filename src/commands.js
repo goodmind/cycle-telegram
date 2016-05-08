@@ -6,11 +6,7 @@ export let commandName = (update) => {
 }
 
 export let findCommandIn = curryN(2, (commands, path) => {
-  let match = find(([r, _]) => path.match(r), commands)
-
-  if (!match) {
-    match = takeLast(1, commands)[0]
-  }
+  let match = find(([r, _]) => path.match(r), commands) || takeLast(1, commands)[0]
 
   return [match[0], match[1]]
 })
