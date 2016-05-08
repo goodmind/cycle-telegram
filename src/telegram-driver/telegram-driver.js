@@ -1,9 +1,8 @@
 import Rx from 'rx'
-import chalk from 'chalk'
 
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
-import { Request } from './types/types'
+import { Request } from '../types'
 
 function makeEventsSelector (sources) {
   return function events (eventName) {
@@ -28,10 +27,19 @@ function makeEventsSelector (sources) {
   }
 }
 
+let handleRequest = (token, request) => {
+  return request
+    .mergeAll()
+    .filter(Request.is)
+    .flatMap(({method, options: query}) => makeAPIRequest({token, method, query}))
+    .doOnError(err => console.log('request error: ', err))
+    .subscribe()
+}
+
 export function makeTelegramDriver (token, webHook) {
   let proxy = webHook ? makeWebHook(token, webHook) : makeUpdates(token)
   let updates = proxy
-    .doOnError(err => console.log('Updates Error', err))
+    .doOnError(err => console.log('updates error: ', err))
     .replay(null, 1)
 
   let sources = makeSources(updates)
@@ -39,14 +47,7 @@ export function makeTelegramDriver (token, webHook) {
 
   return function telegramDriver (request) {
     // pass request
-    request
-      .mergeAll()
-      .filter(Request.is)
-      .flatMap(({method, options: query}) => makeAPIRequest({token, method, query}))
-      .subscribe(
-        msg => console.log(chalk.bold('sent message')),
-        err => console.log('onError', err)
-      )
+    handleRequest(token, request)
 
     // return interface
     return {
