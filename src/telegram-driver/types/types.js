@@ -18,22 +18,6 @@ export const Chat = t.struct({
   last_name: t.maybe(t.String)
 })
 
-export const InlineQuery = t.struct({
-  id: t.String,
-  from: User,
-  location: t.maybe(m.Location),
-  query: t.String,
-  offset: t.String
-})
-
-export const ChosenInlineResult = t.struct({
-  result_id: t.String,
-  from: User,
-  location: t.maybe(m.Location),
-  inline_message_id: t.maybe(t.String),
-  query: t.String
-})
-
 export const InputMessageContent = t.struct({
   message_text: t.String,
   parse_mode: t.maybe(t.String),
@@ -100,12 +84,36 @@ Message.define(t.struct({
   pinned_message: t.maybe(Message)
 }))
 
+export const InlineQuery = t.struct({
+  id: t.String,
+  from: User,
+  location: t.maybe(m.Location),
+  query: t.String,
+  offset: t.String
+})
+
+export const ChosenInlineResult = t.struct({
+  result_id: t.String,
+  from: User,
+  location: t.maybe(m.Location),
+  inline_message_id: t.maybe(t.String),
+  query: t.String
+})
+
+export const CallbackQuery = t.struct({
+  id: t.String,
+  from: User,
+  message: t.maybe(Message),
+  inline_message_id: t.maybe(t.String),
+  data: t.maybe(t.String)
+})
+
 export const Update = t.struct({
   update_id: t.Number,
   message: t.maybe(Message),
   inline_query: t.maybe(InlineQuery),
   chosen_inline_result: t.maybe(ChosenInlineResult),
-  callback_query: t.maybe(k.CallbackQuery)
+  callback_query: t.maybe(CallbackQuery)
 })
 
 export const UpdatesState = t.struct({
