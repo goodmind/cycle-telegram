@@ -1,4 +1,4 @@
-import { Request } from './types/types'
+import { Request } from '../types'
 import { merge, map, assoc, curryN } from 'ramda'
 
 export let reply = curryN(2, (options = {}, update) => Request({
