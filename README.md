@@ -13,13 +13,17 @@ npm install cycle-telegram
 # Usage
 
 ```js
-import {makeTelegramDriver, reply} from 'cycle-telegram'
+import {makeTelegramDriver, makeTelegramLogDriver, reply} from 'cycle-telegram'
 import {run} from '@cycle/core'
 
 import Rx from 'rx'
 
 let main = (sources) => {
   let intents = {
+    uptime: sources.Bot.observable
+      .first()
+      .share(),
+
     messages: sources.Bot.events('message')
       .share()
   }
@@ -30,13 +34,20 @@ let main = (sources) => {
     }))
   ])
 
+  let log = Rx.Observable.from([
+    intents.uptime,
+    intents.messages
+  ])
+
   return {
-    Bot: request
+    Bot: request,
+    Log: log
   }
 }
 
 run(main, {
-  Bot: makeTelegramDriver('<YOUR_TOKEN_HERE>')
+  Bot: makeTelegramDriver('<YOUR_TOKEN_HERE>'),
+  Log: makeTelegramLogDriver()
 })
 ```
 
