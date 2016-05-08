@@ -1,5 +1,7 @@
 # Cycle Telegram Driver
 
+[![Join the chat at https://gitter.im/goodmind/cycle-telegram](https://badges.gitter.im/goodmind/cycle-telegram.svg)](https://gitter.im/goodmind/cycle-telegram?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for Telegram
 
 ```
