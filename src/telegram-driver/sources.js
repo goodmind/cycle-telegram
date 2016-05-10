@@ -30,13 +30,28 @@ export function makeUpdates (token) {
     })))
 }
 
-export function makeWebHook (token, webHook) {
-  return Rx.Observable.create((obs) => webHook(obs))
+export function makeWebHook (token, action) {
+  let webHookUpdates = action.share()
+  let initialState = UpdatesState({
+    startDate: Date.now(),
+    offset: 0,
+    updates: []
+  })
+
+  return Rx.Observable.concat(
+    Rx.Observable.just(initialState),
+    webHookUpdates.map((updates) => UpdatesState({
+      startDate: initialState.startDate,
+      offset: reduce(max('update_id'), 0, updates) + 1,
+      updates
+    })))
+    .share()
 }
 
 export function makeSources (state) {
   let updates = state
     .pluck('updates')
+    .share()
     .map(u => Rx.Observable.fromArray(u))
     .switch()
     .share()

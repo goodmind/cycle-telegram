@@ -1,4 +1,4 @@
-import { Request } from '../types'
+import { Request, WebhookResponse } from '../types'
 import { merge, map, assoc, curryN } from 'ramda'
 
 export let reply = curryN(2, (options = {}, update) => Request({
@@ -27,4 +27,9 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
       results: JSON.stringify(results)
     })
   })
+})
+
+export let webhook = (update) => WebhookResponse({
+  type: 'webhook',
+  update
 })

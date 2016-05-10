@@ -1,10 +1,11 @@
 import { makeTelegramDriver } from './telegram-driver'
-import { reply, answerInlineQuery } from './sinks'
+import { reply, webhook, answerInlineQuery } from './sinks'
 import { getEntityFirst, entityIs } from './entities'
 
 export {
   makeTelegramDriver,
   reply,
+  webhook,
   answerInlineQuery,
   getEntityFirst,
   entityIs

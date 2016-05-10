@@ -1,8 +1,9 @@
 import Rx from 'rx'
 
+import { prop } from 'ramda'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
-import { Request } from '../types'
+import { Request, WebhookResponse } from '../types'
 
 function makeEventsSelector (sources) {
   return function events (eventName) {
@@ -27,19 +28,35 @@ function makeEventsSelector (sources) {
   }
 }
 
-let handleRequest = (token, request) => {
-  return request
-    .mergeAll()
-    .filter(Request.is)
-    .flatMap(({method, options: query}) => makeAPIRequest({token, method, query}))
-    .doOnError(err => console.log('request error: ', err))
-    .subscribe()
+let handleWebhook = (token, request, action) => {
+  return request.mergeAll()
+    .filter(WebhookResponse.is)
+    .map(prop('update'))
+    .do(x => console.log('webhook', x))
+    .subscribe(
+      upd => action.onNext([upd]),
+      err => console.error('request error: ', err)
+    )
 }
 
-export function makeTelegramDriver (token, webHook) {
-  let proxy = webHook ? makeWebHook(token, webHook) : makeUpdates(token)
+let handleRequest = (token, request) => {
+  return request.mergeAll()
+    .filter(Request.is)
+    .flatMap(({method, options: query}) =>
+      makeAPIRequest({token, method, query})
+      .catch(Rx.Observable.empty()))
+    .subscribeOnError(
+      err => console.error('request error: ', err)
+    )
+}
+
+export function makeTelegramDriver (token, options = {}) {
+  let action = new Rx.Subject()
+
+  let proxy = options.webhook ? makeWebHook(token, action) : makeUpdates(token)
+
   let updates = proxy
-    .doOnError(err => console.log('updates error: ', err))
+    .doOnError(err => console.error('updates error: ', err))
     .replay(null, 1)
 
   let sources = makeSources(updates)
@@ -47,10 +64,12 @@ export function makeTelegramDriver (token, webHook) {
 
   return function telegramDriver (request) {
     // pass request
+    handleWebhook(token, request, action)
     handleRequest(token, request)
 
     // return interface
     return {
+      token: token,
       observable: updates,
       events: makeEventsSelector(sources),
       dispose: () => disposable.dispose()
