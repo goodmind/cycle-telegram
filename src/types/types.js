@@ -127,3 +127,8 @@ export const Request = t.struct({
   method: t.String,
   options: t.Object
 })
+
+export const WebhookResponse = t.struct({
+  type: t.enums.of(['webhook']),
+  update: Update
+})
