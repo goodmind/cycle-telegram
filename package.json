@@ -1,9 +1,12 @@
 {
   "name": "cycle-telegram",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "CycleJS Telegram Driver",
   "main": "index.js",
-  "keywords": ["cyclejs", "telegram"],
+  "keywords": [
+    "cyclejs",
+    "telegram"
+  ],
   "directories": {},
   "scripts": {
     "precompile-lib": "rm -rf lib/ && mkdir -p lib",
