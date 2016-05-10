@@ -11,22 +11,18 @@ export function makeAPIRequest ({token, method, query, httpMethod = 'POST', http
   let url = `${endpoint}/${method}`
   let uuid = v4()
 
-  let request$ = Rx.Observable.just(prepareOptions({
+  let request = Rx.Observable.just(prepareOptions({
     method: httpMethod,
     redirects: 0,
     uuid,
     url
   }, query))
 
-  try {
-    return httpDriver(request$)
-      .filter(res$ => res$.request.uuid === uuid)
-      .switch()
-      .catch(e => Rx.Observable.throw(new Error('Bad API token')))
-      .map(res => res.body)
-      .map(body => body.ok ? Rx.Observable.just(body.result) : Rx.Observable.throw(new Error(body)))
-      .mergeAll()
-  } catch (e) {
-    return Rx.Observable.throw(e)
-  }
+  return httpDriver(request)
+    .filter(res => res.request.uuid === uuid)
+    .switch()
+    .catch(e => Rx.Observable.throw(new Error(e)))
+    .map(res => res.body)
+    .map(body => body.ok ? Rx.Observable.just(body.result) : Rx.Observable.throw(new Error(body)))
+    .switch()
 }
