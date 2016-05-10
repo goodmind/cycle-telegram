@@ -2,5 +2,4 @@ node_modules/
 .idea/
 
 # Junk files
-deprecated/
-examples/
+src/telegram-log-driver
