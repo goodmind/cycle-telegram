@@ -13,18 +13,18 @@ npm install cycle-telegram
 # Usage
 
 ```js
-import {makeTelegramDriver, makeTelegramLogDriver, reply} from 'cycle-telegram'
+import {makeTelegramDriver, reply} from 'cycle-telegram'
 import {run} from '@cycle/core'
 
 import Rx from 'rx'
 
-let main = (sources) => {
+let main = ({bot}) => {
   let intents = {
-    uptime: sources.Bot.observable
+    uptime: bot.observable
       .first()
       .share(),
 
-    messages: sources.Bot.events('message')
+    messages: bot.events('message')
       .share()
   }
 
@@ -34,22 +34,104 @@ let main = (sources) => {
     }))
   ])
 
-  let log = Rx.Observable.from([
+  let log = Rx.Observable.merge(
     intents.uptime,
     intents.messages
-  ])
+  )
 
   return {
-    Bot: request,
-    Log: log
+    bot: request,
+    log: log
   }
 }
 
 run(main, {
-  Bot: makeTelegramDriver('<YOUR_TOKEN_HERE>'),
-  Log: makeTelegramLogDriver()
+  bot: makeTelegramDriver('<YOUR_TOKEN_HERE>'),
+  log: (m) => m.forEach(::console.log)
 })
 ```
+
+# Webhook with Express
+```js
+import {makeRouterDriver} from 'cycle-express'
+import {Update, makeTelegramDriver, reply, webhook} from 'cycle-telegram'
+import {run} from '@cycle/core'
+import {prop} from 'ramda'
+
+import express from 'express'
+import bodyParser from 'body-parser'
+
+import Rx from 'rx'
+
+let createServer = (router) => {
+  return router.post(`/${bot.token}/updates`)
+    .let(req => {
+      return Rx.Observable.catch(
+        req.map(req => ({
+          id: req.id,
+          send: Update(req.body)
+        })),
+        req.map(req => ({
+          id: req.id,
+          send: {ok: false, result: 'Invalid request'}
+        }))
+      )
+    })
+}
+
+let main = ({bot, router}) => {
+  let intents = {
+    server: createServer(router).share(),
+
+    uptime: bot.observable
+      .first()
+      .share(),
+
+    messages: bot.events('message')
+      .share()
+  }
+
+  let request = Rx.Observable.from([
+    intents.server.map(prop('send'))
+      .filter(Update.is)
+      .map(webhook),
+
+    intents.messages.map(reply({
+      text: 'Reply to message'
+    }))
+  ])
+
+  let log = Rx.Observable.merge(
+    intents.server,
+    intents.uptime,
+    intents.messages
+  )
+
+  return {
+    router: intents.server,
+    bot: request,
+    log: log
+  }
+}
+
+let app = express()
+let router = express.Router()
+
+app.set('port', process.env.PORT || 5000)
+app.use(bodyParser.json())
+app.use('/', router)
+
+var server = app.listen(app.get('port'), () => {
+  console.log(server.address())
+})
+
+run(main, {
+  router: makeRouterDriver(router),
+  bot: makeTelegramDriver('<YOUR_TOKEN_HERE>', {webhook: true}),
+  log: (m) => m.forEach(::console.log)
+})
+```
+
 
 - - -
 
