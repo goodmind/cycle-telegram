@@ -32,7 +32,6 @@ let handleWebhook = (token, request, action) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
     .map(prop('update'))
-    .do(x => console.log('webhook', x))
     .subscribe(
       upd => action.onNext([upd]),
       err => console.error('request error: ', err)
@@ -43,8 +42,7 @@ let handleRequest = (token, request) => {
   return request.mergeAll()
     .filter(Request.is)
     .flatMap(({method, options: query}) => makeAPIRequest({token, method, query}).catch(Rx.Observable.empty()))
-    .subscribe(
-      req => console.log('response: ', req),
+    .subscribeOnError(
       err => console.error('request error: ', err)
     )
 }
