@@ -51,7 +51,6 @@ export function makeWebHook (token, action) {
 export function makeSources (state) {
   let updates = state
     .pluck('updates')
-    .share()
     .map(u => Rx.Observable.fromArray(u))
     .switch()
     .share()
