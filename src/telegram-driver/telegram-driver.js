@@ -42,18 +42,19 @@ let handleWebhook = (token, request, action) => {
 let handleRequest = (token, request) => {
   return request.mergeAll()
     .filter(Request.is)
-    .flatMap(({method, options: query}) =>
-      makeAPIRequest({token, method, query})
-      .catch(Rx.Observable.empty()))
-    .subscribeOnError(
+    .flatMap(({method, options: query}) => makeAPIRequest({token, method, query}).catch(Rx.Observable.empty()))
+    .subscribe(
+      req => console.log('response: ', req),
       err => console.error('request error: ', err)
     )
 }
 
 export function makeTelegramDriver (token, options = {}) {
+  let proxy = makeUpdates(token)
   let action = new Rx.Subject()
-
-  let proxy = options.webhook ? makeWebHook(token, action) : makeUpdates(token)
+  if (options.webhook) {
+    proxy = makeWebHook(token, action)
+  }
 
   let updates = proxy
     .doOnError(err => console.error('updates error: ', err))
@@ -64,7 +65,11 @@ export function makeTelegramDriver (token, options = {}) {
 
   return function telegramDriver (request) {
     // pass request
-    handleWebhook(token, request, action)
+    if (options.webhook) {
+      // handle webhook
+      handleWebhook(token, request, action)
+    }
+    // handle request
     handleRequest(token, request)
 
     // return interface
