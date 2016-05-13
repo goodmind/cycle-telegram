@@ -53,18 +53,17 @@ run(main, {
 
 # Webhook with Express
 ```js
+import express from 'express'
+import bodyParser from 'body-parser'
+import Rx from 'rx'
+
 import {makeRouterDriver} from 'cycle-express'
-import {Update, makeTelegramDriver, reply, webhook} from 'cycle-telegram'
+import {Update, makeTelegramDriver, reply, webhook, setWebhook} from 'cycle-telegram'
 import {run} from '@cycle/core'
 import {prop} from 'ramda'
 
-import express from 'express'
-import bodyParser from 'body-parser'
-
-import Rx from 'rx'
-
-let createServer = (router) => {
-  return router.post(`/${bot.token}/updates`)
+let createServer = (router, token) => {
+  return router.post(`/${token}/updates`)
     .let(req => {
       return Rx.Observable.catch(
         req.map(req => ({
@@ -81,7 +80,7 @@ let createServer = (router) => {
 
 let main = ({bot, router}) => {
   let intents = {
-    server: createServer(router).share(),
+    server: createServer(router, bot.token).share(),
 
     uptime: bot.observable
       .first()
@@ -95,6 +94,8 @@ let main = ({bot, router}) => {
     intents.server.map(prop('send'))
       .filter(Update.is)
       .map(webhook),
+
+    Rx.Observable.just(setWebhook({url: 'https://example.com/<YOUR_TOKEN_HERE>/updates'})),
 
     intents.messages.map(reply({
       text: 'Reply to message'
