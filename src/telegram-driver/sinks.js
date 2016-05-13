@@ -29,6 +29,12 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
   })
 })
 
+export let setWebhook = (options = {}) => Request({
+  type: 'sink',
+  method: 'setWebhook',
+  options: merge(options, {})
+})
+
 export let webhook = (update) => WebhookResponse({
   type: 'webhook',
   update
