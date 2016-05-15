@@ -23,8 +23,10 @@ function makeEventsSelector (sources) {
     // return interface
     return Rx.Observable.case(
       () => eventName,
-      Object.assign({}, messageSources, inlineQuerySources, callbackQuerySources)
-    )
+      Object.assign({},
+        messageSources,
+        inlineQuerySources,
+        callbackQuerySources))
   }
 }
 
@@ -34,17 +36,18 @@ let handleWebhook = (token, request, action) => {
     .map(prop('update'))
     .subscribe(
       upd => action.onNext([upd]),
-      err => console.error('request error: ', err)
-    )
+      err => console.error('request error: ', err))
 }
 
 let handleRequest = (token, request) => {
   return request.mergeAll()
     .filter(Request.is)
-    .flatMap(({method, options: query}) => makeAPIRequest({token, method, query}).catch(Rx.Observable.empty()))
+    .flatMap(({
+      method,
+      options: query
+    }) => makeAPIRequest({token, method, query}).catch(Rx.Observable.empty()))
     .subscribeOnError(
-      err => console.error('request error: ', err)
-    )
+      err => console.error('request error: ', err))
 }
 
 export function makeTelegramDriver (token, options = {}) {
