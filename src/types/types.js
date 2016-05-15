@@ -43,7 +43,18 @@ export const InlineQueryResultArticle = InlineQueryResult.extend({
 })
 
 export const MessageEntity = t.struct({
-  type: t.enums.of(['mention', 'hashtag', 'bot_command', 'url', 'email', 'bold', 'italic', 'code', 'pre', 'text_link']),
+  type: t.enums.of([
+    'mention',
+    'hashtag',
+    'bot_command',
+    'url',
+    'email',
+    'bold',
+    'italic',
+    'code',
+    'pre',
+    'text_link'
+  ]),
   offset: t.Number,
   length: t.Number,
   url: t.maybe(t.String)
