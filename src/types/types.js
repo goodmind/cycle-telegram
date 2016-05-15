@@ -116,6 +116,22 @@ export const Update = t.struct({
   callback_query: t.maybe(CallbackQuery)
 })
 
+export const UpdateInlineQuery = t.refinement(Update,
+  (u) => u.inline_query,
+  'UpdateInlineQuery')
+
+export const UpdateMessage = t.refinement(Update,
+  (u) => u.message,
+  'UpdateMessage')
+
+export const UpdateChosenInlineResult = t.refinement(Update,
+  (u) => u.chosen_inline_result,
+  'UpdateChosenInlineResult')
+
+export const UpdateCallbackQuery = t.refinement(Update,
+  (u) => u.callback_query,
+  'UpdateCallbackQuery')
+
 export const UpdatesState = t.struct({
   startDate: t.Number,
   offset: t.Number,
