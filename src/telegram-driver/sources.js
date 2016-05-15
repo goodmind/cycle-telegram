@@ -2,11 +2,18 @@ import Rx from 'rx'
 
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
+import {
+  UpdatesState,
+  Message,
+  InlineQuery,
+  ChosenInlineResult
+} from '../types'
 
-import { UpdatesState, Message, InlineQuery, ChosenInlineResult } from '../types'
 import { CallbackQuery } from '../types/keyboard-types'
 
-let max = curryN(3, (property, acc, current) => current[property] > acc ? current[property] : acc)
+let max = curryN(3,
+  (property, acc, current) => current[property] > acc ? current[property] : acc)
+
 let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
   httpMethod: 'GET',
   token,
@@ -23,11 +30,13 @@ export function makeUpdates (token) {
   })
 
   return Rx.Observable.return(initialState).expand(({offset}) => resolve(offset)
-    .combineLatest(Rx.Observable.interval(100).take(1), (updates, _) => UpdatesState({
-      startDate: initialState.startDate,
-      offset: reduce(max('update_id'), 0, updates) + 1,
-      updates
-    })))
+    .combineLatest(
+      Rx.Observable.interval(100).take(1),
+      (updates, _) => UpdatesState({
+        startDate: initialState.startDate,
+        offset: reduce(max('update_id'), 0, updates) + 1,
+        updates
+      })))
 }
 
 export function makeWebHook (token, action) {
@@ -62,7 +71,10 @@ export function makeSources (state) {
   return {
     message: Rx.Observable.zip(updates, startDate)
       .filter(([update, startDate]) => Message.is(update.message))
-      .filter(([update, startDate]) => (update.message.date * 1000) >= startDate)
+      .filter(([
+        update,
+        startDate
+      ]) => (update.message.date * 1000) >= startDate)
       .map(([update]) => update)
       .share(),
 
