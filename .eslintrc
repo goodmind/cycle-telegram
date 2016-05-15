@@ -2,5 +2,8 @@
   "extends": "standard",
   "plugins": [
     "standard"
-  ]
+  ],
+  "rules": {
+    "max-len": ["warning", 80]
+  }
 }
