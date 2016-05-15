@@ -7,7 +7,9 @@ export let entityIs = (type) => pipe(
       any(propEq('type', type)),
       pipe(not, isNil)))
 
-export let getEntityFirst = curryN(2, (type, {message}) => {
-  let match = find(propEq('type', type))(message.entities)
-  return message.text.substr(match.offset, match.length)
+export let getEntityFirst = curryN(2, (type, {message}) => find(propEq('type', type))(message.entities))
+
+export let getEntityFirstValue = curryN(2, (type, update) => {
+  let match = getEntityFirst(type, update)
+  return update.message.text.substr(match.offset, match.length)
 })
