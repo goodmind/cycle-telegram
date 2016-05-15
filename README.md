@@ -10,7 +10,7 @@ npm install cycle-telegram
 
 [![npm version](https://badge.fury.io/js/cycle-telegram.svg)](https://badge.fury.io/js/cycle-telegram)
 
-# Usage
+## Usage
 
 ```js
 import {makeTelegramDriver, reply} from 'cycle-telegram'
@@ -51,7 +51,7 @@ run(main, {
 })
 ```
 
-# Webhook with Express
+## Webhook with Express
 ```js
 import express from 'express'
 import bodyParser from 'body-parser'
