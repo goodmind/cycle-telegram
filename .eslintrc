@@ -4,6 +4,6 @@
     "standard"
   ],
   "rules": {
-    "max-len": ["warning", 80]
+    "max-len": ["warn", 80]
   }
 }
