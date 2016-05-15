@@ -1,4 +1,16 @@
-import { curryN, pipe, view, lensPath, ifElse, isArrayLike, any, propEq, not, isNil, find } from 'ramda'
+import {
+  curryN,
+  pipe,
+  view,
+  lensPath,
+  ifElse,
+  isArrayLike,
+  any,
+  propEq,
+  not,
+  isNil,
+  find
+} from 'ramda'
 
 export let entityIs = (type) => pipe(
     view(lensPath(['message', 'entities'])),
@@ -7,7 +19,8 @@ export let entityIs = (type) => pipe(
       any(propEq('type', type)),
       pipe(not, isNil)))
 
-export let getEntityFirst = curryN(2, (type, {message}) => find(propEq('type', type))(message.entities))
+export let getEntityFirst = curryN(2, (type, {message}) => find(
+  propEq('type', type))(message.entities))
 
 export let getEntityFirstValue = curryN(2, (type, update) => {
   let match = getEntityFirst(type, update)
