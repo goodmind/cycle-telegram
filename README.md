@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/goodmind/cycle-telegram](https://badges.gitter.im/goodmind/cycle-telegram.svg)](https://gitter.im/goodmind/cycle-telegram?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for Telegram
+A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for [Telegram](https://telegram.org/)
 
 ```
 npm install cycle-telegram
