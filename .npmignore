@@ -1,5 +1,3 @@
 .idea/
-
-# Junk files
-deprecated/
-examples/
+test/
+example/
