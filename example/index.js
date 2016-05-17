@@ -44,5 +44,5 @@ let main = ({bot}) => {
 
 run(main, {
   bot: makeTelegramDriver('<YOUR_TOKEN_HERE>'),
-  log: (m) => m.forEach(console.log)
+  log: (m) => m.forEach(::console.log)
 })
