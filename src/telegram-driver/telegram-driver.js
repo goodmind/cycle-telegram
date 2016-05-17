@@ -45,8 +45,8 @@ let handleRequest = (token, request) => {
     .flatMap(({
       method,
       options: query
-    }) => makeAPIRequest({token, method, query}).catch(Rx.Observable.empty()))
-    .subscribeOnError(
+    }) => makeAPIRequest({token, method, query}))
+    .doOnError(
       err => console.error('request error: ', err))
 }
 
@@ -70,13 +70,14 @@ export function makeTelegramDriver (token, options = {}) {
       // handle webhook
       handleWebhook(token, request, action)
     }
-    // handle request
-    handleRequest(token, request)
+
+    let newRequest = handleRequest(token, request)
 
     // return interface
     return {
       token: token,
       observable: updates,
+      responses: newRequest.share(), // handle request
       events: makeEventsSelector(sources),
       dispose: () => disposable.dispose()
     }
