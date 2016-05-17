@@ -1,13 +1,40 @@
-import { find, takeLast, curryN } from 'ramda'
-import { getEntityFirstValue } from './telegram-driver/index'
+import { UpdateMessage, UpdateInlineQuery, getEntityFirst } from './telegram-driver'
+import { find, curryN, prop } from 'ramda'
 
-export let commandName = (update) => getEntityFirstValue('bot_command')(update)
+import t from 'tcomb'
 
-export let findCommandIn = curryN(2, (commands, path) => {
-  let match = find(
-      ([r, _]) => path.match(r),
-      commands
-    ) || takeLast(1, commands)[0]
+let matchPluginPath = (plugins, str) => find(
+  ({path}) => str.match(path),
+  plugins
+)
 
-  return [match[0], match[1]]
+let matchPluginArgs = (str, plugin) => str.match(plugin.path)
+
+let makeResolverWith = curryN(3, (plugins, queryWith, u) => {
+  let query = queryWith(u)
+  let plugin = matchPluginPath(plugins, query)
+  let props = matchPluginArgs(query, plugin)
+
+  return { plugin, props }
 })
+
+export let matchPlugin = function (plugins) {
+  let resolve = makeResolverWith(plugins)
+  let type = (u) => t.match(u,
+    UpdateMessage, resolve(
+      u => u.message.text.substr(getEntityFirst('bot_command', u).offset)
+    ),
+    UpdateInlineQuery, resolve(
+      u => u.inline_query.query
+    )
+  )
+
+  return this.map(u => {
+    let match = type(u)
+    let component = {}
+    if (match.plugin.type.is(u)) {
+      component = match.plugin.component({props: match.props}, u) || {}
+    }
+    return component
+  }).filter(prop('bot'))
+}
