@@ -1,4 +1,8 @@
-import { UpdateMessage, UpdateInlineQuery, getEntityFirst } from './telegram-driver'
+import {
+  UpdateMessage,
+  UpdateInlineQuery,
+  getEntityFirst
+} from './telegram-driver'
 import { find, curryN, prop } from 'ramda'
 
 import t from 'tcomb'
