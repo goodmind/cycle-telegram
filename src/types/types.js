@@ -43,7 +43,18 @@ export const InlineQueryResultArticle = InlineQueryResult.extend({
 })
 
 export const MessageEntity = t.struct({
-  type: t.enums.of(['mention', 'hashtag', 'bot_command', 'url', 'email', 'bold', 'italic', 'code', 'pre', 'text_link']),
+  type: t.enums.of([
+    'mention',
+    'hashtag',
+    'bot_command',
+    'url',
+    'email',
+    'bold',
+    'italic',
+    'code',
+    'pre',
+    'text_link'
+  ]),
   offset: t.Number,
   length: t.Number,
   url: t.maybe(t.String)
@@ -115,6 +126,22 @@ export const Update = t.struct({
   chosen_inline_result: t.maybe(ChosenInlineResult),
   callback_query: t.maybe(CallbackQuery)
 })
+
+export const UpdateInlineQuery = t.refinement(Update,
+  (u) => u.inline_query,
+  'UpdateInlineQuery')
+
+export const UpdateMessage = t.refinement(Update,
+  (u) => u.message,
+  'UpdateMessage')
+
+export const UpdateChosenInlineResult = t.refinement(Update,
+  (u) => u.chosen_inline_result,
+  'UpdateChosenInlineResult')
+
+export const UpdateCallbackQuery = t.refinement(Update,
+  (u) => u.callback_query,
+  'UpdateCallbackQuery')
 
 export const UpdatesState = t.struct({
   startDate: t.Number,

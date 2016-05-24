@@ -1,8 +1,8 @@
 # Cycle Telegram Driver
 
-[![Join the chat at https://gitter.im/goodmind/cycle-telegram](https://badges.gitter.im/goodmind/cycle-telegram.svg)](https://gitter.im/goodmind/cycle-telegram?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat](https://img.shields.io/badge/chat-on_telegram-blue.svg)](https://telegram.me/cyclejs) [![Join the chat at https://gitter.im/goodmind/cycle-telegram](https://badges.gitter.im/goodmind/cycle-telegram.svg)](https://gitter.im/goodmind/cycle-telegram?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for Telegram
+A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for [Telegram](https://telegram.org/)
 
 ```
 npm install cycle-telegram
@@ -10,7 +10,7 @@ npm install cycle-telegram
 
 [![npm version](https://badge.fury.io/js/cycle-telegram.svg)](https://badge.fury.io/js/cycle-telegram)
 
-# Usage
+## Usage
 
 ```js
 import {makeTelegramDriver, reply} from 'cycle-telegram'
@@ -51,7 +51,7 @@ run(main, {
 })
 ```
 
-# Webhook with Express
+## Webhook with Express
 ```js
 import express from 'express'
 import bodyParser from 'body-parser'
@@ -95,7 +95,7 @@ let main = ({bot, router}) => {
       .filter(Update.is)
       .map(webhook),
 
-    Rx.Observable.just(setWebhook({url: 'https://example.com/<YOUR_TOKEN_HERE>/updates'})),
+    Rx.Observable.just(setWebhook({url: `https://example.com/${bot.token}/updates`})),
 
     intents.messages.map(reply({
       text: 'Reply to message'

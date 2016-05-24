@@ -1,0 +1,9 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "standard"
+  ],
+  "rules": {
+    "max-len": ["warn", 80]
+  }
+}
