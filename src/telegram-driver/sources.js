@@ -15,7 +15,6 @@ let max = curryN(3,
   (property, acc, current) => current[property] > acc ? current[property] : acc)
 
 let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
-  httpMethod: 'GET',
   token,
   method: 'getUpdates',
   query: { offset }
