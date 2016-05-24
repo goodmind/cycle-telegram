@@ -1,32 +1,36 @@
 import Rx from 'rx'
-import { makeHTTPDriver } from '@cycle/http'
-import { v4 } from 'node-uuid'
+import request from 'superagent'
 
 let prepareOptions = (options, query) => Object.assign(
   options, options.httpMethod === 'POST' ? { send: query } : { query }
 )
 
+let fromSuperagent = request => Rx.Observable.create(obs => {
+  request.end((err, res) => {
+    if (err) {
+      obs.onError(err)
+    } else {
+      obs.onNext(res)
+    }
+    obs.onCompleted()
+  })
+
+  return () => request.abort()
+})
+
 export function makeAPIRequest ({
   token,
   method,
   query,
-  httpMethod = 'POST',
-  httpDriver = makeHTTPDriver()
+  httpMethod = 'POST'
 }) {
   let endpoint = `https://api.telegram.org/bot${token}`
   let url = `${endpoint}/${method}`
-  let uuid = v4()
+  let req = request(httpMethod, url)
+    .redirects(0)
+    .send(query)
 
-  let request = Rx.Observable.just(prepareOptions({
-    method: httpMethod,
-    redirects: 0,
-    uuid,
-    url
-  }, query))
-
-  return httpDriver(request)
-    .filter(res => res.request.uuid === uuid)
-    .switch()
+  return fromSuperagent(req)
     .catch(e => Rx.Observable.throw(e instanceof Error ? e : new Error(e)))
     .map(res => res.body)
     .map(
