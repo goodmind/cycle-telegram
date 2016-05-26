@@ -17,7 +17,7 @@
     "test:record": "node -r babel-register test/record.js | tap-spec",
     "prepublish": "npm run clean && npm run build"
   },
-  "author": "goodmind",
+  "author": "goodmind <andwebar@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "node-uuid": "^1.4.7",
