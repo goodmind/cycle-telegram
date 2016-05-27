@@ -6,20 +6,16 @@ import path from 'path'
 import tape from 'tape'
 import tapeNock from 'tape-nock'
 
-console.log(path.join(__dirname, 'fixtures'))
-
 let test = tapeNock(tape, {
   fixtures: path.join(__dirname, 'fixtures'),
-  mode: 'record'
+  mode: 'lockdown'
 })
 
-test.nock.enableNetConnect()
-
-let basicDriver =
-  makeTelegramDriver('<YOUR_TOKEN_HERE>')
+const ACCESS_TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
 
 test('should reply to messages with basic driver', t => {
-  let { sources } = run(({bot}) => ({
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { startDate: 1464342407440 })
+  let { sources } = run(({ bot }) => ({
     bot: $.from([bot.events('message').map(
       reply({text: 'Cycle.js'})
     )])
@@ -27,14 +23,18 @@ test('should reply to messages with basic driver', t => {
     bot: basicDriver
   })
 
-  sources.bot.responses.take(1).subscribe(message => {
-    t.equal(message.text, 'Cycle.js',
-      'message text should be equal to `Cycle.js`')
-    t.end()
-  })
+  sources.bot.responses
+    .take(1)
+    .do(() => sources.bot.dispose())
+    .subscribe(message => {
+      t.equal(message.text, 'Cycle.js',
+        'message text should be equal to `Cycle.js`')
+      t.end()
+    })
 })
 
 test('should reply to inline query with basic driver', t => {
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN)
   let results = [
     {
       type: 'article',
@@ -42,7 +42,8 @@ test('should reply to inline query with basic driver', t => {
       input_message_content: {
         message_text:
           'A functional and reactive JavaScript framework for cleaner code'
-      }
+      },
+      id: '2o3aajndy0all3di'
     }
   ]
   let { sources } = run(({bot}) => ({
@@ -53,16 +54,11 @@ test('should reply to inline query with basic driver', t => {
     bot: basicDriver
   })
 
-  sources.bot.responses.take(1).subscribe(boolean => {
-    t.ok(boolean, 'response should be truthy')
-    t.end()
-  })
-})
-
-test.onFinish(() => {
-  let { sources } = run(() => ({}), {
-    bot: basicDriver
-  })
-
-  sources.bot.dispose()
+  sources.bot.responses
+    .take(1)
+    .do(() => sources.bot.dispose())
+    .subscribe(boolean => {
+      t.ok(boolean, 'response should be truthy')
+      t.end()
+    })
 })
