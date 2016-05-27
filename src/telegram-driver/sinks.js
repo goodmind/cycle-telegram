@@ -1,11 +1,11 @@
 import { Request, WebhookResponse } from '../types'
-import { merge, map, assoc, curryN } from 'ramda'
+import { merge, map, assoc, curryN, path } from 'ramda'
 
 export let broadcast = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: merge(options, {
-    chat_id: update.message.chat.id,
+    chat_id: path(['message', 'chat', 'id'], update),
     text: options.text || 'Null-catch: no text provided',
     reply_markup: JSON.stringify(options.reply_markup)
   })
@@ -15,8 +15,8 @@ export let reply = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: merge(options, {
-    chat_id: update.message.chat.id,
-    reply_to_message_id: update.message.message_id,
+    chat_id: path(['message', 'chat', 'id'], update),
+    reply_to_message_id: path(['message', 'message_id'], update),
     text: options.text || 'Null-catch: no text provided',
     reply_markup: JSON.stringify(options.reply_markup)
   })
@@ -33,7 +33,7 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
     type: 'sink',
     method: 'answerInlineQuery',
     options: merge(options, {
-      inline_query_id: update.inline_query.id,
+      inline_query_id: path(['inline_query', 'id'], update),
       results: JSON.stringify(results)
     })
   })
