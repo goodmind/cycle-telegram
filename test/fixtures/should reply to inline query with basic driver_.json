@@ -1,0 +1,114 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 0
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:34:11 GMT",
+            "content-type": "application/json",
+            "content-length": "23",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 1
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 484444975,
+                    "inline_query": {
+                        "id": "170767260372226718",
+                        "from": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka",
+                            "last_name": "🌲",
+                            "username": "goodmind"
+                        },
+                        "query": "",
+                        "offset": ""
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:34:18 GMT",
+            "content-type": "application/json",
+            "content-length": "217",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 484444976
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:34:18 GMT",
+            "content-type": "application/json",
+            "content-length": "23",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/answerInlineQuery",
+        "body": {
+            "results": "[{\"type\":\"article\",\"title\":\"Cycle.js\",\"input_message_content\":{\"message_text\":\"A functional and reactive JavaScript framework for cleaner code\"},\"id\":\"2o3aajndy0all3di\"}]",
+            "inline_query_id": "170767260372226718"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": true
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:34:18 GMT",
+            "content-type": "application/json",
+            "content-length": "25",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

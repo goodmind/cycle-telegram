@@ -1,0 +1,156 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 0
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:24:40 GMT",
+            "content-type": "application/json",
+            "content-length": "392",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 1
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 484444974,
+                    "message": {
+                        "message_id": 784,
+                        "from": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka",
+                            "last_name": "🌲",
+                            "username": "goodmind"
+                        },
+                        "chat": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka",
+                            "last_name": "🌲",
+                            "username": "goodmind",
+                            "type": "private"
+                        },
+                        "date": 1464342407.44,
+                        "text": "hi"
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:24:56 GMT",
+            "content-type": "application/json",
+            "content-length": "331",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 484444975
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:24:57 GMT",
+            "content-type": "application/json",
+            "content-length": "23",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
+        "body": {
+            "text": "Cycle.js",
+            "chat_id": 39759851,
+            "reply_to_message_id": 784
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 785,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": 39759851,
+                    "first_name": "andretshurotshka",
+                    "last_name": "🌲",
+                    "username": "goodmind",
+                    "type": "private"
+                },
+                "date": 1464341097,
+                "reply_to_message": {
+                    "message_id": 784,
+                    "from": {
+                        "id": 39759851,
+                        "first_name": "andretshurotshka",
+                        "last_name": "🌲",
+                        "username": "goodmind"
+                    },
+                    "chat": {
+                        "id": 39759851,
+                        "first_name": "andretshurotshka",
+                        "last_name": "🌲",
+                        "username": "goodmind",
+                        "type": "private"
+                    },
+                    "date": 1464341096,
+                    "text": "hi"
+                },
+                "text": "Cycle.js"
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Fri, 27 May 2016 09:24:57 GMT",
+            "content-type": "application/json",
+            "content-length": "562",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]
