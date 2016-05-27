@@ -20,13 +20,10 @@ let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
   query: { offset }
 }))
 
-export function makeUpdates (token) {
+export function makeUpdates (initialState, token) {
+  UpdatesState(initialState)
+
   let resolve = makeUpdatesResolver(token)
-  let initialState = UpdatesState({
-    startDate: Date.now(),
-    offset: 0,
-    updates: []
-  })
 
   return Rx.Observable.return(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
@@ -38,13 +35,10 @@ export function makeUpdates (token) {
       })))
 }
 
-export function makeWebHook (token, action) {
+export function makeWebHook (initialState, action) {
+  UpdatesState(initialState)
+
   let webHookUpdates = action.share()
-  let initialState = UpdatesState({
-    startDate: Date.now(),
-    offset: 0,
-    updates: []
-  })
 
   return Rx.Observable.concat(
     Rx.Observable.just(initialState),
