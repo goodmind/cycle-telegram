@@ -1,25 +1,25 @@
 import { Request, WebhookResponse } from '../types'
-import { merge, map, assoc, curryN, path } from 'ramda'
+import { merge, map, assoc, curryN, path, evolve, defaultTo } from 'ramda'
 
 export let broadcast = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
-  options: merge(options, {
-    chat_id: path(['message', 'chat', 'id'], update),
-    text: options.text || 'Null-catch: no text provided',
-    reply_markup: JSON.stringify(options.reply_markup)
-  })
+  options: evolve({
+    chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+    text: defaultTo('Null-catch: no text provided'),
+    reply_markup: JSON.stringify
+  }, options)
 }))
 
 export let reply = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
-  options: merge(options, {
-    chat_id: path(['message', 'chat', 'id'], update),
-    reply_to_message_id: path(['message', 'message_id'], update),
-    text: options.text || 'Null-catch: no text provided',
-    reply_markup: JSON.stringify(options.reply_markup)
-  })
+  options: evolve({
+    chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+    reply_to_message_id: defaultTo(path(['message', 'message_id'], update)),
+    text: defaultTo('Null-catch: no text provided'),
+    reply_markup: JSON.stringify
+  }, options)
 }))
 
 export let answerInlineQuery = curryN(2, (options = {}, update) => {
@@ -32,10 +32,10 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
   return Request({
     type: 'sink',
     method: 'answerInlineQuery',
-    options: merge(options, {
-      inline_query_id: path(['inline_query', 'id'], update),
-      results: JSON.stringify(results)
-    })
+    options: evolve({
+      inline_query_id: defaultTo(path(['inline_query', 'id'], update)),
+      results: JSON.stringify
+    }, options)
   })
 })
 
