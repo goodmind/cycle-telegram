@@ -46,8 +46,6 @@ let handleRequest = (token, request) => {
       method,
       options: query
     }) => makeAPIRequest({token, method, query}))
-    .doOnError(
-      err => console.error('request error: ', err))
 }
 
 export function makeTelegramDriver (token, options = {}) {
@@ -79,6 +77,7 @@ export function makeTelegramDriver (token, options = {}) {
     }
 
     let newRequest = handleRequest(token, request)
+    newRequest.subscribeOnError(err => console.error('request error: ', err))
 
     // return interface
     return {
