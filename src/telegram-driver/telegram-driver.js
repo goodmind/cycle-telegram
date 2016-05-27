@@ -51,10 +51,17 @@ let handleRequest = (token, request) => {
 }
 
 export function makeTelegramDriver (token, options = {}) {
-  let proxy = makeUpdates(token)
+  let state = {
+    startDate: options.startDate || Date.now(),
+    offset: 0,
+    updates: []
+  }
+
+  let proxy = makeUpdates(state, token)
   let action = new Rx.Subject()
+
   if (options.webhook) {
-    proxy = makeWebHook(token, action)
+    proxy = makeWebHook(state, action)
   }
 
   let updates = proxy
