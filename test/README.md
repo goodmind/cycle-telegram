@@ -1,3 +1,0 @@
-# Cycle Telegram Driver
-
-## WARNING: `tape-nock` records don't work, unsure why...
