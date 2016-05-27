@@ -1,5 +1,23 @@
 import { Request, WebhookResponse } from '../types'
-import { merge, map, assoc, curryN, path, evolve, defaultTo } from 'ramda'
+import { merge, map, assoc, curryN, path, defaultTo, keys, difference, pickAll, uniq, concat } from 'ramda'
+import _curry2 from 'ramda/src/internal/_curry2'
+
+let evolve = _curry2(function evolve (transformations, object) {
+  object = pickAll(
+    uniq(concat(keys(transformations), keys(object))),
+    object)
+  console.log(transformations, object)
+  var result = {}
+  var transformation, key, type
+  for (key in object) {
+    transformation = transformations[key]
+    type = typeof transformation
+    result[key] = type === 'function' ? transformation(object[key])
+      : type === 'object' ? evolve(transformations[key], object[key])
+      : object[key]
+  }
+  return result
+})
 
 export let broadcast = curryN(2, (options = {}, update) => Request({
   type: 'sink',
