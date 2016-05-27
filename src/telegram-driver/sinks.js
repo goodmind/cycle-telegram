@@ -1,6 +1,16 @@
 import { Request, WebhookResponse } from '../types'
 import { merge, map, assoc, curryN } from 'ramda'
 
+export let broadcast = curryN(2, (options = {}, update) => Request({
+  type: 'sink',
+  method: 'sendMessage',
+  options: merge(options, {
+    chat_id: update.message.chat.id,
+    text: options.text || 'Null-catch: no text provided',
+    reply_markup: JSON.stringify(options.reply_markup)
+  })
+}))
+
 export let reply = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
