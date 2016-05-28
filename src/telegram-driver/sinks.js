@@ -1,28 +1,16 @@
 import { Request, WebhookResponse } from '../types'
-import { merge, map, assoc, curryN, path, defaultTo, keys, difference, pickAll, uniq, concat } from 'ramda'
-import _curry2 from 'ramda/src/internal/_curry2'
+import { merge, map, assoc, curryN, path, defaultTo, keys, pickAll, chain, evolve, compose } from 'ramda'
 
-let evolve = _curry2(function evolve (transformations, object) {
-  object = pickAll(
-    uniq(concat(keys(transformations), keys(object))),
-    object)
-  console.log(transformations, object)
-  var result = {}
-  var transformation, key, type
-  for (key in object) {
-    transformation = transformations[key]
-    type = typeof transformation
-    result[key] = type === 'function' ? transformation(object[key])
-      : type === 'object' ? evolve(transformations[key], object[key])
-      : object[key]
-  }
-  return result
-})
+let defaults = curryN(2, (transformations, object) => evolve(
+  transformations,
+  pickAll(
+    chain(keys, [transformations, object]),
+    object)))
 
 export let broadcast = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
-  options: evolve({
+  options: defaults({
     chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
     text: defaultTo('Null-catch: no text provided'),
     reply_markup: JSON.stringify
@@ -32,7 +20,7 @@ export let broadcast = curryN(2, (options = {}, update) => Request({
 export let reply = curryN(2, (options = {}, update) => Request({
   type: 'sink',
   method: 'sendMessage',
-  options: evolve({
+  options: defaults({
     chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
     reply_to_message_id: defaultTo(path(['message', 'message_id'], update)),
     text: defaultTo('Null-catch: no text provided'),
@@ -41,18 +29,16 @@ export let reply = curryN(2, (options = {}, update) => Request({
 }))
 
 export let answerInlineQuery = curryN(2, (options = {}, update) => {
-  let results = options.results[0].id ? options.results
-    : map(answer =>
-        assoc('id', Math.random().toString(36).substring(2), answer),
-        options.results || []
-      )
+  let updateResults = (results) => results[0].id ? results : map(
+      answer => assoc('id', Math.random().toString(36).substring(2), answer),
+      results || [])
 
   return Request({
     type: 'sink',
     method: 'answerInlineQuery',
-    options: evolve({
+    options: defaults({
       inline_query_id: defaultTo(path(['inline_query', 'id'], update)),
-      results: JSON.stringify
+      results: compose(JSON.stringify, updateResults)
     }, options)
   })
 })
