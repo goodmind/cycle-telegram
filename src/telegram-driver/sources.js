@@ -67,7 +67,7 @@ export function makeSources (state) {
       .filter(([
         update,
         startDate
-      ]) => (update.message.date * 1000) >= startDate)
+      ]) => (startDate - update.message.date * 1000) <= 30000)
       .map(([update]) => update)
       .share(),
 
