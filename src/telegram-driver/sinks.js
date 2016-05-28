@@ -1,5 +1,11 @@
 import { Request, WebhookResponse } from '../types'
-import { merge, map, assoc, curryN, path, defaultTo, keys, pickAll, chain, evolve, compose } from 'ramda'
+import {
+  merge, map, assoc,
+  curryN, path,
+  defaultTo, keys,
+  pickAll, chain,
+  evolve, compose
+} from 'ramda'
 
 let defaults = curryN(2, (transformations, object) => evolve(
   transformations,
