@@ -6,7 +6,8 @@ function CycleJS ({props}, update) {
       type: 'article',
       title: 'Cycle.js',
       input_message_content: {
-        message_text: 'A functional and reactive JavaScript framework for cleaner code'
+        message_text:
+          'A functional and reactive JavaScript framework for cleaner code'
       }
     }
   ]
