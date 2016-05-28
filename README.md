@@ -133,6 +133,10 @@ run(main, {
 })
 ```
 
+## Built with `cycle-telegram`
+
+* [@cyclejs_bot](https://telegram.me/cyclejs_bot) — [source](https://github.com/goodmind/cycle-telegram-bot)
+
 
 - - -
 
