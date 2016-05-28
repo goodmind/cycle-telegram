@@ -1,10 +1,6 @@
 import Rx from 'rx'
 import request from 'superagent'
 
-let prepareOptions = (options, query) => Object.assign(
-  options, options.httpMethod === 'POST' ? { send: query } : { query }
-)
-
 let fromSuperagent = request => Rx.Observable.create(obs => {
   request.end((err, res) => {
     if (err) {
