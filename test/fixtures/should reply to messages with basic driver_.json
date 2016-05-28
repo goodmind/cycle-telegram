@@ -98,9 +98,9 @@
         "method": "POST",
         "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
         "body": {
-            "text": "Cycle.js",
             "chat_id": 39759851,
-            "reply_to_message_id": 784
+            "reply_to_message_id": 784,
+            "text": "Cycle.js"
         },
         "status": 200,
         "response": {
