@@ -77,13 +77,15 @@ export function makeTelegramDriver (token, options = {}) {
     }
 
     let newRequest = handleRequest(token, request)
+      .share()
+
     newRequest.subscribeOnError(err => console.error('request error: ', err))
 
     // return interface
     return {
       token: token,
       observable: updates,
-      responses: newRequest.share(), // handle request
+      responses: newRequest, // handle request
       events: makeEventsSelector(sources),
       dispose: () => disposable.dispose()
     }
