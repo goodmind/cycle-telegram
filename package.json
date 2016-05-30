@@ -20,6 +20,7 @@
   "author": "goodmind <andwebar@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cycle/isolate": "^1.3.2",
     "node-uuid": "^1.4.7",
     "ramda": "^0.21.0",
     "rx": "^4.1.0",
