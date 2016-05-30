@@ -15,7 +15,8 @@
     "eslint": "eslint src/ && eslint example/",
     "test": "node -r babel-register test | tap-spec",
     "test:record": "node -r babel-register test/record.js | tap-spec",
-    "prepublish": "npm run clean && npm run build && npm run test"
+    "prepublish": "npm run clean && npm run build",
+    "preversion": "npm run test"
   },
   "author": "goodmind <andwebar@gmail.com>",
   "license": "MIT",
