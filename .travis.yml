@@ -5,4 +5,4 @@ node_js:
 - "iojs"
 branches:
   only:
-  - master
+    - master
