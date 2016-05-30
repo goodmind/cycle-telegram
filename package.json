@@ -7,6 +7,12 @@
     "telegram"
   ],
   "directories": {},
+  "publishConfig": {
+    "tag": "dev"
+  },
+  "release": {
+    "branch": "development"
+  },
   "scripts": {
     "clean": "rm -rf lib/ && mkdir -p lib",
     "build": "babel -d lib/ src/",
@@ -16,7 +22,7 @@
     "test:record": "node -r babel-register test/record.js | tap-spec",
     "prepublish": "npm run clean && npm run build",
     "preversion": "npm run test",
-    "semantic-release": "semantic-release pre && npm publish --tag beta && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "author": "goodmind <andwebar@gmail.com>",
   "license": "MIT",
