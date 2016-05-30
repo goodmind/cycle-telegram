@@ -1,6 +1,6 @@
 import Rx from 'rx'
 
-import { prop, merge } from 'ramda'
+import { prop, mergeAll } from 'ramda'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '../types'
@@ -23,7 +23,7 @@ function makeEventsSelector (sources) {
     // return interface
     return Rx.Observable.case(
       () => eventName,
-      merge({}, messageSources, inlineQuerySources, callbackQuerySources))
+      mergeAll([messageSources, inlineQuerySources, callbackQuerySources]))
   }
 }
 
