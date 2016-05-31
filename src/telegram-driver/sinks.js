@@ -4,7 +4,8 @@ import {
   curryN, path,
   defaultTo, keys,
   pickAll, chain,
-  evolve, compose
+  evolve, compose,
+  is, isArrayLike
 } from 'ramda'
 
 let defaults = curryN(2, (transformations, obj) => compose(
@@ -31,7 +32,7 @@ export let reply = curryN(2, (options = {}, update) => Request({
     reply_to_message_id: defaultTo(path(['message', 'message_id'], update)),
     text: defaultTo('Null-catch: no text provided'),
     reply_markup: JSON.stringify
-  }, options)
+  }, is(String, options) ? {text: options} : options)
 }))
 
 export let answerInlineQuery = curryN(2, (options = {}, update) => {
@@ -45,14 +46,14 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
     options: defaults({
       inline_query_id: defaultTo(path(['inline_query', 'id'], update)),
       results: compose(JSON.stringify, updateResults)
-    }, options)
+    }, isArrayLike(options) ? {results: options} : options)
   })
 })
 
 export let setWebhook = (options = {}) => Request({
   type: 'sink',
   method: 'setWebhook',
-  options: merge(options, {})
+  options
 })
 
 export let webhook = (update) => WebhookResponse({
