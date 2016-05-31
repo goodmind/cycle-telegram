@@ -1,4 +1,4 @@
-import Rx from 'rx'
+import { Observable as $ } from 'rx'
 
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
@@ -17,7 +17,8 @@ let max = curryN(3,
 let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
   token,
   method: 'getUpdates',
-  query: { offset }
+  query: { offset },
+  timeout: 60000
 }))
 
 export function makeUpdates (initialState, token) {
@@ -25,9 +26,9 @@ export function makeUpdates (initialState, token) {
 
   let resolve = makeUpdatesResolver(token)
 
-  return Rx.Observable.return(initialState).expand(({offset}) => resolve(offset)
+  return $.return(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
-      Rx.Observable.interval(100).take(1),
+      $.interval(1000).take(1),
       (updates, _) => UpdatesState({
         startDate: initialState.startDate,
         offset: reduce(max('update_id'), 0, updates) + 1,
@@ -40,8 +41,8 @@ export function makeWebHook (initialState, action) {
 
   let webHookUpdates = action.share()
 
-  return Rx.Observable.concat(
-    Rx.Observable.just(initialState),
+  return $.concat(
+    $.just(initialState),
     webHookUpdates.map((updates) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
@@ -53,7 +54,7 @@ export function makeWebHook (initialState, action) {
 export function makeSources (state) {
   let updates = state
     .pluck('updates')
-    .map(u => Rx.Observable.fromArray(u))
+    .map(u => $.fromArray(u))
     .switch()
     .share()
 
@@ -62,7 +63,7 @@ export function makeSources (state) {
     .share()
 
   return {
-    message: Rx.Observable.zip(updates, startDate)
+    message: $.zip(updates, startDate)
       .filter(([update, startDate]) => Message.is(update.message))
       .filter(([
         update,
