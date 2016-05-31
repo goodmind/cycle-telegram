@@ -22,7 +22,7 @@ test('should reply to messages with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { startDate: 1464342407440 })
   let { sources } = run(({ bot }) => ({
     bot: $.from([
-      bot.events('message').map(reply({text: 'Cycle.js'}))
+      bot.events('message').map(reply('Cycle.js'))
     ])
   }), {
     bot: basicDriver
@@ -53,7 +53,7 @@ test('should reply to inline query with basic driver', t => {
   ]
   let { sources } = run(({bot}) => ({
     bot: $.from([
-      bot.events('inline_query').map(answerInlineQuery({ results }))
+      bot.events('inline_query').map(answerInlineQuery(results))
     ])
   }), {
     bot: basicDriver
@@ -76,9 +76,7 @@ test('should reply to command `/help` with basic driver', t => {
       name: 'help',
       path: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
       component: ({props}, u) => ({
-        bot: $.just(reply({
-          text: 'Cycle Telegram v1.1.1 (https://git.io/vrs3P)'
-        }, u))
+        bot: $.just(reply('Cycle Telegram v1.1.1 (https://git.io/vrs3P)', u))
       })},
     {
       type: Update,
@@ -111,4 +109,3 @@ test('should reply to command `/help` with basic driver', t => {
       t.end()
     })
 })
-

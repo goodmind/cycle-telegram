@@ -19,8 +19,9 @@ export let entityIs = (type) => pipe(
       any(propEq('type', type)),
       pipe(not, isNil)))
 
-export let getEntityFirst = curryN(2, (type, {message: {entities = []}}) => find(
-  propEq('type', type))(entities))
+export let getEntityFirst = curryN(2, (type, {
+  message: {entities = []}
+}) => find(propEq('type', type))(entities))
 
 export let getEntityFirstValue = curryN(2, (type, update) => {
   let match = getEntityFirst(type, update)
