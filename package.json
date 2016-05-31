@@ -1,18 +1,14 @@
 {
   "name": "cycle-telegram",
   "description": "CycleJS Telegram Driver",
-  "version": "1.2.1-beta",
   "main": "index.js",
   "keywords": [
     "cyclejs",
     "telegram"
   ],
   "directories": {},
-  "publishConfig": {
-    "tag": "dev"
-  },
   "release": {
-    "branch": "development"
+    "branch": "master"
   },
   "scripts": {
     "clean": "rm -rf lib/ && mkdir -p lib",
