@@ -1,11 +1,12 @@
 import Rx from 'rx'
+import RxAdapter from '@cycle/rx-adapter'
 
 import { prop, mergeAll } from 'ramda'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '../types'
 
-function makeEventsSelector (sources) {
+function makeEventsSelector (sources, adapt) {
   return function events (eventName) {
     let messageSources = {
       'message': sources.message.share()
@@ -21,9 +22,15 @@ function makeEventsSelector (sources) {
     }
 
     // return interface
-    return Rx.Observable.case(
+    let rxStream = Rx.Observable.case(
       () => eventName,
-      mergeAll([messageSources, inlineQuerySources, callbackQuerySources]))
+      mergeAll([
+        messageSources,
+        inlineQuerySources,
+        callbackQuerySources
+      ]))
+
+    return adapt(rxStream)
   }
 }
 
@@ -44,6 +51,10 @@ let handleRequest = (token, request) => {
       options: query
     }) => makeAPIRequest({token, method, query}))
 }
+
+let adapter = runSA => stream => runSA ?
+  runSA.adapt(stream, RxAdapter.streamSubscribe)
+  : stream
 
 export function makeTelegramDriver (token, options = {}) {
   let state = {
@@ -66,7 +77,8 @@ export function makeTelegramDriver (token, options = {}) {
   let sources = makeSources(updates)
   let disposable = updates.connect()
 
-  return function telegramDriver (request) {
+  function telegramDriver (request, runSA) {
+    let adapt = adapter(runSA)
     // pass request
     if (options.webhook) {
       // handle webhook
@@ -81,10 +93,14 @@ export function makeTelegramDriver (token, options = {}) {
     // return interface
     return {
       token: token,
-      observable: updates,
-      responses: newRequest, // handle request
-      events: makeEventsSelector(sources),
+      observable: adapt(updates),
+      responses: adapt(newRequest), // handle request
+      events: makeEventsSelector(sources, adapt),
       dispose: () => disposable.dispose()
     }
   }
+
+  telegramDriver.streamAdapter = RxAdapter
+
+  return telegramDriver
 }
