@@ -1,11 +1,11 @@
-import { run } from '@cycle/core'
+import Cycle from '@cycle/rxjs-run'
 import {
   makeTelegramDriver,
   reply, answerInlineQuery,
   UpdateMessage, Update, entityIs
 } from '../lib/index'
 import { matchPlugin } from '../lib/plugins'
-import { Observable as $ } from 'rx'
+import { Observable as $ } from 'rxjs'
 
 import path from 'path'
 import tape from 'tape'
@@ -20,10 +20,10 @@ const ACCESS_TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
 
 test('should reply to messages with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { startDate: 1464342407440 })
-  let { sources } = run(({ bot }) => ({
-    bot: $.from([
-      bot.events('message').map(reply({text: 'Cycle.js'}))
-    ])
+  let { sources, run } = Cycle(({ bot }) => ({
+    bot: $.of(
+      bot.events('message').map(reply('Cycle.js'))
+    )
   }), {
     bot: basicDriver
   })
@@ -36,6 +36,8 @@ test('should reply to messages with basic driver', t => {
         'message text should be equal to `Cycle.js`')
       t.end()
     })
+
+  run()
 })
 
 test('should reply to inline query with basic driver', t => {
@@ -51,10 +53,10 @@ test('should reply to inline query with basic driver', t => {
       id: '2o3aajndy0all3di'
     }
   ]
-  let { sources } = run(({bot}) => ({
-    bot: $.from([
-      bot.events('inline_query').map(answerInlineQuery({ results }))
-    ])
+  let { sources, run } = Cycle(({bot}) => ({
+    bot: $.of(
+      bot.events('inline_query').map(answerInlineQuery(results))
+    )
   }), {
     bot: basicDriver
   })
@@ -66,6 +68,8 @@ test('should reply to inline query with basic driver', t => {
       t.ok(boolean, 'response should be truthy')
       t.end()
     })
+
+  run()
 })
 
 test('should reply to command `/help` with basic driver', t => {
@@ -76,9 +80,7 @@ test('should reply to command `/help` with basic driver', t => {
       name: 'help',
       path: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
       component: ({props}, u) => ({
-        bot: $.just(reply({
-          text: 'Cycle Telegram v1.1.1 (https://git.io/vrs3P)'
-        }, u))
+        bot: $.of(reply('Cycle Telegram v1.1.1 (https://git.io/vrs3P)', u))
       })},
     {
       type: Update,
@@ -88,7 +90,7 @@ test('should reply to command `/help` with basic driver', t => {
         t.fail(`wrong command \`${props[0]}\``)
       }}
   ]
-  let { sources } = run(s => ({
+  let { sources, run } = Cycle(s => ({
     bot: $.from([
       s.bot.events('message')
         .filter(entityIs('bot_command'))
@@ -110,5 +112,7 @@ test('should reply to command `/help` with basic driver', t => {
         'message text should be equal to `Cycle Telegram v1.1.1 (https://git.io/vrs3P)`')
       t.end()
     })
+
+  run()
 })
 
