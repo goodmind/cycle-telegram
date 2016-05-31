@@ -60,7 +60,11 @@ export function makeTelegramDriver (token, options = {}) {
   }
 
   let updates = proxy
-    .doOnError(err => console.error('updates error: ', err))
+    .doOnError(err => {
+      console.error('updates error: ', err)
+      console.warn('Waiting 30 seconds before retry...')
+    })
+    .catch(proxy.delay(30000))
     .replay(null, 1)
 
   let sources = makeSources(updates)
