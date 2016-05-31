@@ -1,4 +1,4 @@
-import Rx from 'rx'
+import { Observable as $, Subject } from 'rx'
 import RxAdapter from '@cycle/rx-adapter'
 
 import { prop, mergeAll } from 'ramda'
@@ -22,7 +22,7 @@ function makeEventsSelector (sources, adapt) {
     }
 
     // return interface
-    let rxStream = Rx.Observable.case(
+    let rxStream = $.case(
       () => eventName,
       mergeAll([
         messageSources,
@@ -52,9 +52,8 @@ let handleRequest = (token, request) => {
     }) => makeAPIRequest({token, method, query}))
 }
 
-let adapter = runSA => stream => runSA ?
-  runSA.adapt(stream, RxAdapter.streamSubscribe)
-  : stream
+let adapter = runSA => stream => runSA
+  ? runSA.adapt(stream, RxAdapter.streamSubscribe) : stream
 
 export function makeTelegramDriver (token, options = {}) {
   let state = {
@@ -64,14 +63,18 @@ export function makeTelegramDriver (token, options = {}) {
   }
 
   let proxy = makeUpdates(state, token)
-  let action = new Rx.Subject()
+  let action = new Subject()
 
   if (options.webhook) {
     proxy = makeWebHook(state, action)
   }
 
   let updates = proxy
-    .doOnError(err => console.error('updates error: ', err))
+    .doOnError(err => {
+      console.error('updates error: ', err)
+      console.warn('Waiting 30 seconds before retry...')
+    })
+    .catch(proxy.delay(30000))
     .replay(null, 1)
 
   let sources = makeSources(updates)
