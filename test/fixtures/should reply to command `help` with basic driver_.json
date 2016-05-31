@@ -1,0 +1,153 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 0
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 451890884,
+                    "message": {
+                        "message_id": 8432,
+                        "from": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka",
+                            "last_name": "🌲",
+                            "username": "goodmind"
+                        },
+                        "chat": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka",
+                            "last_name": "🌲",
+                            "username": "goodmind",
+                            "type": "private"
+                        },
+                        "date": 1464342407.44,
+                        "text": "/help",
+                        "entities": [
+                            {
+                                "type": "bot_command",
+                                "offset": 0,
+                                "length": 5
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Mon, 30 May 2016 11:10:09 GMT",
+            "content-type": "application/json",
+            "content-length": "394",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 451890885
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Mon, 30 May 2016 11:10:10 GMT",
+            "content-type": "application/json",
+            "content-length": "23",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
+        "body": {
+            "chat_id": 39759851,
+            "reply_to_message_id": 8432,
+            "text": "Cycle Telegram v1.1.1 (https://git.io/vrs3P)"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 8433,
+                "from": {
+                    "id": 111321260,
+                    "first_name": "Андрейка",
+                    "username": "goodmind_test_bot"
+                },
+                "chat": {
+                    "id": 39759851,
+                    "first_name": "andretshurotshka",
+                    "last_name": "🌲",
+                    "username": "goodmind",
+                    "type": "private"
+                },
+                "date": 1464606610,
+                "reply_to_message": {
+                    "message_id": 8432,
+                    "from": {
+                        "id": 39759851,
+                        "first_name": "andretshurotshka",
+                        "last_name": "🌲",
+                        "username": "goodmind"
+                    },
+                    "chat": {
+                        "id": 39759851,
+                        "first_name": "andretshurotshka",
+                        "last_name": "🌲",
+                        "username": "goodmind",
+                        "type": "private"
+                    },
+                    "date": 1464606609,
+                    "text": "/help",
+                    "entities": [
+                        {
+                            "type": "bot_command",
+                            "offset": 0,
+                            "length": 5
+                        }
+                    ]
+                },
+                "text": "Cycle Telegram v1.1.1 (https://git.io/vrs3P)",
+                "entities": [
+                    {
+                        "type": "url",
+                        "offset": 23,
+                        "length": 20
+                    }
+                ]
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Mon, 30 May 2016 11:10:10 GMT",
+            "content-type": "application/json",
+            "content-length": "763",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

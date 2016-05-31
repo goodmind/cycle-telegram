@@ -7,11 +7,11 @@ import {
   evolve, compose
 } from 'ramda'
 
-let defaults = curryN(2, (transformations, object) => evolve(
-  transformations,
-  pickAll(
-    chain(keys, [transformations, object]),
-    object)))
+let defaults = curryN(2, (transformations, obj) => compose(
+  evolve(transformations),
+  pickAll)(
+    chain(keys, [transformations, obj]),
+    obj))
 
 export let broadcast = curryN(2, (options = {}, update) => Request({
   type: 'sink',
