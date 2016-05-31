@@ -25,9 +25,9 @@ let main = ({bot}) => {
 
   let request = $.from([
     intents.commands::matchPlugin(plugins)
-      .map(x => x.bot),
+      .pluck('bot'),
     intents.inlineQuery::matchPlugin(plugins)
-      .map(x => x.bot)
+      .pluck('bot')
   ])
 
   let log = $.merge(
