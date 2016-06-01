@@ -1,5 +1,5 @@
-import { Observable as $ } from 'rx'
-import { run } from '@cycle/core'
+import { Observable as $ } from 'rxjs'
+import Cycle from '@cycle/rxjs-run'
 
 import { makeTelegramDriver, entityIs } from 'cycle-telegram'
 import { matchPlugin } from 'cycle-telegram/plugins'
@@ -42,7 +42,7 @@ let main = ({bot}) => {
   }
 }
 
-run(main, {
+Cycle.run(main, {
   bot: makeTelegramDriver('<YOUR_TOKEN_HERE>'),
   log: (m) => m.forEach(::console.log)
 })
