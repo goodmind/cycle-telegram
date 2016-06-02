@@ -3,7 +3,7 @@ import {
   UpdateInlineQuery,
   getEntityFirst
 } from './telegram-driver'
-import { when, isEmpty, curryN, match, find, filter, not, isNil, compose, merge, prop, last, test } from 'ramda'
+import { map, when, isEmpty, curryN, match, find, filter, not, isNil, compose, merge, prop, last, test } from 'ramda'
 
 import isolate from '@cycle/isolate'
 import t from 'tcomb'
@@ -52,23 +52,19 @@ let isolatePlugin = curryN(4,
       toProps(query, plugin)))
 
 let transform =
-  (plugins, sources, update, pluginNotFound) => when(
-    isEmpty,
-    () => [pluginNotFound],
-    plugins
-      .filter(prop('pattern'))
-      .map(isolatePlugin(
-        update,
-        sources,
-        getQuery(update))))
+  (plugins, sources, update, pluginNotFound) => map(
+    isolatePlugin(update, sources, getQuery(update)),
+    when(
+      isEmpty,
+      () => [pluginNotFound],
+      filter(prop('pattern'), plugins)))
 
 let makeComponentSelector = curryN(4,
-  (f, update, plugins, sources) => {
-    let query = getQuery(update)
-    let components = f(query, plugins)
-    let lastIsolated = isolatePlugin(update, sources, query, last(plugins))
-    return query !== null ? transform(components, sources, update, lastIsolated) : []
-  })
+  (f, update, plugins, sources) => when(isNil, [], transform(
+    f(getQuery(update), plugins),
+    sources,
+    update,
+    last(plugins))))
 
 let toComponents = makeComponentSelector(
   (query, plugins) =>
