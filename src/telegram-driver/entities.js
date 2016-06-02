@@ -9,7 +9,9 @@ import {
   propEq,
   not,
   isNil,
-  find
+  find,
+  path,
+  defaultTo
 } from 'ramda'
 
 export let entityIs = (type) => pipe(
@@ -19,9 +21,11 @@ export let entityIs = (type) => pipe(
       any(propEq('type', type)),
       pipe(not, isNil)))
 
-export let getEntityFirst = curryN(2, (type, {
-  message: {entities = []}
-}) => find(propEq('type', type))(entities))
+export let getEntityFirst = curryN(2,
+  (type, update) =>
+    find(
+      propEq('type', type),
+      defaultTo([])(path(['message', 'entities'], update))))
 
 export let getEntityFirstValue = curryN(2, (type, update) => {
   let match = getEntityFirst(type, update)
