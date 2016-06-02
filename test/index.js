@@ -4,7 +4,7 @@ import {
   reply, answerInlineQuery,
   UpdateMessage, Update, entityIs
 } from '../lib/index'
-import { matchPlugin } from '../lib/plugins'
+import { matchWith } from '../lib/plugins'
 import { Observable as $ } from 'rx'
 
 import path from 'path'
@@ -74,14 +74,13 @@ test('should reply to command `/help` with basic driver', t => {
     {
       type: UpdateMessage,
       name: 'help',
-      path: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
+      pattern: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
       component: ({props}, u) => ({
         bot: $.just(reply('Cycle Telegram v1.1.1 (https://git.io/vrs3P)', u))
       })},
     {
       type: Update,
       name: 'not-found',
-      path: /(?:[\s\S]*)/,
       component: ({props}) => {
         t.fail(`wrong command \`${props[0]}\``)
       }}
@@ -90,7 +89,7 @@ test('should reply to command `/help` with basic driver', t => {
     bot: $.from([
       s.bot.events('message')
         .filter(entityIs('bot_command'))
-        ::matchPlugin(plugins, s)
+        ::matchWith(plugins, s)
         .pluck('bot')
         .mergeAll()
     ])
