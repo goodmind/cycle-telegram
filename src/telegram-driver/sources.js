@@ -65,10 +65,7 @@ export function makeSources (state) {
   return {
     message: $.zip(updates, startDate)
       .filter(([update, startDate]) => Message.is(update.message))
-      .filter(([
-        update,
-        startDate
-      ]) => (startDate - update.message.date * 1000) <= 30000)
+      .filter(([update, startDate]) => (startDate - update.message.date * 1000) <= 30000)
       .map(([update]) => update)
       .share(),
 
