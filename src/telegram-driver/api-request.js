@@ -1,7 +1,7 @@
 import { Observable as $ } from 'rx'
 import request from 'superagent'
 
-let fromSuperagent = request => Rx.Observable.create(obs => {
+let fromSuperagent = request => $.create(obs => {
   request.end((err, res) => {
     if (err) {
       obs.onError(err)
