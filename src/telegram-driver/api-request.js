@@ -1,4 +1,4 @@
-import Rx from 'rx'
+import { Observable as $ } from 'rx'
 import request from 'superagent'
 
 let fromSuperagent = request => Rx.Observable.create(obs => {
@@ -27,10 +27,10 @@ export function makeAPIRequest ({
     .send(query)
 
   return fromSuperagent(req)
-    .catch(e => Rx.Observable.throw(e instanceof Error ? e : new Error(e)))
+    .catch(e => $.throw(e instanceof Error ? e : new Error(e)))
     .map(res => res.body)
-    .map(
-      body => body.ok ? Rx.Observable.just(body.result)
-        : Rx.Observable.throw(new Error(body)))
+    .map(body => body.ok
+      ? $.just(body.result)
+      : $.throw(new Error(body)))
     .switch()
 }
