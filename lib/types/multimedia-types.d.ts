@@ -1,0 +1,11 @@
+export declare const PhotoSize: any;
+export declare const Audio: any;
+export declare const Document: any;
+export declare const Sticker: any;
+export declare const Video: any;
+export declare const Voice: any;
+export declare const Contact: any;
+export declare const Location: any;
+export declare const Venue: any;
+export declare const UserProfilePhotos: any;
+export declare const File: any;
