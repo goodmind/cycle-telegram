@@ -1,12 +1,21 @@
-import Rx from 'rx'
+import { Observable, Subject, Observable as $ } from 'rx'
+import {
+  TelegramDriverOptions,
+  TelegramDriverExecution,
+  TelegramDriverSources,
+  TelegramDriverState,
+  TelegramDriverSink,
+  Update,
+  Token
+} from '../interfaces';
 
 import { prop, mergeAll } from 'ramda'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
-import { Request, WebhookResponse } from '../types'
+import { Request, WebhookResponse } from './.'
 
-function makeEventsSelector (sources) {
-  return function events (eventName) {
+function makeEventsSelector (sources: TelegramDriverSources) {
+  return function events (eventName: string): Observable<Update> {
     let messageSources = {
       'message': sources.message.share()
     }
@@ -21,13 +30,13 @@ function makeEventsSelector (sources) {
     }
 
     // return interface
-    return Rx.Observable.case(
+    return $.case(
       () => eventName,
       mergeAll([messageSources, inlineQuerySources, callbackQuerySources]))
   }
 }
 
-let handleWebhook = (token, request, action) => {
+let handleWebhook = (token: Token, request: Observable, action: Subject) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
     .map(prop('update'))
@@ -36,7 +45,7 @@ let handleWebhook = (token, request, action) => {
       err => console.error('request error: ', err))
 }
 
-let handleRequest = (token, request) => {
+let handleRequest = (token: Token, request: Observable): Observable => {
   return request.mergeAll()
     .filter(Request.is)
     .flatMap(({
@@ -45,15 +54,15 @@ let handleRequest = (token, request) => {
     }) => makeAPIRequest({token, method, query}))
 }
 
-export function makeTelegramDriver (token, options = {}) {
-  let state = {
+export function makeTelegramDriver (token: Token, options?: TelegramDriverOptions = {}): Function {
+  let state: TelegramDriverState = {
     startDate: options.startDate || Date.now(),
     offset: 0,
     updates: []
   }
 
   let proxy = makeUpdates(state, token)
-  let action = new Rx.Subject()
+  let action = new Subject()
 
   if (options.webhook) {
     proxy = makeWebHook(state, action)
@@ -70,7 +79,7 @@ export function makeTelegramDriver (token, options = {}) {
   let sources = makeSources(updates)
   let disposable = updates.connect()
 
-  return function telegramDriver (request) {
+  return function telegramDriver (request: Observable<TelegramDriverSink>): TelegramDriverExecution {
     // pass request
     if (options.webhook) {
       // handle webhook

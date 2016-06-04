@@ -1,4 +1,5 @@
-import { Observable as $ } from 'rx'
+import { Observable, Subject, Observable as $ } from 'rx'
+import { Token, TelegramDriverState, TelegramDriverSources } from '../interfaces'
 
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
@@ -7,21 +8,20 @@ import {
   Message,
   InlineQuery,
   ChosenInlineResult
-} from '../types'
+} from '../runtime-types'
 
-import { CallbackQuery } from '../types/keyboard-types'
+import { CallbackQuery } from '../runtime-types/types'
 
 let max = curryN(3,
   (property, acc, current) => current[property] > acc ? current[property] : acc)
 
-let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
+let makeUpdatesResolver = curryN(2, (token: Token, offset): Observable => makeAPIRequest({
   token,
   method: 'getUpdates',
-  query: { offset },
-  timeout: 60000
+  query: { offset, timeout: 60000 }
 }))
 
-export function makeUpdates (initialState, token) {
+export function makeUpdates (initialState: TelegramDriverState, token: Token): Observable<TelegramDriverState> {
   UpdatesState(initialState)
 
   let resolve = makeUpdatesResolver(token)
@@ -36,7 +36,7 @@ export function makeUpdates (initialState, token) {
       })))
 }
 
-export function makeWebHook (initialState, action) {
+export function makeWebHook (initialState: TelegramDriverState, action: Subject) {
   UpdatesState(initialState)
 
   let webHookUpdates = action.share()
@@ -51,7 +51,7 @@ export function makeWebHook (initialState, action) {
     .share()
 }
 
-export function makeSources (state) {
+export function makeSources (state: Observable<TelegramDriverState>): TelegramDriverSources {
   let updates = state
     .pluck('updates')
     .map(u => $.fromArray(u))

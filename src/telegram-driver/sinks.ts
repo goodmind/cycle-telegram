@@ -1,4 +1,5 @@
-import { Request, WebhookResponse } from '../types'
+import { Update } from '../interfaces'
+import { Request, WebhookResponse } from '../runtime-types'
 import {
   merge, map, assoc,
   curryN, path,
@@ -9,13 +10,13 @@ import {
 } from 'ramda'
 
 let defaults = curryN(2,
-  (transformations, obj) => compose(
+  <T, U>(transformations: T, obj: U): T & U => compose(
     evolve(transformations),
     pickAll)(
       chain(keys, [transformations, obj]),
       obj))
 
-export let broadcast = curryN(2, (options = {}, update) => Request({
+export let broadcast = curryN(2, (options = {}, update: Update): any => Request({
   type: 'sink',
   method: 'sendMessage',
   options: defaults({
@@ -25,7 +26,7 @@ export let broadcast = curryN(2, (options = {}, update) => Request({
   }, options)
 }))
 
-export let reply = curryN(2, (options = {}, update) => Request({
+export let reply = curryN(2, (options = {}, update: Update): any => Request({
   type: 'sink',
   method: 'sendMessage',
   options: defaults({
@@ -36,7 +37,7 @@ export let reply = curryN(2, (options = {}, update) => Request({
   }, is(String, options) ? {text: options} : options)
 }))
 
-export let answerInlineQuery = curryN(2, (options = {}, update) => {
+export let answerInlineQuery = curryN(2, (options = {}, update: Update): any => {
   let updateResults = (results) => results[0].id ? results : map(
       answer => assoc('id', Math.random().toString(36).substring(2), answer),
       results || [])
@@ -52,7 +53,7 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
 })
 
 export let answerCallbackQuery = curryN(2,
-  (options = {}, update) => Request({
+  (options = {}, update: Update): any => Request({
     type: 'sink',
     method: 'answerCallbackQuery',
     options: defaults({
@@ -61,14 +62,14 @@ export let answerCallbackQuery = curryN(2,
   }))
 
 export let setWebhook =
-  (options = {}) => Request({
+  (options = {}): any => Request({
     type: 'sink',
     method: 'setWebhook',
     options
   })
 
 export let webhook =
-  (update) => WebhookResponse({
+  (update: Update): any => WebhookResponse({
     type: 'webhook',
     update
   })

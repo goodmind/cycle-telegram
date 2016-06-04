@@ -53,7 +53,8 @@ export const MessageEntity = t.struct({
     'italic',
     'code',
     'pre',
-    'text_link'
+    'text_link',
+    'text_mention'
   ]),
   offset: t.Number,
   length: t.Number,

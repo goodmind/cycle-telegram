@@ -10,4 +10,4 @@ export {
 
 export * from './sinks'
 
-export * from '../types'
+export * from '../runtime-types'
