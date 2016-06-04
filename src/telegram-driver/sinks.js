@@ -8,11 +8,12 @@ import {
   is, isArrayLike
 } from 'ramda'
 
-let defaults = curryN(2, (transformations, obj) => compose(
-  evolve(transformations),
-  pickAll)(
-    chain(keys, [transformations, obj]),
-    obj))
+let defaults = curryN(2,
+  (transformations, obj) => compose(
+    evolve(transformations),
+    pickAll)(
+      chain(keys, [transformations, obj]),
+      obj))
 
 export let broadcast = curryN(2, (options = {}, update) => Request({
   type: 'sink',
@@ -50,13 +51,24 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
   })
 })
 
-export let setWebhook = (options = {}) => Request({
-  type: 'sink',
-  method: 'setWebhook',
-  options
-})
+export let answerCallbackQuery = curryN(2,
+  (options = {}, update) => Request({
+    type: 'sink',
+    method: 'answerCallbackQuery',
+    options: defaults({
+      callback_query_id: defaultTo(path(['callback_query', 'id'], update))
+    })
+  }))
 
-export let webhook = (update) => WebhookResponse({
-  type: 'webhook',
-  update
-})
+export let setWebhook =
+  (options = {}) => Request({
+    type: 'sink',
+    method: 'setWebhook',
+    options
+  })
+
+export let webhook =
+  (update) => WebhookResponse({
+    type: 'webhook',
+    update
+  })
