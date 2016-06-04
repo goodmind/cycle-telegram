@@ -6,10 +6,9 @@ import {
   UpdatesState,
   Message,
   InlineQuery,
-  ChosenInlineResult
+  ChosenInlineResult,
+  CallbackQuery
 } from '../types'
-
-import { CallbackQuery } from '../types/keyboard-types'
 
 let max = curryN(3,
   (property, acc, current) => current[property] > acc ? current[property] : acc)
@@ -17,8 +16,7 @@ let max = curryN(3,
 let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
   token,
   method: 'getUpdates',
-  query: { offset },
-  timeout: 60000
+  query: { offset, timeout: 60000 }
 }))
 
 export function makeUpdates (initialState, token) {
