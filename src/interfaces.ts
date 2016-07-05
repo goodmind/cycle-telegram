@@ -22,12 +22,14 @@ export interface TelegramDriverOptions {
 }
 
 export type EventsFn = (eventName: string) => Observable<Update>;
+export type DisposableFn = () => void
 
-export interface TelegramDriverExecution extends IDisposable {
+export interface TelegramDriverExecution {
   token: Token;
-  observable: Observable<Update>;
-  responses: Observable<TelegramAPIResult>;
+  observable: Observable<TelegramDriverState>;
+  responses: Observable<TelegramAPIResponseResult>;
   events: EventsFn;
+  dispose: DisposableFn;
 }
 
 export interface TelegramDriverSink {
@@ -48,10 +50,16 @@ export interface TelegramAPIRequest {
   httpMethod?: string;
 }
 
-export interface TelegramAPIResult {}
+export interface TelegramAPIResponseResult {}
+
+export interface TelegramAPIError {
+  ok: boolean;
+  description: string;
+  error_code: number;
+}
 
 export interface TelegramAPIResponse {
   ok: boolean;
   description?: string;
-  result: TelegramAPIResult
+  result: TelegramAPIResponseResult
 }

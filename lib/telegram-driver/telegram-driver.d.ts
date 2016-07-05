@@ -1,2 +1,2 @@
-import { TelegramDriverOptions } from '../interfaces';
-export declare function makeTelegramDriver(token: string, options?: TelegramDriverOptions): Function;
+import { TelegramDriverOptions, Token } from '../interfaces';
+export declare function makeTelegramDriver(token: Token, options?: TelegramDriverOptions): Function;

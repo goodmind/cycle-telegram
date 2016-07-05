@@ -3,3 +3,4 @@ node_modules/
 test/record.js
 test/record-fixtures/
 typings/
+npm-debug.log

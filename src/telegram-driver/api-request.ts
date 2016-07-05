@@ -1,8 +1,8 @@
-import { TelegramAPIRequest, TelegramAPIResponse, TelegramAPIResult } from '../interfaces'
+import { TelegramAPIRequest, TelegramAPIResponse, TelegramAPIResponseResult, TelegramAPIError } from '../interfaces'
 import { Observable, Observer, Observable as $ } from 'rx'
 import request, { Request, Req, Response } from 'superagent'
 
-let fromSuperagent = (request: Request<Req>): Observable<Response> => $.create((obs: Observer): () => void => {
+let fromSuperagent = (request: Request<Req>): Observable<any> => $.create((obs: Observer<any>): () => void => {
   request.end((err, res) => {
     if (err) {
       obs.onError(err)
@@ -20,7 +20,7 @@ export function makeAPIRequest ({
   method,
   query,
   httpMethod = 'POST'
-}: TelegramAPIRequest): Observable<TelegramAPIResult | Error> {
+}: TelegramAPIRequest): Observable<TelegramAPIResponseResult | TelegramAPIError> {
   let endpoint = `https://api.telegram.org/bot${token}`
   let url = `${endpoint}/${method}`
   let req = request(httpMethod, url)
@@ -32,6 +32,6 @@ export function makeAPIRequest ({
     .map(res => res.body)
     .map(body => body.ok
       ? $.just(body.result)
-      : $.throw(new Error(body)))
+      : $.throw(body))
     .switch()
 }

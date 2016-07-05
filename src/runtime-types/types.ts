@@ -129,19 +129,19 @@ export const Update = t.struct({
 })
 
 export const UpdateInlineQuery = t.refinement(Update,
-  (u) => u.inline_query,
+  (u: any) => u.inline_query,
   'UpdateInlineQuery')
 
 export const UpdateMessage = t.refinement(Update,
-  (u) => u.message,
+  (u: any) => u.message,
   'UpdateMessage')
 
 export const UpdateChosenInlineResult = t.refinement(Update,
-  (u) => u.chosen_inline_result,
+  (u: any) => u.chosen_inline_result,
   'UpdateChosenInlineResult')
 
 export const UpdateCallbackQuery = t.refinement(Update,
-  (u) => u.callback_query,
+  (u: any) => u.callback_query,
   'UpdateCallbackQuery')
 
 export const UpdatesState = t.struct({

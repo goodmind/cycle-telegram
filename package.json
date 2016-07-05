@@ -16,7 +16,7 @@
   },
   "scripts": {
     "clean": "rm -rf lib/ && mkdir -p lib",
-    "build": "babel -d lib/ src/",
+    "build": "tsc",
     "build:watch": "babel -w -d lib/ src/",
     "eslint": "eslint src/ && eslint example/",
     "test": "node -r babel-register test | tap-spec",

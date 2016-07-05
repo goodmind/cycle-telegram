@@ -1,5 +1,5 @@
 import { Observable, Subject, Observable as $ } from 'rx'
-import { Token, TelegramDriverState, TelegramDriverSources } from '../interfaces'
+import {Token, TelegramDriverState, TelegramDriverSources, Update} from '../interfaces'
 
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
@@ -13,9 +13,9 @@ import {
 import { CallbackQuery } from '../runtime-types/types'
 
 let max = curryN(3,
-  (property, acc, current) => current[property] > acc ? current[property] : acc)
+  (property: any, acc: any, current: any) => current[property] > acc ? current[property] : acc)
 
-let makeUpdatesResolver = curryN(2, (token: Token, offset): Observable => makeAPIRequest({
+let makeUpdatesResolver = curryN(2, (token: Token, offset: number) => makeAPIRequest({
   token,
   method: 'getUpdates',
   query: { offset, timeout: 60000 }
@@ -29,21 +29,21 @@ export function makeUpdates (initialState: TelegramDriverState, token: Token): O
   return $.return(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
       $.interval(500).take(1),
-      (updates, _) => UpdatesState({
+      (updates: Update[], _: any) => UpdatesState({
         startDate: initialState.startDate,
         offset: reduce(max('update_id'), 0, updates) + 1,
         updates
       })))
 }
 
-export function makeWebHook (initialState: TelegramDriverState, action: Subject) {
+export function makeWebHook (initialState: TelegramDriverState, action: Subject<Update[]>) {
   UpdatesState(initialState)
 
   let webHookUpdates = action.share()
 
   return $.concat(
     $.just(initialState),
-    webHookUpdates.map((updates) => UpdatesState({
+    webHookUpdates.map((updates: Update[]) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
       updates
@@ -54,7 +54,7 @@ export function makeWebHook (initialState: TelegramDriverState, action: Subject)
 export function makeSources (state: Observable<TelegramDriverState>): TelegramDriverSources {
   let updates = state
     .pluck('updates')
-    .map(u => $.fromArray(u))
+    .map((u: Update[]) => $.fromArray(u))
     .switch()
     .share()
 

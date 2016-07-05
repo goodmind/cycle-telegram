@@ -1,9 +1,5 @@
-import { Observable as $ } from 'rx';
-export declare function makeUpdates(initialState: any, token: any): $<any>;
-export declare function makeWebHook(initialState: any, action: any): $<any>;
-export declare function makeSources(state: any): {
-    message: $<any>;
-    inlineQuery: any;
-    chosenInlineResult: any;
-    callbackQuery: any;
-};
+import { Observable, Subject } from 'rx';
+import { Token, TelegramDriverState, TelegramDriverSources, Update } from '../interfaces';
+export declare function makeUpdates(initialState: TelegramDriverState, token: Token): Observable<TelegramDriverState>;
+export declare function makeWebHook(initialState: TelegramDriverState, action: Subject<Update[]>): Observable<any>;
+export declare function makeSources(state: Observable<TelegramDriverState>): TelegramDriverSources;

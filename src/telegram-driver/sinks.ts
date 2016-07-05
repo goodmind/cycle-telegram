@@ -10,7 +10,7 @@ import {
 } from 'ramda'
 
 let defaults = curryN(2,
-  <T, U>(transformations: T, obj: U): T & U => compose(
+  (transformations: any, obj: any): any => compose(
     evolve(transformations),
     pickAll)(
       chain(keys, [transformations, obj]),
@@ -38,7 +38,7 @@ export let reply = curryN(2, (options = {}, update: Update): any => Request({
 }))
 
 export let answerInlineQuery = curryN(2, (options = {}, update: Update): any => {
-  let updateResults = (results) => results[0].id ? results : map(
+  let updateResults = (results: any[]) => results[0].id ? results : map(
       answer => assoc('id', Math.random().toString(36).substring(2), answer),
       results || [])
 

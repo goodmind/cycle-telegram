@@ -36,16 +36,16 @@ function makeEventsSelector (sources: TelegramDriverSources) {
   }
 }
 
-let handleWebhook = (token: Token, request: Observable, action: Subject) => {
+let handleWebhook = (token: Token, request: Observable<any>, action: Subject<any>) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
     .map(prop('update'))
     .subscribe(
-      upd => action.onNext([upd]),
-      err => console.error('request error: ', err))
+      (upd: Update) => action.onNext([upd]),
+      (err: any) => console.error('request error: ', err))
 }
 
-let handleRequest = (token: Token, request: Observable): Observable => {
+let handleRequest = (token: Token, request: Observable<any>): Observable<any> => {
   return request.mergeAll()
     .filter(Request.is)
     .flatMap(({
@@ -54,7 +54,7 @@ let handleRequest = (token: Token, request: Observable): Observable => {
     }) => makeAPIRequest({token, method, query}))
 }
 
-export function makeTelegramDriver (token: Token, options?: TelegramDriverOptions = {}): Function {
+export function makeTelegramDriver (token: Token, options: TelegramDriverOptions = {}): Function {
   let state: TelegramDriverState = {
     startDate: options.startDate || Date.now(),
     offset: 0,
@@ -62,14 +62,14 @@ export function makeTelegramDriver (token: Token, options?: TelegramDriverOption
   }
 
   let proxy = makeUpdates(state, token)
-  let action = new Subject()
+  let action = new Subject<any>()
 
   if (options.webhook) {
     proxy = makeWebHook(state, action)
   }
 
   let updates = proxy
-    .doOnError(err => {
+    .doOnError((err: any) => {
       console.error('updates error: ', err)
       console.warn('Waiting 30 seconds before retry...')
     })
@@ -89,7 +89,7 @@ export function makeTelegramDriver (token: Token, options?: TelegramDriverOption
     let newRequest = handleRequest(token, request)
       .share()
 
-    newRequest.subscribeOnError(err => console.error('request error: ', err))
+    newRequest.subscribeOnError((err: any) => console.error('request error: ', err))
 
     // return interface
     return {
