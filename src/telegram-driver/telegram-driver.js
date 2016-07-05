@@ -1,42 +1,33 @@
-import Rx from 'rx'
-
-import { prop, mergeAll } from 'ramda'
+import { Observable as $, Subject } from 'rx'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '../types'
 
 function makeEventsSelector (sources) {
   return function events (eventName) {
-    let messageSources = {
-      'message': sources.message.share()
-    }
-
-    let inlineQuerySources = {
+    let sources = {
+      'message': sources.message.share(),
       'inline_query': sources.inlineQuery.share(),
-      'chosen_inline_result': sources.chosenInlineResult.share()
-    }
-
-    let callbackQuerySources = {
+      'chosen_inline_result': sources.chosenInlineResult.share(),
       'callback_query': sources.callbackQuery.share()
     }
 
-    // return interface
-    return Rx.Observable.case(
+    return $.case(
       () => eventName,
-      mergeAll([messageSources, inlineQuerySources, callbackQuerySources]))
+      sources)
   }
 }
 
 let handleWebhook = (token, request, action) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
-    .map(prop('update'))
+    .pluck('update')
     .subscribe(
       upd => action.onNext([upd]),
       err => console.error('request error: ', err))
 }
 
-let handleRequest = (token, request) => {
+let makeRequest = (token, request) => {
   return request.mergeAll()
     .filter(Request.is)
     .flatMap(({
@@ -53,7 +44,7 @@ export function makeTelegramDriver (token, options = {}) {
   }
 
   let proxy = makeUpdates(state, token)
-  let action = new Rx.Subject()
+  let action = new Subject()
 
   if (options.webhook) {
     proxy = makeWebHook(state, action)
@@ -71,22 +62,19 @@ export function makeTelegramDriver (token, options = {}) {
   let disposable = updates.connect()
 
   return function telegramDriver (request) {
-    // pass request
     if (options.webhook) {
-      // handle webhook
       handleWebhook(token, request, action)
     }
 
-    let newRequest = handleRequest(token, request)
+    let newRequest = makeRequest(token, request)
       .share()
 
     newRequest.subscribeOnError(err => console.error('request error: ', err))
 
-    // return interface
     return {
       token: token,
       observable: updates,
-      responses: newRequest, // handle request
+      responses: newRequest,
       events: makeEventsSelector(sources),
       dispose: () => disposable.dispose()
     }
