@@ -1,6 +1,6 @@
 import { Request, WebhookResponse } from '../types'
 import {
-  merge, map, assoc,
+  map, assoc,
   curryN, path,
   defaultTo, keys,
   pickAll, chain,
