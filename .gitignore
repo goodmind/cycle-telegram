@@ -1,4 +1,7 @@
 node_modules/
 .idea/
+typings/
 test/record.js
 test/record-fixtures/
+test/integration/record.js
+test/integration/record-fixtures/
