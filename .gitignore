@@ -1,5 +1,8 @@
 node_modules/
 .idea/
 test/record.js
+test/integration/record.js
 test/record-fixtures/
+test/integration/record-fixtures/
 typings/
+npm-debug.log
