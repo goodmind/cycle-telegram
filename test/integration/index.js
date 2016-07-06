@@ -3,8 +3,8 @@ import {
   makeTelegramDriver,
   reply, answerInlineQuery,
   UpdateMessage, Update, entityIs
-} from '../lib/index'
-import { matchPlugin } from '../lib/plugins'
+} from '../../lib/index'
+import { matchPlugin } from '../../lib/plugins'
 import { Observable as $ } from 'rx'
 
 import path from 'path'
