@@ -4,6 +4,8 @@
 
 A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for [Telegram](https://telegram.org/)
 
+![Telegram](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png)
+
 ```
 npm install cycle-telegram
 ```
@@ -17,7 +19,7 @@ npm install cycle-telegram
 ## Built with Cycle Telegram
 
 * [@cyclejs_bot](https://telegram.me/cyclejs_bot) — [source](https://github.com/goodmind/cycle-telegram-bot)
-* [@tryhaskell_bot](https://telegram.me/tryhaskell_bot) - [source](https://github.com/goodmind/tryhaskell-bot)
+* [@tryhaskell_bot](https://telegram.me/tryhaskell_bot) — [source](https://github.com/goodmind/tryhaskell-bot)
 
 
 - - -
