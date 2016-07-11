@@ -1,3 +1,5 @@
+/*eslint camelcase: ["off"]*/
+
 import { Request, WebhookResponse } from '../types'
 import {
   map, assoc,
@@ -55,7 +57,12 @@ export let answerInlineQuery = curryN(2, (options = {}, update) => {
   })
 })
 
-export let forwardMessage = curryN(2, ({ chat_id, from_chat_id, disable_notification = null, message_id,  } = {}, update) => {
+export let forwardMessage = curryN(2, ({
+  chat_id,
+  from_chat_id,
+  disable_notification = null,
+  message_id
+} = {}, update) => {
   let options = {
     chat_id,
     from_chat_id,
@@ -69,7 +76,14 @@ export let forwardMessage = curryN(2, ({ chat_id, from_chat_id, disable_notifica
   })
 })
 
-export let sendPhoto = curryN(2, ({ chat_id, photo, caption = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendPhoto = curryN(2, ({
+  chat_id,
+  photo,
+  caption = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     photo,
@@ -85,7 +99,16 @@ export let sendPhoto = curryN(2, ({ chat_id, photo, caption = null, disable_noti
   })
 })
 
-export let sendAudio = curryN(2, ({ chat_id, audio, duration = null, performer = null, title = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendAudio = curryN(2, ({
+  chat_id,
+  audio,
+  duration = null,
+  performer = null,
+  title = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     audio,
@@ -103,7 +126,14 @@ export let sendAudio = curryN(2, ({ chat_id, audio, duration = null, performer =
   })
 })
 
-export let sendDocument = curryN(2, ({ chat_id, document, caption = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendDocument = curryN(2, ({
+  chat_id,
+  document,
+  caption = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     document,
@@ -119,7 +149,13 @@ export let sendDocument = curryN(2, ({ chat_id, document, caption = null, disabl
   })
 })
 
-export let sendSticker = curryN(2, ({ chat_id, sticker, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendSticker = curryN(2, ({
+  chat_id,
+  sticker,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     sticker,
@@ -134,7 +170,17 @@ export let sendSticker = curryN(2, ({ chat_id, sticker, disable_notification = n
   })
 })
 
-export let sendVideo = curryN(2, ({ chat_id, video, duration = null, width = null, height = null, caption = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendVideo = curryN(2, ({
+  chat_id,
+  video,
+  duration = null,
+  width = null,
+  height = null,
+  caption = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     video,
@@ -153,7 +199,14 @@ export let sendVideo = curryN(2, ({ chat_id, video, duration = null, width = nul
   })
 })
 
-export let sendVoice = curryN(2, ({ chat_id, voice, duration = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendVoice = curryN(2, ({
+  chat_id,
+  voice,
+  duration = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     voice,
@@ -169,7 +222,14 @@ export let sendVoice = curryN(2, ({ chat_id, voice, duration = null, disable_not
   })
 })
 
-export let sendLocation = curryN(2, ({ chat_id, latitude, longitude, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendLocation = curryN(2, ({
+  chat_id,
+  latitude,
+  longitude,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     latitude,
@@ -185,7 +245,17 @@ export let sendLocation = curryN(2, ({ chat_id, latitude, longitude, disable_not
   })
 })
 
-export let sendVenue = curryN(2, ({ chat_id, latitude, longitude, title, address, foursquare_id = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendVenue = curryN(2, ({
+  chat_id,
+  latitude,
+  longitude,
+  title,
+  address,
+  foursquare_id = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     latitude,
@@ -204,7 +274,15 @@ export let sendVenue = curryN(2, ({ chat_id, latitude, longitude, title, address
   })
 })
 
-export let sendContact = curryN(2, ({ chat_id, phone_number, first_name, last_name = null, disable_notification = null, reply_to_message_id = null, reply_markup = null,  } = {}, update) => {
+export let sendContact = curryN(2, ({
+  chat_id,
+  phone_number,
+  first_name,
+  last_name = null,
+  disable_notification = null,
+  reply_to_message_id = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     chat_id,
     phone_number,
@@ -221,7 +299,11 @@ export let sendContact = curryN(2, ({ chat_id, phone_number, first_name, last_na
   })
 })
 
-export let getUserProfilePhotos = curryN(2, ({ user_id, offset = null, limit = null,  } = {}, update) => {
+export let getUserProfilePhotos = curryN(2, ({
+  user_id,
+  offset = null,
+  limit = null
+} = {}, update) => {
   let options = {
     user_id,
     offset,
@@ -234,7 +316,7 @@ export let getUserProfilePhotos = curryN(2, ({ user_id, offset = null, limit = n
   })
 })
 
-export let getFile = curryN(2, ({ file_id,  } = {}, update) => {
+export let getFile = curryN(2, ({ file_id } = {}, update) => {
   let options = {
     file_id
   }
@@ -245,7 +327,7 @@ export let getFile = curryN(2, ({ file_id,  } = {}, update) => {
   })
 })
 
-export let leaveChat = curryN(2, ({ chat_id,  } = {}, update) => {
+export let leaveChat = curryN(2, ({ chat_id } = {}, update) => {
   let options = {
     chat_id
   }
@@ -256,7 +338,7 @@ export let leaveChat = curryN(2, ({ chat_id,  } = {}, update) => {
   })
 })
 
-export let unbanChatMember = curryN(2, ({ chat_id, user_id,  } = {}, update) => {
+export let unbanChatMember = curryN(2, ({ chat_id, user_id } = {}, update) => {
   let options = {
     chat_id,
     user_id
@@ -268,7 +350,7 @@ export let unbanChatMember = curryN(2, ({ chat_id, user_id,  } = {}, update) => 
   })
 })
 
-export let getChat = curryN(2, ({ chat_id,  } = {}, update) => {
+export let getChat = curryN(2, ({ chat_id } = {}, update) => {
   let options = {
     chat_id
   }
@@ -279,7 +361,7 @@ export let getChat = curryN(2, ({ chat_id,  } = {}, update) => {
   })
 })
 
-export let getChatAdministrators = curryN(2, ({ chat_id,  } = {}, update) => {
+export let getChatAdministrators = curryN(2, ({ chat_id } = {}, update) => {
   let options = {
     chat_id
   }
@@ -290,7 +372,7 @@ export let getChatAdministrators = curryN(2, ({ chat_id,  } = {}, update) => {
   })
 })
 
-export let getChatMembersCount = curryN(2, ({ chat_id,  } = {}, update) => {
+export let getChatMembersCount = curryN(2, ({ chat_id } = {}, update) => {
   let options = {
     chat_id
   }
@@ -301,7 +383,7 @@ export let getChatMembersCount = curryN(2, ({ chat_id,  } = {}, update) => {
   })
 })
 
-export let getChatMember = curryN(2, ({ chat_id, user_id,  } = {}, update) => {
+export let getChatMember = curryN(2, ({ chat_id, user_id } = {}, update) => {
   let options = {
     chat_id,
     user_id
@@ -313,7 +395,11 @@ export let getChatMember = curryN(2, ({ chat_id, user_id,  } = {}, update) => {
   })
 })
 
-export let answerCallbackQuery = curryN(2, ({ callback_query_id, text = null, show_alert = null,  } = {}, update) => {
+export let answerCallbackQuery = curryN(2, ({
+  callback_query_id,
+  text = null,
+  show_alert = null
+} = {}, update) => {
   let options = {
     callback_query_id,
     text,
@@ -326,7 +412,12 @@ export let answerCallbackQuery = curryN(2, ({ callback_query_id, text = null, sh
   })
 })
 
-export let editMessageText = curryN(2, ({ text, parse_mode = null, disable_web_page_preview = null, reply_markup = null,  } = {}, update) => {
+export let editMessageText = curryN(2, ({
+  text,
+  parse_mode = null,
+  disable_web_page_preview = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     text,
     parse_mode,
@@ -340,7 +431,10 @@ export let editMessageText = curryN(2, ({ text, parse_mode = null, disable_web_p
   })
 })
 
-export let editMessageCaption = curryN(2, ({ caption = null, reply_markup = null,  } = {}, update) => {
+export let editMessageCaption = curryN(2, ({
+  caption = null,
+  reply_markup = null
+} = {}, update) => {
   let options = {
     caption,
     reply_markup
@@ -352,7 +446,9 @@ export let editMessageCaption = curryN(2, ({ caption = null, reply_markup = null
   })
 })
 
-export let editMessageReplyMarkup = curryN(2, ({ reply_markup = null,  } = {}, update) => {
+export let editMessageReplyMarkup = curryN(2, ({
+  reply_markup = null
+} = {}, update) => {
   let options = {
     reply_markup
   }
