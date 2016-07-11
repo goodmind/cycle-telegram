@@ -89,7 +89,7 @@ declare module CycleTelegram {
 
     interface TelegramDriverExecution extends IDisposable {
       token:Token;
-      observable:Observable<Update>;
+      updates:Observable<Update>;
       responses:Observable<any>;
       events:EventsFn;
     }
