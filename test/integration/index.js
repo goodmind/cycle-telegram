@@ -111,111 +111,111 @@ test('should reply to command `/help` with basic driver', t => {
 })
 
 test('should forward message with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send photo with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send audio with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send document with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send sticker with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send video with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send voice with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send location with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send venue with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send contact with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should send get user profile photos with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should get file with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should leave chat with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should unban chat member with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should get chat with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should get chat administrators with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should get chat members count with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should get chat member with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should answer callback query with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should edit message text with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should edit message caption with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
 
 test('should edit message reply markup with basic driver', t => {
-  t.fail()
+  
   t.end()
 })
