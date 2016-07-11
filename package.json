@@ -20,7 +20,7 @@
     "build:watch": "babel -w -d lib/ src/",
     "eslint": "eslint src/ && eslint example/",
     "test": "node -r babel-register test | tap-spec",
-    "test:record": "node -r babel-register test/record.js | tap-spec",
+    "test:record": "node -r babel-register test/integration/record.js | tap-spec",
     "prepublish": "npm run clean && npm run build",
     "preversion": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
