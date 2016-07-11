@@ -1,0 +1,7 @@
+{
+  "name": "cycle-telegram",
+  "dependencies": {},
+  "globalDependencies": {
+    "rx": "github:Reactive-Extensions/RxJS/ts/rx.all.d.ts"
+  }
+}
