@@ -3,7 +3,12 @@ import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '../types'
 
-function makeEventsSelector ({ message, inlineQuery, chosenInlineResult, callbackQuery }) {
+function makeEventsSelector ({
+  message,
+  inlineQuery,
+  chosenInlineResult,
+  callbackQuery
+}) {
   return function events (eventName) {
     return $.case(() => eventName, {
       'message': message.share(),
