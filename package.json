@@ -1,6 +1,7 @@
 {
   "name": "cycle-telegram",
   "version": "0.0.0-placeholder",
+  "typings": "index.d.ts",
   "description": "CycleJS Telegram Driver",
   "main": "index.js",
   "keywords": [
