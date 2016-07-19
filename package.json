@@ -33,7 +33,7 @@
     "ramda": "^0.21.0",
     "rx": "^4.1.0",
     "superagent": "^2.0.0-alpha.3",
-    "tcomb": "^3.0.0"
+    "tcomb": "^3.2.6"
   },
   "devDependencies": {
     "@cycle/core": "^6.0.3",
