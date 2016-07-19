@@ -28,7 +28,7 @@ export let broadcast = curryN(2, (options = {}, update) => Request({
     chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
     text: defaultTo('Null-catch: no text provided'),
     reply_markup: JSON.stringify
-  }, options)
+  }, is(String, options) ? {text: options} : options)
 }))
 
 export let reply = curryN(2, (options = {}, update) => Request({
@@ -412,24 +412,16 @@ export let answerCallbackQuery = curryN(2, ({
   })
 })
 
-export let editMessageText = curryN(2, ({
-  text,
-  parse_mode = null,
-  disable_web_page_preview = null,
-  reply_markup = null
-} = {}, update) => {
-  let options = {
-    text,
-    parse_mode,
-    disable_web_page_preview,
-    reply_markup
-  }
-  return Request({
-    type: 'sink',
-    method: 'editMessageText',
-    options
-  })
-})
+export let editMessageText = curryN(2, (options = {}, update) => Request({
+  type: 'sink',
+  method: 'editMessageText',
+  options: defaults({
+    chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+    message_id: defaultTo(path(['message', 'message_id'], update)),
+    text: defaultTo('Null-catch: no text provided'),
+    reply_markup: JSON.stringify
+  }, options)
+}))
 
 export let editMessageCaption = curryN(2, ({
   caption = null,
