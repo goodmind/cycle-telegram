@@ -83,8 +83,8 @@ export function makeTelegramDriver (token, options = {}) {
 
     return {
       token,
-      observable: adapt(updates),
-      responses: adapt(newRequest), // handle request
+      updates: adapt(updates),
+      responses: adapt(responses),
       events: makeEventsSelector(sources, adapt),
       dispose: () => disposable.dispose()
     }
