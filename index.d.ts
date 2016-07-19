@@ -1,6 +1,6 @@
 import { Observable, IDisposable } from 'rx'
 
-declare module CycleTelegram {
+declare namespace CycleTelegram {
   interface Update {
     update_id:number;
     message?:any;
@@ -16,51 +16,29 @@ declare module CycleTelegram {
     url?:string;
   }
 
-  interface SetWebhookOptions {
-    url?:string;
-    certificate?:any;
-  }
-
-  interface SendMessageOptions {
-    chat_id:number | string;
-    text:string;
-    parse_mode?:string;
-    disable_web_page_preview?:boolean;
-    disable_notification?:boolean;
-    reply_to_message_id?:number;
-    reply_markup?:any;
-  }
-
-  interface AnswerInlineQueryOptions {
-  }
-
-  interface AnswerCallbackQueryOptions {
-  }
-
   interface WebhookResponse {
-    type:'webhook';
-    update:Update;
+    type: 'webhook';
+    update: Update;
   }
 
-  function broadcast(options:SendMessageOptions, update:Update):TelegramDriverSink<'sendMessage', SendMessageOptions>;
-  function broadcast(options:SendMessageOptions):(update:Update) =>
-    TelegramDriverSink<'sendMessage', SendMessageOptions>;
+  function editMessageText(options:any, update:Update): TelegramDriverSink<'editMessageText', any>;
+  function editMessageText(options:any): (update:Update) => TelegramDriverSink<'editMessageText', any>;
 
-  function reply(options:SendMessageOptions, update:Update):TelegramDriverSink<'sendMessage', SendMessageOptions>;
-  function reply(options:SendMessageOptions):(update:Update) =>
-    TelegramDriverSink<'sendMessage', SendMessageOptions>;
+  function broadcast(options:any, update:Update): TelegramDriverSink<'sendMessage', any>;
+  function broadcast(options:any): (update:Update) => TelegramDriverSink<'sendMessage', any>;
 
-  function answerInlineQuery(options:AnswerInlineQueryOptions, update:Update):TelegramDriverSink<'answerInlineQuery', AnswerInlineQueryOptions>;
-  function answerInlineQuery(options:AnswerInlineQueryOptions):(update:Update) =>
-    TelegramDriverSink<'answerInlineQuery', AnswerInlineQueryOptions>;
+  function reply(options:any, update:Update): TelegramDriverSink<'sendMessage', any>;
+  function reply(options:any): (update:Update) => TelegramDriverSink<'sendMessage', any>;
 
-  function answerCallbackQuery(options:AnswerCallbackQueryOptions, update:Update):TelegramDriverSink<'answerCallbackQuery', AnswerCallbackQueryOptions>;
-  function answerCallbackQuery(options:AnswerCallbackQueryOptions):(update:Update) =>
-    TelegramDriverSink<'answerCallbackQuery', AnswerCallbackQueryOptions>;
+  function answerInlineQuery(options:any, update:Update): TelegramDriverSink<'answerInlineQuery', any>;
+  function answerInlineQuery(options:any): (update:Update) =>TelegramDriverSink<'answerInlineQuery', any>;
 
-  function setWebhook(options?:SetWebhookOptions):TelegramDriverSink<'setWebhook', SetWebhookOptions>;
+  function answerCallbackQuery(options:any, update:Update): TelegramDriverSink<'answerCallbackQuery', any>;
+  function answerCallbackQuery(options:any): (update:Update) => TelegramDriverSink<'answerCallbackQuery', any>;
 
-  function webhook(update:Update):WebhookResponse;
+  function setWebhook(options?:any): TelegramDriverSink<'setWebhook', any>;
+
+  function webhook(update:Update): WebhookResponse;
 
   type Token = string;
   type EventsFn = (eventName:string) => Observable<Update>;
