@@ -1,45 +1,34 @@
-import { Observable as $, Subject } from 'rx'
 import RxAdapter from '@cycle/rx-adapter'
 
-import { prop, mergeAll } from 'ramda'
+import { Observable as $, Subject } from 'rx'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '../types'
 
-function makeEventsSelector (sources, adapt) {
+function makeEventsSelector ({
+  message,
+  inlineQuery,
+  chosenInlineResult,
+  callbackQuery
+}, adapt) {
   return function events (eventName) {
-    let messageSources = {
-      'message': sources.message.share()
-    }
-
-    let inlineQuerySources = {
-      'inline_query': sources.inlineQuery.share(),
-      'chosen_inline_result': sources.chosenInlineResult.share()
-    }
-
-    let callbackQuerySources = {
-      'callback_query': sources.callbackQuery.share()
-    }
-
-    // return interface
-    let rxStream = $.case(
-      () => eventName,
-      mergeAll([
-        messageSources,
-        inlineQuerySources,
-        callbackQuerySources
-      ]))
+    let rxStream = $.case(() => eventName, {
+      'message': message.share(),
+      'inline_query': inlineQuery.share(),
+      'chosen_inline_result': chosenInlineResult.share(),
+      'callback_query': callbackQuery.share()
+    })
 
     return adapt(rxStream)
   }
 }
 
-let handleWebhook = (token, request, action) => {
+let handleWebhook = (token, request, proxy) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
-    .map(prop('update'))
+    .pluck('update')
     .subscribe(
-      upd => action.onNext([upd]),
+      upd => proxy.onNext([upd]),
       err => console.error('request error: ', err))
 }
 
@@ -62,19 +51,19 @@ export function makeTelegramDriver (token, options = {}) {
     updates: []
   }
 
-  let proxy = makeUpdates(state, token)
-  let action = new Subject()
+  let proxyUpdates = makeUpdates(state, token)
+  let proxyWebHook = new Subject()
 
   if (options.webhook) {
-    proxy = makeWebHook(state, action)
+    proxyUpdates = makeWebHook(state, proxyWebHook)
   }
 
-  let updates = proxy
+  let updates = proxyUpdates
     .doOnError(err => {
       console.error('updates error: ', err)
       console.warn('Waiting 30 seconds before retry...')
     })
-    .catch(proxy.delay(30000))
+    .catch(proxyUpdates.delay(30000))
     .replay(null, 1)
 
   let sources = makeSources(updates)
@@ -82,20 +71,18 @@ export function makeTelegramDriver (token, options = {}) {
 
   function telegramDriver (request, runSA) {
     let adapt = adapter(runSA)
-    // pass request
+
     if (options.webhook) {
-      // handle webhook
-      handleWebhook(token, request, action)
+      handleWebhook(token, request, proxyWebHook)
     }
 
-    let newRequest = handleRequest(token, request)
+    let responses = handleRequest(token, request)
       .share()
 
-    newRequest.subscribeOnError(err => console.error('request error: ', err))
+    responses.subscribeOnError(err => console.error('request error: ', err))
 
-    // return interface
     return {
-      token: token,
+      token,
       observable: adapt(updates),
       responses: adapt(newRequest), // handle request
       events: makeEventsSelector(sources, adapt),
