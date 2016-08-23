@@ -96,7 +96,7 @@ declare module CycleTelegram {
     }
 
     export function makeTelegramDriver(token:Token,
-                                       options?:TelegramDriverOptions):(request:Observable<TelegramDriverSink>) => TelegramDriverExecution;
+                                       options?:TelegramDriverOptions): (request:Observable<Observable<TelegramDriverSink>>) => TelegramDriverExecution;
 
     export function getEntityFirst(type:string, update:Update):MessageEntity;
     export function getEntityFirst(type:string):(update:Update) => MessageEntity;
