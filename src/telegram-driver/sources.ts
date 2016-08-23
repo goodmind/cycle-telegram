@@ -12,14 +12,16 @@ import {
 
 import { CallbackQuery } from '../runtime-types/types'
 
-let max = curryN(3,
-  (property: any, acc: any, current: any) => current[property] > acc ? current[property] : acc)
+let max =
+  curryN(3, (property: any, acc: any, current: any) =>
+    current[property] > acc ? current[property] : acc)
 
-let makeUpdatesResolver = curryN(2, (token: Token, offset: number) => makeAPIRequest({
-  token,
-  method: 'getUpdates',
-  query: { offset, timeout: 60000 }
-}))
+let makeUpdatesResolver =
+  curryN(2, (token: Token, offset: number) => makeAPIRequest({
+    token,
+    method: 'getUpdates',
+    query: { offset, timeout: 60000 }
+  }))
 
 export function makeUpdates (initialState: TelegramDriverState, token: Token): Observable<TelegramDriverState> {
   UpdatesState(initialState)
@@ -36,12 +38,15 @@ export function makeUpdates (initialState: TelegramDriverState, token: Token): O
       })))
 }
 
-export function makeWebHook (initialState: TelegramDriverState, action: Subject<Update[]>) {
+export function makeWebHook (
+  initialState: TelegramDriverState,
+  action: Subject<Update[]>
+): Observable<TelegramDriverState> {
   UpdatesState(initialState)
 
   let webHookUpdates = action.share()
 
-  return $.concat(
+  return $.concat<TelegramDriverState>(
     $.just(initialState),
     webHookUpdates.map((updates: Update[]) => UpdatesState({
       startDate: initialState.startDate,
@@ -64,7 +69,7 @@ export function makeSources (state: Observable<TelegramDriverState>): TelegramDr
 
   return {
     message: $.zip(updates, startDate)
-      .filter(([update, startDate]) => Message.is(update.message))
+      .filter(([update]) => Message.is(update.message))
       .filter(([update, startDate]) => (startDate - update.message.date * 1000) <= 30000)
       .map(([update]) => update)
       .share(),

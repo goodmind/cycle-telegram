@@ -7,36 +7,35 @@ import {
   TelegramDriverSink,
   Update,
   Token
-} from '../interfaces';
+} from '../interfaces'
 
-import { prop, mergeAll } from 'ramda'
+import { prop } from 'ramda'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
-import { Request, WebhookResponse } from './.'
+
+import { Request, WebhookResponse } from '.'
+import { TcombWebhookResponse, TcombRequest } from '.'
+
+function isWebhookResponse (
+  request: Observable<Observable<any>>,
+  options: any
+): request is Observable<Observable<TcombWebhookResponse>> {
+  return options.webhook
+}
 
 function makeEventsSelector (sources: TelegramDriverSources) {
   return function events (eventName: string): Observable<Update> {
-    let messageSources = {
-      'message': sources.message.share()
-    }
-
-    let inlineQuerySources = {
-      'inline_query': sources.inlineQuery.share(),
-      'chosen_inline_result': sources.chosenInlineResult.share()
-    }
-
-    let callbackQuerySources = {
-      'callback_query': sources.callbackQuery.share()
-    }
-
     // return interface
-    return $.case(
-      () => eventName,
-      mergeAll([messageSources, inlineQuerySources, callbackQuerySources]))
+    return $.case(() => eventName, {
+      'message': sources.message.share(),
+      'inline_query': sources.inlineQuery.share(),
+      'chosen_inline_result': sources.chosenInlineResult.share(),
+      'callback_query': sources.callbackQuery.share()
+    })
   }
 }
 
-let handleWebhook = (token: Token, request: Observable<any>, action: Subject<any>) => {
+let handleWebhook = (token: Token, request: Observable<Observable<TcombWebhookResponse>>, action: Subject<any>) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
     .map(prop('update'))
@@ -45,7 +44,7 @@ let handleWebhook = (token: Token, request: Observable<any>, action: Subject<any
       (err: any) => console.error('request error: ', err))
 }
 
-let handleRequest = (token: Token, request: Observable<any>): Observable<any> => {
+let handleRequest = (token: Token, request: Observable<Observable<TcombRequest>>): Observable<any> => {
   return request.mergeAll()
     .filter(Request.is)
     .flatMap(({
@@ -54,7 +53,10 @@ let handleRequest = (token: Token, request: Observable<any>): Observable<any> =>
     }) => makeAPIRequest({token, method, query}))
 }
 
-export function makeTelegramDriver (token: Token, options: TelegramDriverOptions = {}): Function {
+export function makeTelegramDriver (
+  token: Token,
+  options: TelegramDriverOptions = {}
+): (request: Observable<Observable<TelegramDriverSink>>) => TelegramDriverExecution {
   let state: TelegramDriverState = {
     startDate: options.startDate || Date.now(),
     offset: 0,
@@ -79,14 +81,14 @@ export function makeTelegramDriver (token: Token, options: TelegramDriverOptions
   let sources = makeSources(updates)
   let disposable = updates.connect()
 
-  return function telegramDriver (request: Observable<TelegramDriverSink>): TelegramDriverExecution {
+  return function telegramDriver (request) {
     // pass request
-    if (options.webhook) {
+    if (isWebhookResponse(request, options)) {
       // handle webhook
       handleWebhook(token, request, action)
     }
 
-    let newRequest = handleRequest(token, request)
+    let newRequest = handleRequest(token, request as Observable<Observable<TcombRequest>>)
       .share()
 
     newRequest.subscribeOnError((err: any) => console.error('request error: ', err))
