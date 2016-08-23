@@ -3,11 +3,11 @@
     "removeComments": false,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "declaration": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs",
     "target": "ES5",
+    "lib": ["es5", "es6", "dom"],
     "outDir": "lib/"
   },
   "formatCodeOptions": {
@@ -15,7 +15,10 @@
     "tabSize": 2
   },
   "files": [
-    "typings/index.d.ts",
-    "src/index.ts"
+    "node_modules/rx/ts/rx.all.d.ts",
+    "typings/index.d.ts"
+  ],
+  "include": [
+    "src/**/*"
   ]
 }
