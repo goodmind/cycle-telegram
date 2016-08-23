@@ -20,7 +20,7 @@
     "build:watch": "tsc -w",
     "tslint": "tslint 'src/**/*.ts'",
     "test": "node -r babel-register test | tap-spec",
-    "test:record": "node -r babel-register test/record.js | tap-spec",
+    "test:record": "node -r babel-register test/integration/record.js | tap-spec",
     "prepublish": "npm run clean && npm run build",
     "preversion": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
@@ -32,7 +32,7 @@
     "ramda": "^0.21.0",
     "rx": "^4.1.0",
     "superagent": "^2.0.0-alpha.3",
-    "tcomb": "^3.0.0"
+    "tcomb": "^3.2.6"
   },
   "devDependencies": {
     "@cycle/core": "^6.0.3",

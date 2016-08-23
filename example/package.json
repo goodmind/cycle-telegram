@@ -1,0 +1,26 @@
+{
+  "name": "example",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel -d dist/ src/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cycle/core": "^6.0.3",
+    "body-parser": "^1.15.2",
+    "cycle-express": "0.0.1",
+    "cycle-telegram": "^1.3.1",
+    "express": "^4.14.0",
+    "ramda": "^0.21.0",
+    "rx": "^4.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-plugin-transform-function-bind": "^6.8.0"
+  }
+}
