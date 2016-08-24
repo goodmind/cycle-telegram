@@ -22,19 +22,15 @@ const UpdateMessageText =
     compose(not, isNil, (u: Update) => u.message.text),
     'UpdateMessageText')
 
-interface ComponentSources {
+export interface ComponentSources {
   [driverName: string]: Observable<any> | any
-  props?: any[]
 }
 
-interface ComponentSinks {
-  [driverName: string]: Observable<any>
-}
-
-type Component = (sources: ComponentSources, update: Update) => ComponentSinks
+export type ComponentSinks = { [driverName: string]: Observable<any> } | void
+export type Component = (sources: ComponentSources, update: Update) => ComponentSinks
 type CurriedToComponent = (plugins: Plugin[], sources: ComponentSources) => ComponentSinks[]
 
-interface Plugin {
+export interface Plugin {
   type: t.Type<any>
   name: string
   pattern?: RegExp
@@ -68,10 +64,9 @@ let toProps =
     ({ plugin, props: getProps(query, plugin) }))
 
 let toIsolate =
-  curryN(3, (update: Update, sources: ComponentSources, {plugin, props}: PluginProps): ComponentSinks =>
-    isolate(plugin.component)(
-      merge({ props }, sources),
-      update))
+  curryN(3, (update: Update, sources: ComponentSources, {plugin, props}: PluginProps): ComponentSinks => isolate(plugin.component)(
+    merge({ props }, sources),
+    update))
 
 let isolatePlugin =
   curryN(4, (update: Update, sources: ComponentSources, query: string, plugin: Plugin): ComponentSinks => toIsolate(
@@ -113,6 +108,7 @@ let toComponent: (u: Update) =>
     [find(testPattern(query), plugins)])
 
 export function matchWith (
+  this: Observable<Update>,
   plugins: Plugin[],
   sources: ComponentSources,
   {dupe = true} = {dupe: true}
@@ -121,4 +117,8 @@ export function matchWith (
     .map((u: Update) => dupe ? toComponents(u) : toComponent(u))
     .flatMap((f: CurriedToComponent) => f(plugins, sources))
     .filter(prop('bot'))
+}
+
+export function matchStream (observable: Observable<Update>, ...args: any[]) {
+  return matchWith.apply(observable, args)
 }
