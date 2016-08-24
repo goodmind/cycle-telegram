@@ -2,5 +2,9 @@
   "name": "cycle-telegram",
   "dependencies": {
     "ramda": "registry:npm/ramda#0.21.0+20160531162943"
+Q  },
+  "globalDependencies": {
+    "rx.all": "github:Reactive-Extensions/RxJS/ts/rx.all.d.ts",
+    "superagent": "registry:dt/superagent#2.0.0+20160811085415"
   }
 }
