@@ -2,11 +2,14 @@
   "compilerOptions": {
     "removeComments": false,
     "preserveConstEnums": true,
+    "declaration": true,
     "sourceMap": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs",
-    "target": "ES5",
+    "target": "es5",
     "lib": ["es5", "es6", "dom"],
     "outDir": "lib/"
   },
@@ -15,10 +18,8 @@
     "tabSize": 2
   },
   "files": [
-    "node_modules/rx/ts/rx.all.d.ts",
-    "typings/index.d.ts"
-  ],
-  "include": [
-    "src/**/*"
+    "typings/index.d.ts",
+    "src/index.ts",
+    "src/plugins.ts"
   ]
 }
