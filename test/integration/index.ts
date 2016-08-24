@@ -1,15 +1,11 @@
-import { run } from '@cycle/core'
-import {
-  makeTelegramDriver,
-  reply, answerInlineQuery,
-  UpdateMessage, Update, entityIs
-} from '../../lib/index'
-import { matchPlugin } from '../../lib/plugins'
+let { run } = require('@cycle/core')
+import { makeTelegramDriver, reply, answerInlineQuery, UpdateMessage, Update, entityIs } from '../../lib/index'
+import { matchStream, Plugin, ComponentSources } from '../../lib/plugins'
 import { Observable as $ } from 'rx'
 
-import path from 'path'
-import tape from 'tape'
-import tapeNock from 'tape-nock'
+import * as path from 'path'
+import * as tape from 'tape'
+import * as tapeNock from 'tape-nock'
 
 let test = tapeNock(tape, {
   fixtures: path.join(__dirname, 'fixtures'),
@@ -20,7 +16,7 @@ const ACCESS_TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
 
 test('should reply to messages with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { startDate: 1464342407440 })
-  let { sources } = run(({ bot }) => ({
+  let { sources } = run(({ bot }: any) => ({
     bot: $.from([
       bot.events('message').map(reply('Cycle.js'))
     ])
@@ -31,7 +27,7 @@ test('should reply to messages with basic driver', t => {
   sources.bot.responses
     .take(1)
     .do(() => sources.bot.dispose())
-    .subscribe(message => {
+    .subscribe((message: any) => {
       t.equal(message.text, 'Cycle.js',
         'message text should be equal to `Cycle.js`')
       t.end()
@@ -51,7 +47,7 @@ test('should reply to inline query with basic driver', t => {
       id: '2o3aajndy0all3di'
     }
   ]
-  let { sources } = run(({bot}) => ({
+  let { sources } = run(({ bot }: any) => ({
     bot: $.from([
       bot.events('inline_query').map(answerInlineQuery(results))
     ])
@@ -62,7 +58,7 @@ test('should reply to inline query with basic driver', t => {
   sources.bot.responses
     .take(1)
     .do(() => sources.bot.dispose())
-    .subscribe(boolean => {
+    .subscribe((boolean: boolean) => {
       t.ok(boolean, 'response should be truthy')
       t.end()
     })
@@ -70,27 +66,24 @@ test('should reply to inline query with basic driver', t => {
 
 test('should reply to command `/help` with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { startDate: 1464342407440 })
-  let plugins = [
+  let plugins: Plugin[] = [
     {
       type: UpdateMessage,
       name: 'help',
-      path: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
-      component: ({props}, u) => ({
+      pattern: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
+      component: ({ props }, u) => ({
         bot: $.just(reply('Cycle Telegram v1.1.1 (https://git.io/vrs3P)', u))
       })},
     {
       type: Update,
       name: 'not-found',
-      path: /(?:[\s\S]*)/,
       component: ({props}) => {
         t.fail(`wrong command \`${props[0]}\``)
       }}
   ]
-  let { sources } = run(s => ({
+  let { sources } = run((s: { bot: any }) => ({
     bot: $.from([
-      s.bot.events('message')
-        .filter(entityIs('bot_command'))
-        ::matchPlugin(plugins, s)
+      matchStream(s.bot.events('message').filter(entityIs('bot_command')), plugins, s)
         .pluck('bot')
         .mergeAll()
     ])
@@ -101,7 +94,7 @@ test('should reply to command `/help` with basic driver', t => {
   sources.bot.responses
     .take(1)
     .do(() => sources.bot.dispose())
-    .subscribe(message => {
+    .subscribe((message: any) => {
       t.ok(/\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/.test(message.reply_to_message.text),
         'reply to message text should match `/help` command pattern')
       t.equal(message.text, 'Cycle Telegram v1.1.1 (https://git.io/vrs3P)',
