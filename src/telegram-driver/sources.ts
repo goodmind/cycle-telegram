@@ -1,16 +1,14 @@
 import { Observable, Subject, Observable as $ } from 'rx'
-import {Token, TelegramDriverState, TelegramDriverSources, Update} from '../interfaces'
-
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
 import {
   UpdatesState,
   Message,
   InlineQuery,
-  ChosenInlineResult
+  ChosenInlineResult,
+  CallbackQuery
 } from '../runtime-types'
-
-import { CallbackQuery } from '../runtime-types/types'
+import {Token, TelegramDriverState, TelegramDriverSources, Update} from '../interfaces'
 
 let max =
   curryN(3, (property: any, acc: any, current: any) =>
@@ -58,8 +56,8 @@ export function makeWebHook (
 
 export function makeSources (state: Observable<TelegramDriverState>): TelegramDriverSources {
   let updates = state
-    .pluck('updates')
-    .map((u: Update[]) => $.fromArray(u))
+    .pluck<Update[]>('updates')
+    .map((u: Update[]) => $.from(u))
     .switch()
     .share()
 
