@@ -26,7 +26,7 @@ export type EventsFn = (eventName: string) => Observable<Update>;
 
 export interface TelegramDriverExecution extends IDisposable {
   token: Token
-  observable: Observable<TelegramDriverState>
+  updates: Observable<TelegramDriverState>
   responses: Observable<TelegramAPIResponseResult>
   events: EventsFn
 }
