@@ -1,6 +1,7 @@
-import t from 'tcomb'
+import * as t from 'tcomb'
 import * as m from './multimedia-types'
 import * as k from './keyboard-types'
+import { Update as TcombUpdate } from '../interfaces'
 
 export const User = t.struct({
   id: t.Number,
@@ -53,7 +54,8 @@ export const MessageEntity = t.struct({
     'italic',
     'code',
     'pre',
-    'text_link'
+    'text_link',
+    'text_mention'
   ]),
   offset: t.Number,
   length: t.Number,
@@ -127,21 +129,29 @@ export const Update = t.struct({
   callback_query: t.maybe(CallbackQuery)
 })
 
-export const UpdateInlineQuery = t.refinement(Update,
-  (u) => u.inline_query,
-  'UpdateInlineQuery')
+export const UpdateInlineQuery =
+  t.refinement(
+    Update,
+    (u: any) => u.inline_query,
+    'UpdateInlineQuery')
 
-export const UpdateMessage = t.refinement(Update,
-  (u) => u.message,
-  'UpdateMessage')
+export const UpdateMessage =
+  t.refinement(
+    Update,
+    (u: any) => u.message,
+    'UpdateMessage')
 
-export const UpdateChosenInlineResult = t.refinement(Update,
-  (u) => u.chosen_inline_result,
-  'UpdateChosenInlineResult')
+export const UpdateChosenInlineResult =
+  t.refinement(
+    Update,
+    (u: any) => u.chosen_inline_result,
+    'UpdateChosenInlineResult')
 
-export const UpdateCallbackQuery = t.refinement(Update,
-  (u) => u.callback_query,
-  'UpdateCallbackQuery')
+export const UpdateCallbackQuery =
+  t.refinement(
+    Update,
+    (u: any) => u.callback_query,
+    'UpdateCallbackQuery')
 
 export const UpdatesState = t.struct({
   startDate: t.Number,
@@ -149,13 +159,24 @@ export const UpdatesState = t.struct({
   updates: t.list(Update)
 })
 
-export const Request = t.struct({
+export const Request = t.struct<TcombRequest>({
   type: t.enums.of(['sink']),
   method: t.String,
   options: t.Object
 })
 
-export const WebhookResponse = t.struct({
+export interface TcombRequest {
+  type: 'sink',
+  method: string,
+  options: any
+}
+
+export const WebhookResponse = t.struct<TcombWebhookResponse>({
   type: t.enums.of(['webhook']),
   update: Update
 })
+
+export interface TcombWebhookResponse {
+  type: 'webhook',
+  update: TcombUpdate
+}

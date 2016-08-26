@@ -1,4 +1,4 @@
-import t from 'tcomb'
+import * as t from 'tcomb'
 
 export const PhotoSize = t.struct({
   file_id: t.String,
@@ -78,4 +78,3 @@ export const File = t.struct({
   file_size: t.maybe(t.Number),
   file_path: t.maybe(t.String)
 })
-

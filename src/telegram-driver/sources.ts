@@ -1,5 +1,4 @@
-import { Observable as $ } from 'rx'
-
+import { Observable, Subject, Observable as $ } from 'rx'
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
 import {
@@ -8,18 +7,21 @@ import {
   InlineQuery,
   ChosenInlineResult,
   CallbackQuery
-} from '../types'
+} from '../runtime-types'
+import {Token, TelegramDriverState, TelegramDriverSources, Update} from '../interfaces'
 
-let max = curryN(3,
-  (property, acc, current) => current[property] > acc ? current[property] : acc)
+let max =
+  curryN(3, (property: any, acc: any, current: any) =>
+    current[property] > acc ? current[property] : acc)
 
-let makeUpdatesResolver = curryN(2, (token, offset) => makeAPIRequest({
-  token,
-  method: 'getUpdates',
-  query: { offset, timeout: 60000 }
-}))
+let makeUpdatesResolver =
+  curryN(2, (token: Token, offset: number) => makeAPIRequest({
+    token,
+    method: 'getUpdates',
+    query: { offset, timeout: 60000 }
+  }))
 
-export function makeUpdates (initialState, token) {
+export function makeUpdates (initialState: TelegramDriverState, token: Token): Observable<TelegramDriverState> {
   UpdatesState(initialState)
 
   let resolve = makeUpdatesResolver(token)
@@ -27,21 +29,24 @@ export function makeUpdates (initialState, token) {
   return $.return(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
       $.interval(500).take(1),
-      (updates, _) => UpdatesState({
+      (updates: Update[], _: any) => UpdatesState({
         startDate: initialState.startDate,
         offset: reduce(max('update_id'), 0, updates) + 1,
         updates
       })))
 }
 
-export function makeWebHook (initialState, action) {
+export function makeWebHook (
+  initialState: TelegramDriverState,
+  action: Subject<Update[]>
+): Observable<TelegramDriverState> {
   UpdatesState(initialState)
 
   let webHookUpdates = action.share()
 
-  return $.concat(
+  return $.concat<TelegramDriverState>(
     $.just(initialState),
-    webHookUpdates.map((updates) => UpdatesState({
+    webHookUpdates.map((updates: Update[]) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
       updates
@@ -49,10 +54,10 @@ export function makeWebHook (initialState, action) {
     .share()
 }
 
-export function makeSources (state) {
+export function makeSources (state: Observable<TelegramDriverState>): TelegramDriverSources {
   let updates = state
-    .pluck('updates')
-    .map(u => $.fromArray(u))
+    .pluck<Update[]>('updates')
+    .map((u: Update[]) => $.from(u))
     .switch()
     .share()
 
@@ -62,11 +67,8 @@ export function makeSources (state) {
 
   return {
     message: $.zip(updates, startDate)
-      .filter(([update, startDate]) => Message.is(update.message))
-      .filter(([
-        update,
-        startDate
-      ]) => (startDate - update.message.date * 1000) <= 30000)
+      .filter(([update]) => Message.is(update.message))
+      .filter(([update, startDate]) => (startDate - update.message.date * 1000) <= 30000)
       .map(([update]) => update)
       .share(),
 
