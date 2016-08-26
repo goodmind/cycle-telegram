@@ -27,7 +27,7 @@ npm install cycle-telegram --save
 ## Examples
 
 * [@cyclejs_bot](https://telegram.me/cyclejs_bot) — [source](https://github.com/goodmind/cycle-telegram-bot)
-* [@tryhaskell_bot](https://telegram.me/tryhaskell_bot) — [source](https://github.com/goodmind/tryhaskell-bot)
+* [@tryhaskell_bot](https://telegram.me/tryhaskell_bot) - [source](https://github.com/goodmind/tryhaskell-bot)
 
 ## Contribute
 
