@@ -19,6 +19,7 @@ export declare const UpdatesState: t.Struct<{}>;
 export declare const Request: t.Struct<TcombRequest>;
 export interface TcombRequest {
     type: 'sink';
+    multipart?: boolean;
     method: string;
     options: any;
 }
