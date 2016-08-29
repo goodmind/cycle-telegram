@@ -64,7 +64,11 @@ let toProps =
     ({ plugin, props: getProps(query, plugin) }))
 
 let toIsolate =
-  curryN(3, (update: Update, sources: ComponentSources, {plugin, props}: PluginProps): ComponentSinks => isolate(plugin.component)(
+  curryN(3, (
+    update: Update,
+    sources: ComponentSources,
+    {plugin, props}: PluginProps
+  ): ComponentSinks => isolate(plugin.component)(
     merge({ props }, sources),
     update))
 
