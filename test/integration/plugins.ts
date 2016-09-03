@@ -3,7 +3,8 @@ import {
   reply,
   UpdateMessage,
   Update,
-  entityIs
+  entityIs,
+  DriverExecution
 } from '../../lib/index'
 import { matchStream, Plugin } from '../../lib/plugins'
 
@@ -14,7 +15,11 @@ import * as tapeNock from 'tape-nock'
 import Cycle from '@cycle/core'
 import { Observable as $ } from 'rx'
 
-let isRecord = process.env.NOCK_BACK_MODE === 'record'
+interface Sources {
+  bot: DriverExecution
+}
+
+let isRecord = process.env['NOCK_BACK_MODE'] === 'record'
 let onError = (sources, t) => (err) => {
   sources.bot.dispose()
   t.fail(err)
@@ -22,14 +27,14 @@ let onError = (sources, t) => (err) => {
 }
 
 let test = tapeNock(tape, {
-  fixtures: path.join(__dirname, isRecord ? 'record-fixtures' : 'fixtures'),
+  fixtures: path.join(__dirname, isRecord ? 'record-fixtures' : 'record-fixtures'),
   mode: isRecord ? 'record' : 'lockdown'
 })
 
-const ACCESS_TOKEN = isRecord ? process.env.ACCESS_TOKEN : '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+const ACCESS_TOKEN = isRecord ? process.env['ACCESS_TOKEN'] : '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
 
 test('should reply to command `/help` with basic driver', t => {
-  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1464342407440 })
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1472895279 * 1000 })
   let plugins: Plugin[] = [
     {
       type: UpdateMessage,
@@ -45,7 +50,7 @@ test('should reply to command `/help` with basic driver', t => {
         t.fail(`wrong command \`${props[0]}\``)
       }}
   ]
-  let main = (s: { bot: any }) => ({
+  let main = (s: Sources) => ({
     bot: $.from([
       matchStream(s.bot.events('message').filter(entityIs('bot_command')), plugins, s)
         .pluck('bot')
