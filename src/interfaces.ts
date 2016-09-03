@@ -1,43 +1,30 @@
 import { Observable, IDisposable } from 'rx'
-import { TcombWebhookResponse, TcombRequest } from './runtime-types/types'
+import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } from './runtime-types/types'
 
 export type Token = string;
 
-export interface Update {
-  update_id: number,
-  message?: any,
-  inline_query?: any,
-  chosen_inline_result?: any,
-  callback_query?: any
-}
-
-export interface TelegramDriverState {
-  startDate: number
-  offset: number
-  updates: Update[]
-}
-
-export interface TelegramDriverOptions {
+export interface DriverOptions {
   webhook?: boolean
-  startDate?: number
+  startDate?: number,
+  skipUpdates?: boolean
 }
 
-export type EventsFn = (eventName: string) => Observable<Update>;
+export type EventsFn = (eventName: string) => Observable<TcombUpdate>;
 
-export interface TelegramDriverExecution extends IDisposable {
+export interface DriverExecution extends IDisposable {
   token: Token
-  updates: Observable<TelegramDriverState>
-  responses: Observable<TelegramAPIResponseResult>
+  updates: Observable<TcombUpdatesState>
+  responses: Observable<any>
   events: EventsFn
 }
 
-export type TelegramDriverSink = TcombRequest | TcombWebhookResponse
+export type DriverSink = TcombRequest | TcombWebhookResponse
 
-export interface TelegramDriverSources {
-  message: Observable<Update>
-  inlineQuery: Observable<Update>
-  chosenInlineResult: Observable<Update>
-  callbackQuery: Observable<Update>
+export interface DriverSources {
+  message: Observable<TcombUpdate>
+  inlineQuery: Observable<TcombUpdate>
+  chosenInlineResult: Observable<TcombUpdate>
+  callbackQuery: Observable<TcombUpdate>
 }
 
 export interface TelegramAPIRequest {
@@ -47,13 +34,13 @@ export interface TelegramAPIRequest {
   httpMethod?: string
 }
 
-export interface TelegramAPIResponseResult {}
-
 export interface TelegramAPIError {
   ok: boolean
   description: string
   error_code: number
 }
+
+export interface TelegramAPIResponseResult {}
 
 export interface TelegramAPIResponse {
   ok: boolean
