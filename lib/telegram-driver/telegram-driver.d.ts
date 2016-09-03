@@ -1,3 +1,3 @@
 import { Observable } from 'rx';
-import { TelegramDriverOptions, TelegramDriverExecution, TelegramDriverSink, Token } from '../interfaces';
-export declare function makeTelegramDriver(token: Token, options?: TelegramDriverOptions): (request: Observable<Observable<TelegramDriverSink>>) => TelegramDriverExecution;
+import { DriverOptions, DriverExecution, DriverSink, Token } from '../interfaces';
+export declare function makeTelegramDriver(token: Token, options?: DriverOptions): (request: Observable<Observable<DriverSink>>) => DriverExecution;

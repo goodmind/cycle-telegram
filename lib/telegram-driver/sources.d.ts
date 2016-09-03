@@ -1,5 +1,6 @@
 import { Observable, Subject } from 'rx';
-import { Token, TelegramDriverState, TelegramDriverSources, Update } from '../interfaces';
-export declare function makeUpdates(initialState: TelegramDriverState, token: Token): Observable<TelegramDriverState>;
-export declare function makeWebHook(initialState: TelegramDriverState, action: Subject<Update[]>): Observable<TelegramDriverState>;
-export declare function makeSources(state: Observable<TelegramDriverState>): TelegramDriverSources;
+import { Token, DriverSources } from '../interfaces';
+import { TcombUpdate, TcombUpdatesState } from '../runtime-types/types';
+export declare function makeUpdates(initialState: TcombUpdatesState, token: Token): Observable<TcombUpdatesState>;
+export declare function makeWebHook(initialState: TcombUpdatesState, action: Subject<TcombUpdate[]>): Observable<TcombUpdatesState>;
+export declare function makeSources(state: Observable<TcombUpdatesState>): DriverSources;

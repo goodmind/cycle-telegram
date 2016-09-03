@@ -1,5 +1,4 @@
-import { Update } from '../interfaces';
-import { TcombRequest, TcombWebhookResponse } from '../runtime-types';
+import { TcombRequest, TcombWebhookResponse, TcombUpdate as Update } from '../runtime-types/types';
 export declare let webhook: (update: Update) => TcombWebhookResponse;
 export declare let setWebhook: (options?: {}) => TcombRequest;
 export declare let getMe: (options?: {}) => TcombRequest;
