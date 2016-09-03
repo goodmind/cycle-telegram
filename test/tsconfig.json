@@ -3,9 +3,9 @@
     "module": "commonjs"
   },
   "files": [
-    "custom-typings/index.d.ts",
     "../lib/index.d.ts",
     "../typings/index.d.ts",
+    "integration/plugins.ts",
     "index.ts"
   ]
 }
