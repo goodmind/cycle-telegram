@@ -12,9 +12,9 @@
             "ok": true,
             "result": [
                 {
-                    "update_id": 384712963,
+                    "update_id": 384712964,
                     "message": {
-                        "message_id": 5016,
+                        "message_id": 5025,
                         "from": {
                             "id": 39759851,
                             "first_name": "andretshurotshka!",
@@ -25,42 +25,17 @@
                             "title": "cycle-telegram recording",
                             "type": "group"
                         },
-                        "date": 1472895283,
-                        "text": "sas"
+                        "date": 1472895308,
+                        "text": "s"
                     }
                 }
             ]
         },
         "headers": {
             "server": "nginx/1.10.0",
-            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
+            "date": "Sat, 03 Sep 2016 09:35:08 GMT",
             "content-type": "application/json",
-            "content-length": "261",
-            "connection": "close",
-            "access-control-allow-origin": "*",
-            "access-control-allow-methods": "GET, POST, OPTIONS",
-            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
-            "strict-transport-security": "max-age=31536000; includeSubdomains"
-        }
-    },
-    {
-        "scope": "https://api.telegram.org:443",
-        "method": "POST",
-        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
-        "body": {
-            "offset": 384712964,
-            "timeout": 60000
-        },
-        "status": 200,
-        "response": {
-            "ok": true,
-            "result": []
-        },
-        "headers": {
-            "server": "nginx/1.10.0",
-            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
-            "content-type": "application/json",
-            "content-length": "261",
+            "content-length": "259",
             "connection": "close",
             "access-control-allow-origin": "*",
             "access-control-allow-methods": "GET, POST, OPTIONS",
@@ -74,14 +49,14 @@
         "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
         "body": {
             "chat_id": -175523088,
-            "reply_to_message_id": 5016,
+            "reply_to_message_id": 5025,
             "text": "Cycle.js"
         },
         "status": 200,
         "response": {
             "ok": true,
             "result": {
-                "message_id": 5017,
+                "message_id": 5026,
                 "from": {
                     "id": 209109785,
                     "first_name": "Cycle.js",
@@ -92,9 +67,9 @@
                     "title": "cycle-telegram recording",
                     "type": "group"
                 },
-                "date": 1472895283,
+                "date": 1472895309,
                 "reply_to_message": {
-                    "message_id": 5016,
+                    "message_id": 5025,
                     "from": {
                         "id": 39759851,
                         "first_name": "andretshurotshka!",
@@ -105,17 +80,72 @@
                         "title": "cycle-telegram recording",
                         "type": "group"
                     },
-                    "date": 1472895283,
-                    "text": "sas"
+                    "date": 1472895308,
+                    "text": "s"
                 },
                 "text": "Cycle.js"
             }
         },
         "headers": {
             "server": "nginx/1.10.0",
-            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
+            "date": "Sat, 03 Sep 2016 09:35:09 GMT",
             "content-type": "application/json",
-            "content-length": "447",
+            "content-length": "445",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/editMessageText",
+        "body": {
+            "chat_id": -175523088,
+            "message_id": 5026,
+            "text": "Cycle Telegram"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5026,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group"
+                },
+                "date": 1472895309,
+                "reply_to_message": {
+                    "message_id": 5025,
+                    "from": {
+                        "id": 39759851,
+                        "first_name": "andretshurotshka!",
+                        "username": "goodmind"
+                    },
+                    "chat": {
+                        "id": -175523088,
+                        "title": "cycle-telegram recording",
+                        "type": "group"
+                    },
+                    "date": 1472895308,
+                    "text": "s"
+                },
+                "text": "Cycle.js"
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:35:09 GMT",
+            "content-type": "application/json",
+            "content-length": "445",
             "connection": "close",
             "access-control-allow-origin": "*",
             "access-control-allow-methods": "GET, POST, OPTIONS",

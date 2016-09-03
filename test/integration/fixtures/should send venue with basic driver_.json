@@ -1,0 +1,60 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendVenue",
+        "body": {
+            "reply_markup": "{}",
+            "chat_id": -175523088,
+            "latitude": 55.7554244,
+            "longitude": 37.6132518,
+            "title": "Red Square",
+            "address": "Moscow, Russia",
+            "foursquare_id": null,
+            "disable_notification": null,
+            "reply_to_message_id": null
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5023,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group"
+                },
+                "date": 1472895289,
+                "location": {
+                    "latitude": 55.755437,
+                    "longitude": 37.613277
+                },
+                "venue": {
+                    "location": {
+                        "latitude": 55.755437,
+                        "longitude": 37.613277
+                    },
+                    "title": "Red Square",
+                    "address": "Moscow, Russia",
+                    "foursquare_id": "null"
+                }
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:49 GMT",
+            "content-type": "application/json",
+            "content-length": "399",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

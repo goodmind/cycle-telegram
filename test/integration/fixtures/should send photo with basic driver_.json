@@ -1,0 +1,57 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendPhoto",
+        "body": "*",
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5019,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group"
+                },
+                "date": 1472895285,
+                "photo": [
+                    {
+                        "file_id": "AgADAgAD9KcxGxnDdgzx6i3J9HsZrCbfgQ0ABPTVVEfovkluVzkAAgI",
+                        "file_size": 1209,
+                        "width": 90,
+                        "height": 90
+                    },
+                    {
+                        "file_id": "AgADAgAD9KcxGxnDdgzx6i3J9HsZrCbfgQ0ABKAPkVhmo84SWDkAAgI",
+                        "file_size": 8302,
+                        "width": 320,
+                        "height": 320
+                    },
+                    {
+                        "file_id": "AgADAgAD9KcxGxnDdgzx6i3J9HsZrCbfgQ0ABOc6zUqUrCFoVjkAAgI",
+                        "file_size": 16783,
+                        "width": 640,
+                        "height": 640
+                    }
+                ]
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:45 GMT",
+            "content-type": "application/json",
+            "content-length": "551",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]
