@@ -1,23 +1,38 @@
 import * as t from 'tcomb'
 import * as m from './multimedia-types'
 import * as k from './keyboard-types'
-import { Update as TcombUpdate } from '../interfaces'
 
-export const User = t.struct({
+export const User = t.struct<TcombUser>({
   id: t.Number,
   first_name: t.String,
   last_name: t.maybe(t.String),
   username: t.maybe(t.String)
 })
 
-export const Chat = t.struct({
+export interface TcombUser {
+  id: number
+  first_name: string
+  last_name?: string
+  username?: string
+}
+
+export const Chat = t.struct<TcombChat>({
   id: t.Number,
-  type: t.String,
+  type: t.enums.of(['private', 'group', 'supergroup', 'channel']),
   title: t.maybe(t.String),
   username: t.maybe(t.String),
   first_name: t.maybe(t.String),
   last_name: t.maybe(t.String)
 })
+
+export interface TcombChat {
+  id: number
+  type: 'private' | 'group' | 'supergroup' | 'channel',
+  title?: string
+  username?: string
+  first_name?: string
+  last_name?: string
+}
 
 export const InputMessageContent = t.struct({
   message_text: t.String,
@@ -64,7 +79,7 @@ export const MessageEntity = t.struct({
 
 export const Message = t.declare('Message')
 
-Message.define(t.struct({
+Message.define(t.struct<TcombMessage>({
   message_id: t.Number,
   from: t.maybe(User),
   date: t.Number,
@@ -97,7 +112,39 @@ Message.define(t.struct({
   pinned_message: t.maybe(Message)
 }))
 
-export const InlineQuery = t.struct({
+export interface TcombMessage {
+  message_id: number
+  from?: TcombUser
+  date: number
+  chat: TcombChat
+  forward_from?: any
+  forward_date?: number
+  reply_to_message?: TcombMessage
+  text?: string
+  entities?: any[]
+  audio?: any
+  document?: any
+  photo?: any[]
+  sticker?: any
+  video?: any
+  voice?: any
+  caption?: string
+  contact?: any
+  location?: any
+  new_chat_member?: TcombUser
+  left_chat_member?: TcombUser
+  new_chat_title?: string
+  new_chat_photo?: any[]
+  delete_chat_photo?: boolean
+  group_chat_created?: boolean
+  supergroup_chat_created?: boolean
+  channel_chat_created?: boolean
+  migrate_to_chat_id?: number
+  migrate_from_chat_id?: number
+  pinned_message?: TcombMessage
+}
+
+export const InlineQuery = t.struct<TcombInlineQuery>({
   id: t.String,
   from: User,
   location: t.maybe(m.Location),
@@ -105,7 +152,15 @@ export const InlineQuery = t.struct({
   offset: t.String
 })
 
-export const ChosenInlineResult = t.struct({
+export interface TcombInlineQuery {
+  id: string
+  from: TcombUser
+  location?: any
+  query: string
+  offset: string
+}
+
+export const ChosenInlineResult = t.struct<TcombChosenInlineResult>({
   result_id: t.String,
   from: User,
   location: t.maybe(m.Location),
@@ -113,7 +168,15 @@ export const ChosenInlineResult = t.struct({
   query: t.String
 })
 
-export const CallbackQuery = t.struct({
+export interface TcombChosenInlineResult {
+  result_id: string
+  from: TcombUser
+  location?: any
+  inline_message_id?: string
+  query: string
+}
+
+export const CallbackQuery = t.struct<TcombCallbackQuery>({
   id: t.String,
   from: User,
   message: t.maybe(Message),
@@ -121,7 +184,15 @@ export const CallbackQuery = t.struct({
   data: t.maybe(t.String)
 })
 
-export const Update = t.struct({
+export interface TcombCallbackQuery {
+  id: string
+  from: TcombUser
+  message?: TcombMessage
+  inline_message_id?: string
+  data?: string
+}
+
+export const Update = t.struct<TcombUpdate>({
   update_id: t.Number,
   message: t.maybe(Message),
   inline_query: t.maybe(InlineQuery),
@@ -129,44 +200,80 @@ export const Update = t.struct({
   callback_query: t.maybe(CallbackQuery)
 })
 
+export interface TcombUpdate {
+  update_id: number,
+  message?: TcombMessage,
+  inline_query?: TcombInlineQuery,
+  chosen_inline_result?: TcombChosenInlineResult,
+  callback_query?: TcombCallbackQuery
+}
+
 export const UpdateInlineQuery =
-  t.refinement(
+  t.refinement<TcombUpdateInlineQuery>(
     Update,
-    (u: any) => u.inline_query,
+    (u) => !!u.inline_query,
     'UpdateInlineQuery')
 
+export interface TcombUpdateInlineQuery {
+  update_id: number,
+  inline_query: TcombInlineQuery
+}
+
 export const UpdateMessage =
-  t.refinement(
+  t.refinement<TcombUpdateMessage>(
     Update,
-    (u: any) => u.message,
+    (u) => !!u.message,
     'UpdateMessage')
 
+export interface TcombUpdateMessage {
+  update_id: number,
+  message: TcombMessage
+}
+
 export const UpdateChosenInlineResult =
-  t.refinement(
+  t.refinement<TcombUpdateChosenInlineResult>(
     Update,
-    (u: any) => u.chosen_inline_result,
+    (u) => !!u.chosen_inline_result,
     'UpdateChosenInlineResult')
 
+export interface TcombUpdateChosenInlineResult {
+  update_id: number,
+  chosen_inline_result: TcombChosenInlineResult
+}
+
 export const UpdateCallbackQuery =
-  t.refinement(
+  t.refinement<TcombUpdateCallbackQuery>(
     Update,
-    (u: any) => u.callback_query,
+    (u) => !!u.callback_query,
     'UpdateCallbackQuery')
 
-export const UpdatesState = t.struct({
+export interface TcombUpdateCallbackQuery {
+  update_id: number,
+  callback_query: TcombCallbackQuery
+}
+
+export const UpdatesState = t.struct<TcombUpdatesState>({
   startDate: t.Number,
   offset: t.Number,
   updates: t.list(Update)
 })
 
+export interface TcombUpdatesState {
+  startDate: number
+  offset: number
+  updates: TcombUpdate[]
+}
+
 export const Request = t.struct<TcombRequest>({
   type: t.enums.of(['sink']),
+  multipart: t.maybe(t.Boolean),
   method: t.String,
   options: t.Object
 })
 
 export interface TcombRequest {
   type: 'sink',
+  multipart?: boolean,
   method: string,
   options: any
 }
