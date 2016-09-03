@@ -1,14 +1,16 @@
 import { Observable, Subject, Observable as $ } from 'rx'
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
+import { Token, DriverSources } from '../interfaces'
 import {
   UpdatesState,
   Message,
   InlineQuery,
   ChosenInlineResult,
-  CallbackQuery
-} from '../runtime-types'
-import {Token, TelegramDriverState, TelegramDriverSources, Update} from '../interfaces'
+  CallbackQuery,
+  TcombUpdate,
+  TcombUpdatesState
+} from '../runtime-types/types'
 
 let max =
   curryN(3, (property: any, acc: any, current: any) =>
@@ -21,7 +23,7 @@ let makeUpdatesResolver =
     query: { offset, timeout: 60000 }
   }))
 
-export function makeUpdates (initialState: TelegramDriverState, token: Token): Observable<TelegramDriverState> {
+export function makeUpdates (initialState: TcombUpdatesState, token: Token): Observable<TcombUpdatesState> {
   UpdatesState(initialState)
 
   let resolve = makeUpdatesResolver(token)
@@ -29,7 +31,7 @@ export function makeUpdates (initialState: TelegramDriverState, token: Token): O
   return $.return(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
       $.interval(500).take(1),
-      (updates: Update[], _: any) => UpdatesState({
+      (updates: TcombUpdate[], _: any) => UpdatesState({
         startDate: initialState.startDate,
         offset: reduce(max('update_id'), 0, updates) + 1,
         updates
@@ -37,16 +39,16 @@ export function makeUpdates (initialState: TelegramDriverState, token: Token): O
 }
 
 export function makeWebHook (
-  initialState: TelegramDriverState,
-  action: Subject<Update[]>
-): Observable<TelegramDriverState> {
+  initialState: TcombUpdatesState,
+  action: Subject<TcombUpdate[]>
+): Observable<TcombUpdatesState> {
   UpdatesState(initialState)
 
   let webHookUpdates = action.share()
 
-  return $.concat<TelegramDriverState>(
+  return $.concat<TcombUpdatesState>(
     $.just(initialState),
-    webHookUpdates.map((updates: Update[]) => UpdatesState({
+    webHookUpdates.map((updates: TcombUpdate[]) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
       updates
@@ -54,10 +56,10 @@ export function makeWebHook (
     .share()
 }
 
-export function makeSources (state: Observable<TelegramDriverState>): TelegramDriverSources {
+export function makeSources (state: Observable<TcombUpdatesState>): DriverSources {
   let updates = state
-    .pluck<Update[]>('updates')
-    .map((u: Update[]) => $.from(u))
+    .pluck<TcombUpdate[]>('updates')
+    .map((u: TcombUpdate[]) => $.from(u))
     .switch()
     .share()
 
