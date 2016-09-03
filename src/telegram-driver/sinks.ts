@@ -1,12 +1,11 @@
-import { Update } from '../interfaces'
 import { Request, WebhookResponse } from '../runtime-types'
-import { TcombRequest, TcombWebhookResponse } from '../runtime-types'
+/* tslint:disable */
+import { TcombRequest, TcombWebhookResponse, TcombUpdate as Update } from '../runtime-types/types'
+/* tslint:enable */
 import {
   map, assoc,
   curryN, path,
-  defaultTo, keys,
-  pickAll, chain,
-  evolve, compose,
+  defaultTo, compose,
   is, isArrayLike
 } from 'ramda'
 import { defaults } from '../helpers'
@@ -18,7 +17,19 @@ export let webhook = (update: Update) => WebhookResponse({
   update
 })
 
-export let broadcast = curryN(2, (options = {}, update: Update): TcombRequest => Request({
+export let setWebhook = (options = {}) => Request({
+  type: 'sink',
+  method: 'setWebhook',
+  options
+})
+
+export let getMe = (options = {}) => Request({
+  type: 'sink',
+  method: 'getMe',
+  options
+})
+
+export let broadcast = curryN(2, (options = {}, update: Update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: defaults(
@@ -43,55 +54,18 @@ export let reply = curryN(2, (options = {}, update: Update) => Request({
     is(String, options) ? {text: options} : options)
 }))
 
-export let answerInlineQuery = curryN(2, (options = {}, update: Update) => {
-  let updateResults = (results: any[]) => results[0].id ? results : map(
-      answer => assoc('id', Math.random().toString(36).substring(2), answer),
-      results || [])
-
-  return Request({
-    type: 'sink',
-    method: 'answerInlineQuery',
-    options: defaults(
-      {
-        inline_query_id: defaultTo(path(['inline_query', 'id'], update)),
-        results: compose(JSON.stringify, updateResults)
-      },
-      isArrayLike(options) ? {results: options} : options)
-  })
-})
-
-export let answerCallbackQuery = curryN(2, (options = {}, update: Update) => Request({
+export let forwardMessage = curryN(2, (options = {}, update: Update) => Request({
   type: 'sink',
-  method: 'answerCallbackQuery',
-  options: defaults({
-    callback_query_id: defaultTo(path(['callback_query', 'id'], update))
-  })
+  method: 'forwardMessage',
+  options: defaults(
+    {
+      from_chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+      message_id: defaultTo(path(['message', 'message_id'], update))
+    },
+    is(Number, options) ? {chat_id: options} : options)
 }))
 
-export let setWebhook = (options = {}) => Request({
-  type: 'sink',
-  method: 'setWebhook',
-  options
-})
-
-export let forwardMessage = curryN(2, ({
-  chat_id,
-  from_chat_id,
-  disable_notification = null,
-  message_id
-}: SinkPayload, update: Update) => {
-  let options = {
-    chat_id,
-    from_chat_id,
-    disable_notification,
-    message_id
-  }
-  return Request({
-    type: 'sink',
-    method: 'forwardMessage',
-    options
-  })
-})
+/* tslint:disable:variable-name */
 
 export let sendPhoto = curryN(2, ({
   chat_id,
@@ -99,7 +73,7 @@ export let sendPhoto = curryN(2, ({
   caption = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -111,8 +85,14 @@ export let sendPhoto = curryN(2, ({
   }
   return Request({
     type: 'sink',
+    multipart: true,
     method: 'sendPhoto',
-    options
+    options: defaults(
+      {
+        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        reply_markup: JSON.stringify
+      },
+      options)
   })
 })
 
@@ -124,7 +104,7 @@ export let sendAudio = curryN(2, ({
   title = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -138,8 +118,9 @@ export let sendAudio = curryN(2, ({
   }
   return Request({
     type: 'sink',
+    multipart: true,
     method: 'sendAudio',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -149,7 +130,7 @@ export let sendDocument = curryN(2, ({
   caption = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -161,8 +142,9 @@ export let sendDocument = curryN(2, ({
   }
   return Request({
     type: 'sink',
+    multipart: true,
     method: 'sendDocument',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -171,7 +153,7 @@ export let sendSticker = curryN(2, ({
   sticker,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -182,8 +164,9 @@ export let sendSticker = curryN(2, ({
   }
   return Request({
     type: 'sink',
+    multipart: true,
     method: 'sendSticker',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -196,7 +179,7 @@ export let sendVideo = curryN(2, ({
   caption = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -211,8 +194,9 @@ export let sendVideo = curryN(2, ({
   }
   return Request({
     type: 'sink',
+    multipart: true,
     method: 'sendVideo',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -222,7 +206,7 @@ export let sendVoice = curryN(2, ({
   duration = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -234,8 +218,9 @@ export let sendVoice = curryN(2, ({
   }
   return Request({
     type: 'sink',
+    multipart: true,
     method: 'sendVoice',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -245,7 +230,7 @@ export let sendLocation = curryN(2, ({
   longitude,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -258,7 +243,7 @@ export let sendLocation = curryN(2, ({
   return Request({
     type: 'sink',
     method: 'sendLocation',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -271,7 +256,7 @@ export let sendVenue = curryN(2, ({
   foursquare_id = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -287,7 +272,7 @@ export let sendVenue = curryN(2, ({
   return Request({
     type: 'sink',
     method: 'sendVenue',
-    options
+    options: defaults({ reply_markup: JSON.stringify }, options)
   })
 })
 
@@ -298,7 +283,7 @@ export let sendContact = curryN(2, ({
   last_name = null,
   disable_notification = null,
   reply_to_message_id = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
@@ -312,6 +297,18 @@ export let sendContact = curryN(2, ({
   return Request({
     type: 'sink',
     method: 'sendContact',
+    options: defaults({ reply_markup: JSON.stringify }, options)
+  })
+})
+
+export let sendChatAction = curryN(2, ({ chat_id, action }: SinkPayload, update: Update) => {
+  let options = {
+    chat_id,
+    action
+  }
+  return Request({
+    type: 'sink',
+    method: 'sendChatAction',
     options
   })
 })
@@ -333,7 +330,7 @@ export let getUserProfilePhotos = curryN(2, ({
   })
 })
 
-export let getFile = curryN(2, ({ file_id }, update) => {
+export let getFile = curryN(2, ({ file_id }: SinkPayload, update: Update) => {
   let options = {
     file_id
   }
@@ -344,7 +341,19 @@ export let getFile = curryN(2, ({ file_id }, update) => {
   })
 })
 
-export let leaveChat = curryN(2, ({ chat_id }, update) => {
+export let kickChatMember = curryN(2, ({ chat_id, user_id }: SinkPayload, update: Update) => {
+  let options = {
+    chat_id,
+    user_id
+  }
+  return Request({
+    type: 'sink',
+    method: 'kickChatMember',
+    options
+  })
+})
+
+export let leaveChat = curryN(2, ({ chat_id }: SinkPayload, update: Update) => {
   let options = {
     chat_id
   }
@@ -355,7 +364,7 @@ export let leaveChat = curryN(2, ({ chat_id }, update) => {
   })
 })
 
-export let unbanChatMember = curryN(2, ({ chat_id, user_id }, update) => {
+export let unbanChatMember = curryN(2, ({ chat_id, user_id }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
     user_id
@@ -367,7 +376,7 @@ export let unbanChatMember = curryN(2, ({ chat_id, user_id }, update) => {
   })
 })
 
-export let getChat = curryN(2, ({ chat_id }, update) => {
+export let getChat = curryN(2, ({ chat_id }: SinkPayload, update: Update) => {
   let options = {
     chat_id
   }
@@ -378,7 +387,7 @@ export let getChat = curryN(2, ({ chat_id }, update) => {
   })
 })
 
-export let getChatAdministrators = curryN(2, ({ chat_id }, update) => {
+export let getChatAdministrators = curryN(2, ({ chat_id }: SinkPayload, update: Update) => {
   let options = {
     chat_id
   }
@@ -389,7 +398,7 @@ export let getChatAdministrators = curryN(2, ({ chat_id }, update) => {
   })
 })
 
-export let getChatMembersCount = curryN(2, ({ chat_id }, update) => {
+export let getChatMembersCount = curryN(2, ({ chat_id }: SinkPayload, update: Update) => {
   let options = {
     chat_id
   }
@@ -400,7 +409,7 @@ export let getChatMembersCount = curryN(2, ({ chat_id }, update) => {
   })
 })
 
-export let getChatMember = curryN(2, ({ chat_id, user_id }, update) => {
+export let getChatMember = curryN(2, ({ chat_id, user_id }: SinkPayload, update: Update) => {
   let options = {
     chat_id,
     user_id
@@ -412,20 +421,30 @@ export let getChatMember = curryN(2, ({ chat_id, user_id }, update) => {
   })
 })
 
-export let editMessageText = curryN(2, (options = {}, update) => Request({
+export let answerCallbackQuery = curryN(2, (options = {}, update: Update) => Request({
+  type: 'sink',
+  method: 'answerCallbackQuery',
+  options: defaults(
+    { callback_query_id: defaultTo(path(['callback_query', 'id'], update)) },
+    options)
+}))
+
+export let editMessageText = curryN(2, (options = {}, update: Update) => Request({
   type: 'sink',
   method: 'editMessageText',
-  options: defaults({
-    chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-    message_id: defaultTo(path(['message', 'message_id'], update)),
-    text: defaultTo('Null-catch: no text provided'),
-    reply_markup: JSON.stringify
-  }, options)
+  options: defaults(
+    {
+      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+      message_id: defaultTo(path(['message', 'message_id'], update)),
+      text: defaultTo('Null-catch: no text provided'),
+      reply_markup: JSON.stringify
+    },
+    options)
 }))
 
 export let editMessageCaption = curryN(2, ({
   caption = null,
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     caption,
@@ -434,12 +453,18 @@ export let editMessageCaption = curryN(2, ({
   return Request({
     type: 'sink',
     method: 'editMessageCaption',
-    options
+    options: defaults(
+      {
+        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        message_id: defaultTo(path(['message', 'message_id'], update)),
+        reply_markup: JSON.stringify
+      },
+      options)
   })
 })
 
 export let editMessageReplyMarkup = curryN(2, ({
-  reply_markup = null
+  reply_markup = {}
 }: SinkPayload, update: Update) => {
   let options = {
     reply_markup
@@ -447,6 +472,29 @@ export let editMessageReplyMarkup = curryN(2, ({
   return Request({
     type: 'sink',
     method: 'editMessageReplyMarkup',
-    options
+    options: defaults(
+      {
+        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        message_id: defaultTo(path(['message', 'message_id'], update)),
+        reply_markup: JSON.stringify
+      },
+      options)
+  })
+})
+
+export let answerInlineQuery = curryN(2, (options = {}, update: Update) => {
+  let updateResults = (results: any[]) => results[0].id ? results : map(
+    answer => assoc('id', Math.random().toString(36).substring(2), answer),
+    results || [])
+
+  return Request({
+    type: 'sink',
+    method: 'answerInlineQuery',
+    options: defaults(
+      {
+        inline_query_id: defaultTo(path(['inline_query', 'id'], update)),
+        results: compose(JSON.stringify, updateResults)
+      },
+      isArrayLike(options) ? {results: options} : options)
   })
 })
