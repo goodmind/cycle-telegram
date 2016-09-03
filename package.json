@@ -17,11 +17,12 @@
   },
   "scripts": {
     "clean": "rm -rf lib/ && mkdir -p lib && typings install",
+    "prebuild": "npm run tslint",
     "build": "tsc",
     "build:watch": "tsc -w",
-    "tslint": "tslint 'src/**/*.ts'",
+    "tslint": "tslint 'src/**/*.ts'; tslint 'test/**/*.ts' --exclude 'test/**/*.d.ts'",
     "test": "ts-node --project test/ test/ | tap-spec",
-    "test:record": "ts-node test/integration/record.js | tap-spec",
+    "test:record": "NOCK_BACK_MODE=record ts-node --project test/ test/ | tap-spec",
     "prepublish": "npm run clean && npm run build",
     "preversion": "npm run test",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
@@ -34,24 +35,20 @@
     "ramda": "^0.22.1",
     "rx": "^4.1.0",
     "superagent": "^2.0.0-alpha.3",
-    "tcomb": "^3.2.6"
+    "tcomb": "^3.2.13"
   },
   "devDependencies": {
     "@cycle/core": "^7.0.0",
     "@types/tape": "^4.2.27",
-    "babel-cli": "^6.14.0",
-    "babel-plugin-transform-function-bind": "^6.8.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-register": "^6.14.0",
     "semantic-release": "^4.3.5",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
-    "tape-nock": "^1.2.1",
+    "tape-nock": "^1.2.3",
     "ts-node": "^1.3.0",
     "tslint": "^3.15.0-dev.0",
     "tslint-config-standard": "^1.3.0",
     "typescript": "^2.1.0-dev.20160822",
-    "typings": "^1.3.2"
+    "typings": "^1.3.3"
   },
   "repository": {
     "type": "git",
