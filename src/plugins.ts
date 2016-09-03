@@ -3,7 +3,7 @@ import {
   UpdateInlineQuery,
   getEntityFirst
 } from './telegram-driver'
-import { Update } from './interfaces'
+import { TcombUpdate, TcombUpdateMessage, TcombUpdateInlineQuery } from './runtime-types/types'
 import { map, when, isEmpty, curryN, match, find, filter, not, isNil, compose, merge, prop, last, test } from 'ramda'
 
 import { Observable } from 'rx'
@@ -11,15 +11,15 @@ import isolate from '@cycle/isolate'
 import * as t from 'tcomb'
 
 const UpdateMessageCommand =
-  t.refinement(
+  t.refinement<TcombUpdateMessage>(
     UpdateMessage,
     compose(not, isNil, getEntityFirst('bot_command')),
     'UpdateMessageCommand')
 
 const UpdateMessageText =
-  t.refinement(
+  t.refinement<TcombUpdateMessage>(
     UpdateMessage,
-    compose(not, isNil, (u: Update) => u.message.text),
+    compose(not, isNil, (u: TcombUpdateMessage) => u.message.text),
     'UpdateMessageText')
 
 export interface ComponentSources {
@@ -27,7 +27,7 @@ export interface ComponentSources {
 }
 
 export type ComponentSinks = { [driverName: string]: Observable<any> } | void
-export type Component = (sources: ComponentSources, update: Update) => ComponentSinks
+export type Component = (sources: ComponentSources, update: TcombUpdate) => ComponentSinks
 type CurriedToComponent = (plugins: Plugin[], sources: ComponentSources) => ComponentSinks[]
 
 export interface Plugin {
@@ -42,11 +42,11 @@ interface PluginProps {
   props: any[]
 }
 
-let getQuery = (update: Update): string | null => t.match(
+let getQuery = (update: TcombUpdate): string | null => t.match(
   update,
-  UpdateMessageCommand, (u) => u.message.text.substr(getEntityFirst('bot_command', u).offset),
-  UpdateMessageText, (u) => update.message.text,
-  UpdateInlineQuery, (u) => update.inline_query.query,
+  UpdateMessageCommand, (u: TcombUpdateMessage) => u.message.text.substr(getEntityFirst('bot_command', u).offset),
+  UpdateMessageText, (u: TcombUpdateMessage) => update.message.text,
+  UpdateInlineQuery, (u: TcombUpdateInlineQuery) => update.inline_query.query,
   t.Any, () => null)
 
 let matchPattern =
@@ -65,7 +65,7 @@ let toProps =
 
 let toIsolate =
   curryN(3, (
-    update: Update,
+    update: TcombUpdate,
     sources: ComponentSources,
     {plugin, props}: PluginProps
   ): ComponentSinks => isolate(plugin.component)(
@@ -73,7 +73,12 @@ let toIsolate =
     update))
 
 let isolatePlugin =
-  curryN(4, (update: Update, sources: ComponentSources, query: string, plugin: Plugin): ComponentSinks => toIsolate(
+  curryN(4, (
+    update: TcombUpdate,
+    sources: ComponentSources,
+    query: string,
+    plugin: Plugin
+  ): ComponentSinks => toIsolate(
     update,
     sources,
     toProps(query, plugin)))
@@ -81,7 +86,7 @@ let isolatePlugin =
 let transform =
   (plugins: Plugin[],
    sources: ComponentSources,
-   update: Update,
+   update: TcombUpdate,
    pluginNotFound: Plugin): ComponentSinks[] => map<Plugin, ComponentSinks>(
     isolatePlugin(update, sources, getQuery(update)),
     when(
@@ -91,7 +96,7 @@ let transform =
 
 let makeComponentSelector =
   curryN(4, (f: (query: string, plugins: Plugin[]) => Plugin[],
-   update: Update,
+   update: TcombUpdate,
    plugins: Plugin[],
    sources: ComponentSources): ComponentSinks[] => when(isNil, () => [], transform(
     f(getQuery(update), plugins),
@@ -99,30 +104,30 @@ let makeComponentSelector =
     update,
     last(plugins))))
 
-let toComponents: (u: Update) =>
+let toComponents: (u: TcombUpdate) =>
   (plugins: Plugin[], sources: ComponentSources) =>
     ComponentSinks[] = makeComponentSelector(
   (query: string, plugins: Plugin[]) =>
     filter(testPattern(query), plugins))
 
-let toComponent: (u: Update) =>
+let toComponent: (u: TcombUpdate) =>
   (plugins: Plugin[], sources: ComponentSources) =>
     ComponentSinks[] = makeComponentSelector(
   (query: string, plugins: Plugin[]) =>
     [find(testPattern(query), plugins)])
 
 export function matchWith (
-  this: Observable<Update>,
+  this: Observable<TcombUpdate>,
   plugins: Plugin[],
   sources: ComponentSources,
   {dupe = true} = {dupe: true}
 ): Observable<ComponentSinks> {
   return this
-    .map((u: Update) => dupe ? toComponents(u) : toComponent(u))
+    .map((u: TcombUpdate) => dupe ? toComponents(u) : toComponent(u))
     .flatMap((f: CurriedToComponent) => f(plugins, sources))
     .filter(prop('bot'))
 }
 
-export function matchStream (observable: Observable<Update>, ...args: any[]) {
+export function matchStream (observable: Observable<TcombUpdate>, ...args: any[]) {
   return matchWith.apply(observable, args)
 }
