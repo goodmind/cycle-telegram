@@ -3,9 +3,11 @@ import { run } from '@cycle/core'
 
 import express from 'express'
 import bodyParser from 'body-parser'
-import { makeRouterDriver} from 'cycle-express'
+import { makeRouterDriver } from 'cycle-express'
 import { Update, makeTelegramDriver, reply, webhook, setWebhook } from 'cycle-telegram'
 import { prop } from 'ramda'
+
+const ACCESS_TOKEN = process.env['ACCESS_TOKEN'] || '<YOUR_TOKEN_HERE>'
 
 let createServer = (router, token) => {
   return router.post(`/${token}/updates`)
@@ -28,7 +30,7 @@ let main = ({bot, router}) => {
     server: createServer(router, bot.token)
       .share(),
     
-    uptime: bot.observable
+    uptime: bot.updates
       .first()
       .share(),
     
@@ -72,6 +74,6 @@ var server = app.listen(app.get('port'), () => {
 
 run(main, {
   router: makeRouterDriver(router),
-  bot: makeTelegramDriver('<YOUR_TOKEN_HERE>', { webhook: true }),
+  bot: makeTelegramDriver(ACCESS_TOKEN, { webhook: true }),
   log: (m) => m.forEach(::console.log)
 })
