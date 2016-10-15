@@ -35,7 +35,7 @@ let okTake = (t: tape.Test, sources: Sources, next: Function, error = onError(so
   sources.bot.responses
     .take(1)
     .subscribe({
-      next (m: any)  {
+      next (m: any) {
         sources.bot.dispose()
         next(m)
       },
