@@ -41,6 +41,7 @@ let okTake = (t: tape.Test, sources: Sources, next: Function, error = onError(so
       },
       error,
       complete () {
+        // stub
       }
     })
 }
