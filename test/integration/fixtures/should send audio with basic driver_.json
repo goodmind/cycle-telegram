@@ -1,0 +1,43 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendAudio",
+        "body": "*",
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5020,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group"
+                },
+                "date": 1472895286,
+                "voice": {
+                    "duration": 0,
+                    "mime_type": "audio/ogg",
+                    "file_id": "AwADAgADDgADGcN2DGsOZNWHp8QdAg",
+                    "file_size": 1857805
+                }
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:46 GMT",
+            "content-type": "application/json",
+            "content-length": "317",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

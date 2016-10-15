@@ -4,64 +4,38 @@
         "method": "POST",
         "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
         "body": {
-            "offset": 0
-        },
-        "status": 200,
-        "response": {
-            "ok": true,
-            "result": []
-        },
-        "headers": {
-            "server": "nginx/1.10.0",
-            "date": "Fri, 27 May 2016 09:24:40 GMT",
-            "content-type": "application/json",
-            "content-length": "392",
-            "connection": "close",
-            "access-control-allow-origin": "*",
-            "access-control-allow-methods": "GET, POST, OPTIONS",
-            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
-            "strict-transport-security": "max-age=31536000; includeSubdomains"
-        }
-    },
-    {
-        "scope": "https://api.telegram.org:443",
-        "method": "POST",
-        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
-        "body": {
-            "offset": 1
+            "offset": 0,
+            "timeout": 60000
         },
         "status": 200,
         "response": {
             "ok": true,
             "result": [
                 {
-                    "update_id": 484444974,
+                    "update_id": 384712963,
                     "message": {
-                        "message_id": 784,
+                        "message_id": 5016,
                         "from": {
                             "id": 39759851,
-                            "first_name": "andretshurotshka",
-                            "last_name": "🌲",
+                            "first_name": "andretshurotshka!",
                             "username": "goodmind"
                         },
                         "chat": {
-                            "id": 39759851,
-                            "first_name": "andretshurotshka",
-                            "last_name": "🌲",
-                            "username": "goodmind",
-                            "type": "private"
+                            "id": -175523088,
+                            "title": "cycle-telegram recording",
+                            "type": "group"
                         },
-                        "date": 1464342407.44,
-                        "text": "hi"
+                        "date": 1472895283,
+                        "text": "sas"
                     }
                 }
             ]
         },
         "headers": {
             "server": "nginx/1.10.0",
-            "date": "Fri, 27 May 2016 09:24:56 GMT",
+            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
             "content-type": "application/json",
-            "content-length": "331",
+            "content-length": "261",
             "connection": "close",
             "access-control-allow-origin": "*",
             "access-control-allow-methods": "GET, POST, OPTIONS",
@@ -74,7 +48,8 @@
         "method": "POST",
         "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
         "body": {
-            "offset": 484444975
+            "offset": 384712964,
+            "timeout": 60000
         },
         "status": 200,
         "response": {
@@ -83,9 +58,9 @@
         },
         "headers": {
             "server": "nginx/1.10.0",
-            "date": "Fri, 27 May 2016 09:24:57 GMT",
+            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
             "content-type": "application/json",
-            "content-length": "23",
+            "content-length": "261",
             "connection": "close",
             "access-control-allow-origin": "*",
             "access-control-allow-methods": "GET, POST, OPTIONS",
@@ -98,54 +73,49 @@
         "method": "POST",
         "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
         "body": {
-            "chat_id": 39759851,
-            "reply_to_message_id": 784,
+            "chat_id": -175523088,
+            "reply_to_message_id": 5016,
             "text": "Cycle.js"
         },
         "status": 200,
         "response": {
             "ok": true,
             "result": {
-                "message_id": 785,
+                "message_id": 5017,
                 "from": {
                     "id": 209109785,
                     "first_name": "Cycle.js",
                     "username": "cyclejs_bot"
                 },
                 "chat": {
-                    "id": 39759851,
-                    "first_name": "andretshurotshka",
-                    "last_name": "🌲",
-                    "username": "goodmind",
-                    "type": "private"
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group"
                 },
-                "date": 1464341097,
+                "date": 1472895283,
                 "reply_to_message": {
-                    "message_id": 784,
+                    "message_id": 5016,
                     "from": {
                         "id": 39759851,
-                        "first_name": "andretshurotshka",
-                        "last_name": "🌲",
+                        "first_name": "andretshurotshka!",
                         "username": "goodmind"
                     },
                     "chat": {
-                        "id": 39759851,
-                        "first_name": "andretshurotshka",
-                        "last_name": "🌲",
-                        "username": "goodmind",
-                        "type": "private"
+                        "id": -175523088,
+                        "title": "cycle-telegram recording",
+                        "type": "group"
                     },
-                    "date": 1464341096,
-                    "text": "hi"
+                    "date": 1472895283,
+                    "text": "sas"
                 },
                 "text": "Cycle.js"
             }
         },
         "headers": {
             "server": "nginx/1.10.0",
-            "date": "Fri, 27 May 2016 09:24:57 GMT",
+            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
             "content-type": "application/json",
-            "content-length": "562",
+            "content-length": "447",
             "connection": "close",
             "access-control-allow-origin": "*",
             "access-control-allow-methods": "GET, POST, OPTIONS",

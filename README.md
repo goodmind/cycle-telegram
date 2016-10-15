@@ -1,28 +1,40 @@
 # Cycle Telegram Driver
 
-[![Join the chat](https://img.shields.io/badge/chat-on_telegram-blue.svg)](https://telegram.me/cyclejs) [![Join the chat at https://gitter.im/goodmind/cycle-telegram](https://badges.gitter.im/goodmind/cycle-telegram.svg)](https://gitter.im/goodmind/cycle-telegram?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+<div align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png" width="200">
+  <br>
+  <br>
+</div>
 
-A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for [Telegram](https://telegram.org/)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](http://standardjs.com/)
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![npm version](https://img.shields.io/npm/v/cycle-telegram.svg?style=flat-square)](https://badge.fury.io/js/cycle-telegram)
+[![Dependency Status](https://img.shields.io/david/goodmind/cycle-telegram.svg?style=flat-square)](https://david-dm.org/goodmind/cycle-telegram)
+[![devDependency Status](https://img.shields.io/david/dev/goodmind/cycle-telegram.svg?style=flat-square)](https://david-dm.org/goodmind/cycle-telegram#info=devDependencies)
 
-![Telegram](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/240px-Telegram_logo.svg.png)
+> A  [Cycle.js](http://cycle.js.org) [Driver](http://cycle.js.org/drivers.html) for [Telegram](https://telegram.org/)
 
+## Install
 ```
-npm install cycle-telegram
+npm install cycle-telegram --save
 ```
 
-[![npm version](https://badge.fury.io/js/cycle-telegram.svg)](https://badge.fury.io/js/cycle-telegram)
+## Usage
 
-## Examples
 * [Long polling](https://github.com/goodmind/cycle-telegram/blob/master/example/index.js)
 * [Web hook](https://github.com/goodmind/cycle-telegram/blob/master/example/index-webhook.js)
 
-## Built with Cycle Telegram
+## Examples
 
 * [@cyclejs_bot](https://telegram.me/cyclejs_bot) — [source](https://github.com/goodmind/cycle-telegram-bot)
 * [@tryhaskell_bot](https://telegram.me/tryhaskell_bot) - [source](https://github.com/goodmind/tryhaskell-bot)
 
+## Contribute
 
-- - -
+PRs accepted
 
-[![Dependency Status](https://david-dm.org/goodmind/cycle-telegram.svg)](https://david-dm.org/goodmind/cycle-telegram)
-[![devDependency Status](https://david-dm.org/goodmind/cycle-telegram/dev-status.svg)](https://david-dm.org/goodmind/cycle-telegram#info=devDependencies)
+Note: If you had questions ask them [in my telegram](https://telegram.me/goodmind)
+
+## License
+
+MIT (c) Goodmind

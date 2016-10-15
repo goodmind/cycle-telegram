@@ -1,9 +1,0 @@
-{
-  "sourceMaps": "inline",
-  "presets": [
-    "es2015"
-  ],
-  "plugins": [
-    "transform-function-bind"
-  ]
-}

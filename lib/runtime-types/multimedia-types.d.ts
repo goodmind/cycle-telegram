@@ -1,0 +1,12 @@
+import * as t from 'tcomb';
+export declare const PhotoSize: t.Struct<{}>;
+export declare const Audio: t.Struct<{}>;
+export declare const Document: t.Struct<{}>;
+export declare const Sticker: t.Struct<{}>;
+export declare const Video: t.Struct<{}>;
+export declare const Voice: t.Struct<{}>;
+export declare const Contact: t.Struct<{}>;
+export declare const Location: t.Struct<{}>;
+export declare const Venue: t.Struct<{}>;
+export declare const UserProfilePhotos: t.Struct<{}>;
+export declare const File: t.Struct<{}>;
