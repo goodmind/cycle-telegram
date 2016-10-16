@@ -23,6 +23,12 @@ export let setWebhook = (options = {}) => Request({
   options
 })
 
+export let getWebhookInfo = (options = {}) => Request({
+  type: 'sink',
+  method: 'getWebhookInfo',
+  options
+})
+
 export let getMe = (options = {}) => Request({
   type: 'sink',
   method: 'getMe',
