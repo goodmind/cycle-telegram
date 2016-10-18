@@ -1,5 +1,4 @@
 /// <reference path="../../../rx-typings.d.ts" />
-
 import {
   makeTelegramDriver,
   reply,
@@ -8,7 +7,12 @@ import {
   entityIs,
   DriverExecution
 } from '../../../lib/index'
+import {
+  Message,
+  TcombMessage
+} from '../../../lib/index'
 import { matchStream, Plugin } from '../../../lib/plugins'
+import { OkTakeFn, OnErrorFn } from '../../interfaces'
 
 import * as path from 'path'
 import * as tape from 'tape'
@@ -21,19 +25,32 @@ interface Sources {
   bot: DriverExecution
 }
 
-let isRecord = process.env['NOCK_BACK_MODE'] === 'record'
-let onError = (sources: Sources, t: tape.Test) => (err: any) => {
+const isRecord = process.env['NOCK_BACK_MODE'] === 'record'
+const FIXTURES_WRITE_PATH = path.join(__dirname, '..', isRecord ? 'record-fixtures' : 'fixtures')
+const test = tapeNock(tape, {
+  fixtures: FIXTURES_WRITE_PATH,
+  mode: isRecord ? 'record' : 'lockdown'
+})
+const ACCESS_TOKEN = isRecord ? process.env['ACCESS_TOKEN'] : '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+
+const onError: OnErrorFn<Sources> = (sources, t) => (err) => {
   sources.bot.dispose()
+  console.error('test error: ', err)
   t.fail(err)
   t.end()
 }
-
-let test = tapeNock(tape, {
-  fixtures: path.join(__dirname, '..', isRecord ? 'record-fixtures' : 'record-fixtures'),
-  mode: isRecord ? 'record' : 'lockdown'
-})
-
-const ACCESS_TOKEN = isRecord ? process.env['ACCESS_TOKEN'] : '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+const okTake: OkTakeFn<Sources> = <T>(t, sources, next, error = onError(sources, t)) => {
+  sources.bot.responses
+    .take(1)
+    .subscribe(
+      (m: T) => {
+        sources.bot.dispose()
+        next(m)
+      },
+      error,
+      () => undefined
+    )
+}
 
 test('should reply to command `/help` with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1472895279 * 1000 })
@@ -62,19 +79,15 @@ test('should reply to command `/help` with basic driver', t => {
   let { sources, run } = Cycle(main, { bot: basicDriver })
 
   run()
-  sources.bot.responses
-    .take(1)
-    .do(() => sources.bot.dispose())
-    .subscribe(
-      (message: any) => {
-        t.ok(
-          /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/.test(message.reply_to_message.text),
-          'reply to message text should match `/help` command pattern')
-        t.equal(
-          message.text,
-          'Cycle Telegram v1.1.1 (https://git.io/vrs3P)',
-          'message text should be equal to `Cycle Telegram v1.1.1 (https://git.io/vrs3P)`')
-        t.end()
-      },
-      onError(sources, t))
+  okTake<TcombMessage>(t, sources, (message) => {
+    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+    t.ok(
+      /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/.test(message.reply_to_message.text),
+      'reply to message text should match `/help` command pattern')
+    t.equal(
+      message.text,
+      'Cycle Telegram v1.1.1 (https://git.io/vrs3P)',
+      'message text should be equal to `Cycle Telegram v1.1.1 (https://git.io/vrs3P)`')
+    t.end()
+  })
 })
