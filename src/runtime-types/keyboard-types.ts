@@ -1,4 +1,5 @@
 import * as t from 'tcomb'
+import { TcombCallbackGame, CallbackGame } from './types'
 
 export const KeyboardButton = t.struct<TcombKeyboardButton>({
   text: t.String,
@@ -37,6 +38,7 @@ export const InlineKeyboardButton = t.struct<TcombInlineKeyboardButton>({
   text: t.String,
   url: t.maybe(t.String),
   callback_data: t.maybe(t.String),
+  callback_game: t.maybe(CallbackGame),
   switch_inline_query: t.maybe(t.String),
   switch_inline_query_current_chat: t.maybe(t.String)
 })
@@ -44,6 +46,7 @@ export interface TcombInlineKeyboardButton {
   text: string
   url?: string
   callback_data?: string
+  callback_game?: TcombCallbackGame
   switch_inline_query?: string
   switch_inline_query_current_chat?: string
 }
