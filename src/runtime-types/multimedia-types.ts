@@ -45,11 +45,27 @@ export interface TcombDocument {
   file_size?: number
 }
 
+export const Animation = t.struct<TcombAnimation>({
+  file_id: t.String,
+  thumb: t.maybe(PhotoSize),
+  file_name: t.maybe(t.String),
+  mime_type: t.maybe(t.String),
+  file_size: t.maybe(t.Number)
+})
+export interface TcombAnimation {
+  file_id: string
+  thumb?: TcombPhotoSize
+  file_name?: string
+  mime_type?: string
+  file_size?: number
+}
+
 export const Sticker = t.struct<TcombSticker>({
   file_id: t.String,
   width: t.Number,
   height: t.Number,
   thumb: t.maybe(PhotoSize),
+  emoji: t.maybe(t.String),
   file_size: t.maybe(t.Number)
 })
 export interface TcombSticker {
@@ -57,6 +73,7 @@ export interface TcombSticker {
   width: number
   height: number
   thumb?: TcombPhotoSize
+  emoji?: string
   file_size?: number
 }
 
