@@ -30,3 +30,6 @@ export declare let editMessageText: Function;
 export declare let editMessageCaption: Function;
 export declare let editMessageReplyMarkup: Function;
 export declare let answerInlineQuery: Function;
+export declare let sendGame: Function;
+export declare let setGameScore: Function;
+export declare let getGameHighScores: Function;

@@ -756,10 +756,10 @@ test('should get game high scores with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN)
   let main = () => ({
     bot: $.from([
-      $.just(getGameHighScores({
-        user_id: 1,
-        chat_id: 1
-      }, {}))
+      $.just(
+        getGameHighScores(
+          { user_id: 1, chat_id: 1 },
+          {}))
     ])
   })
   let { sources, run } = Cycle(main, { bot: basicDriver })
