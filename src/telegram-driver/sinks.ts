@@ -504,3 +504,27 @@ export let answerInlineQuery = curryN(2, (options = {}, update: Update) => {
       isArrayLike(options) ? {results: options} : options)
   })
 })
+
+export let sendGame = curryN(2, (options: SinkPayload = {}, update: Update) => {
+  return Request({
+    type: 'sink',
+    method: 'sendGame',
+    options
+  })
+})
+
+export let setGameScore = curryN(2, (options: SinkPayload = {}, update: Update) => {
+  return Request({
+    type: 'sink',
+    method: 'setGameScore',
+    options
+  })
+})
+
+export let getGameHighScores = curryN(2, (options: SinkPayload = {}, update: Update) => {
+  return Request({
+    type: 'sink',
+    method: 'getGameHighScores',
+    options
+  })
+})
