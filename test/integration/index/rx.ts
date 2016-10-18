@@ -30,6 +30,9 @@ import {
   editMessageCaption,
   editMessageReplyMarkup,
   answerInlineQuery,
+  sendGame,
+  setGameScore,
+  getGameHighScores,
   DriverExecution
 } from '../../../lib/index'
 import {
@@ -42,7 +45,9 @@ import {
   Chat,
   TcombChat,
   ChatMember,
-  TcombChatMember
+  TcombChatMember,
+  GameHighScore,
+  TcombGameHighScore
 } from '../../../lib/index'
 import {
   UserProfilePhotos,
@@ -660,10 +665,6 @@ test('should edit message reply markup with basic driver', t => {
 
   run()
   okDrop<TcombMessage | boolean>(t, sources, (message) => {
-    if (typeof message !== 'boolean') {
-      t.ok(Message.is(Message(message)), 'message satisfies typecheck')
-      t.equal(message.text, 'Message with reply_markup')
-    }
     t.end()
   })
 })
@@ -708,6 +709,64 @@ test('should leave chat with basic driver', t => {
   run()
   okTake<boolean>(t, sources, (bool) => {
     t.equal(bool, true, 'bool should be true')
+    t.end()
+  })
+})
+
+// Games
+
+test('should send game with basic driver', t => {
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { skipUpdates: true })
+  let main = () => ({
+    bot: $.from([
+      $.just(sendGame(
+        { chat_id: GROUP_ID,
+          game_short_name: 'test' },
+        {}))
+    ])
+  })
+  let { sources, run } = Cycle(main, { bot: basicDriver })
+
+  run()
+  okTake<TcombMessage>(t, sources, (message) => {
+    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+    t.end()
+  })
+})
+
+test('should set game score with basic driver', t => {
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN)
+  let main = () => ({
+    bot: $.from([
+      $.just(setGameScore())
+    ])
+  })
+  let { sources, run } = Cycle(main, { bot: basicDriver })
+
+  run()
+  okTake<TcombMessage | boolean>(t, sources, (message) => {
+    if (typeof message !== 'boolean') {
+      t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+    }
+    t.end()
+  })
+})
+
+test('should get game high scores with basic driver', t => {
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN)
+  let main = () => ({
+    bot: $.from([
+      $.just(getGameHighScores({
+        user_id: 1,
+        chat_id: 1
+      }, {}))
+    ])
+  })
+  let { sources, run } = Cycle(main, { bot: basicDriver })
+
+  run()
+  okTake<TcombGameHighScore[]>(t, sources, (gameHighScores) => {
+    t.ok(tc.list(GameHighScore).is(tc.list(GameHighScore)(gameHighScores)), 'game high scores satisfies typecheck')
     t.end()
   })
 })
