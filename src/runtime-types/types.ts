@@ -87,8 +87,8 @@ export interface TcombMessageEntity {
   user?: TcombUser
 }
 
-export const Message = t.declare('Message')
-Message.define(t.struct<TcombMessage>({
+export const Message = t.declare<TcombMessage>('Message')
+Message.define(t.struct({
   message_id: t.Number,
   from: t.maybe(User),
   date: t.Number,
@@ -139,6 +139,7 @@ export interface TcombMessage {
   caption?: string
   contact?: m.TcombContact
   location?: m.TcombLocation
+  venue?: m.TcombVenue
   new_chat_member?: TcombUser
   left_chat_member?: TcombUser
   new_chat_title?: string

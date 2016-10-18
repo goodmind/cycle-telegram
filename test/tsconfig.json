@@ -6,7 +6,7 @@
     "sourceMap": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs",
     "target": "es5",

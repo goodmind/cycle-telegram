@@ -1,10 +1,16 @@
 import * as t from 'tcomb';
+import * as m from './multimedia-types';
 export declare const User: t.Struct<TcombUser>;
 export interface TcombUser {
     id: number;
     first_name: string;
     last_name?: string;
     username?: string;
+}
+export declare const ChatMember: t.Struct<TcombChatMember>;
+export interface TcombChatMember {
+    user: TcombUser;
+    status: 'creator' | 'administrator' | 'member' | 'left' | 'kicked';
 }
 export declare const Chat: t.Struct<TcombChat>;
 export interface TcombChat {
@@ -15,34 +21,39 @@ export interface TcombChat {
     first_name?: string;
     last_name?: string;
 }
-export declare const InputMessageContent: t.Struct<{}>;
-export declare const InlineQueryResult: t.Struct<{}>;
-export declare const InlineQueryResultArticle: t.Struct<{}>;
-export declare const MessageEntity: t.Struct<{}>;
-export declare const Message: t.Declare<{}>;
+export declare const MessageEntity: t.Struct<TcombMessageEntity>;
+export interface TcombMessageEntity {
+    type: 'mention' | 'hashtag' | 'bot_command' | 'url' | 'email' | 'bold' | 'italic' | 'code' | 'pre' | 'text_link' | 'text_mention';
+    offset: number;
+    length: number;
+    url?: string;
+    user?: TcombUser;
+}
+export declare const Message: t.Declare<TcombMessage>;
 export interface TcombMessage {
     message_id: number;
     from?: TcombUser;
     date: number;
     chat: TcombChat;
-    forward_from?: any;
+    forward_from?: TcombUser;
     forward_date?: number;
     reply_to_message?: TcombMessage;
     text?: string;
-    entities?: any[];
-    audio?: any;
-    document?: any;
-    photo?: any[];
-    sticker?: any;
-    video?: any;
-    voice?: any;
+    entities?: TcombMessageEntity[];
+    audio?: m.TcombAudio;
+    document?: m.TcombDocument;
+    photo?: m.TcombPhotoSize[];
+    sticker?: m.TcombSticker;
+    video?: m.TcombVideo;
+    voice?: m.TcombVoice;
     caption?: string;
-    contact?: any;
-    location?: any;
+    contact?: m.TcombContact;
+    location?: m.TcombLocation;
+    venue?: m.TcombVenue;
     new_chat_member?: TcombUser;
     left_chat_member?: TcombUser;
     new_chat_title?: string;
-    new_chat_photo?: any[];
+    new_chat_photo?: m.TcombPhotoSize[];
     delete_chat_photo?: boolean;
     group_chat_created?: boolean;
     supergroup_chat_created?: boolean;
@@ -55,7 +66,7 @@ export declare const InlineQuery: t.Struct<TcombInlineQuery>;
 export interface TcombInlineQuery {
     id: string;
     from: TcombUser;
-    location?: any;
+    location?: m.TcombLocation;
     query: string;
     offset: string;
 }
@@ -63,7 +74,7 @@ export declare const ChosenInlineResult: t.Struct<TcombChosenInlineResult>;
 export interface TcombChosenInlineResult {
     result_id: string;
     from: TcombUser;
-    location?: any;
+    location?: m.TcombLocation;
     inline_message_id?: string;
     query: string;
 }
@@ -73,6 +84,7 @@ export interface TcombCallbackQuery {
     from: TcombUser;
     message?: TcombMessage;
     inline_message_id?: string;
+    chat_instance: string;
     data?: string;
 }
 export declare const Update: t.Struct<TcombUpdate>;
@@ -114,7 +126,16 @@ export interface TcombRequest {
     type: 'sink';
     multipart?: boolean;
     method: string;
+    returnType?: string;
     options: any;
+}
+export declare const WebhookInfo: t.Struct<TcombWebhookInfo>;
+export interface TcombWebhookInfo {
+    url: string;
+    has_custom_certificate: boolean;
+    pending_update_count: number;
+    last_error_date?: number;
+    last_error_message?: string;
 }
 export declare const WebhookResponse: t.Struct<TcombWebhookResponse>;
 export interface TcombWebhookResponse {
