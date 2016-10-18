@@ -100,8 +100,14 @@ export interface TcombInlineQueryResultAudio extends TcombInlineQueryResult {}
 export const InlineQueryResultContact = InlineQueryResult.extend<TcombInlineQueryResultContact>({})
 export interface TcombInlineQueryResultContact extends TcombInlineQueryResult {}
 
-export const InlineQueryResultGame = InlineQueryResult.extend<TcombInlineQueryResultGame>({})
-export interface TcombInlineQueryResultGame extends TcombInlineQueryResult {}
+export const InlineQueryResultGame = InlineQueryResult.extend<TcombInlineQueryResultGame>({
+  type: t.enums.of(['game']),
+  game_short_name: t.String
+})
+export interface TcombInlineQueryResultGame extends TcombInlineQueryResult {
+  type: 'game'
+  game_short_name: string
+}
 
 export const InlineQueryResultDocument = InlineQueryResult.extend<TcombInlineQueryResultDocument>({})
 export interface TcombInlineQueryResultDocument extends TcombInlineQueryResult {}
