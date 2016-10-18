@@ -87,6 +87,17 @@ export interface TcombMessageEntity {
   user?: TcombUser
 }
 
+export const GameHighScore = t.struct<TcombGameHighScore>({
+  position: t.Number,
+  user: User,
+  score: t.Number
+})
+export interface TcombGameHighScore {
+  position: number
+  user: TcombUser
+  score: number
+}
+
 export const Game = t.struct<TcombGame>({
   title: t.String,
   description: t.String,
