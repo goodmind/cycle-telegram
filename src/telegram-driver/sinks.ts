@@ -509,7 +509,12 @@ export let sendGame = curryN(2, (options: SinkPayload = {}, update: Update) => {
   return Request({
     type: 'sink',
     method: 'sendGame',
-    options
+    options: defaults(
+      {
+        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        reply_markup: JSON.stringify
+      },
+      options)
   })
 })
 
@@ -517,7 +522,12 @@ export let setGameScore = curryN(2, (options: SinkPayload = {}, update: Update) 
   return Request({
     type: 'sink',
     method: 'setGameScore',
-    options
+    options: defaults(
+      {
+        user_id: defaultTo(path(['message', 'from', 'id'], update)),
+        chat_id: defaultTo(path(['message', 'chat', 'id'], update))
+      },
+      options)
   })
 })
 
@@ -525,6 +535,11 @@ export let getGameHighScores = curryN(2, (options: SinkPayload = {}, update: Upd
   return Request({
     type: 'sink',
     method: 'getGameHighScores',
-    options
+    options: defaults(
+      {
+        user_id: defaultTo(path(['message', 'from', 'id'], update)),
+        chat_id: defaultTo(path(['message', 'chat', 'id'], update))
+      },
+      options)
   })
 })
