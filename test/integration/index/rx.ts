@@ -46,6 +46,8 @@ import {
   TcombChat,
   ChatMember,
   TcombChatMember,
+  Game,
+  TcombGame,
   GameHighScore,
   TcombGameHighScore
 } from '../../../lib/index'
@@ -66,7 +68,7 @@ import * as tc from 'tcomb'
 
 import Cycle from '@cycle/rx-run'
 import { Observable as $ } from 'rx'
-import { is } from 'ramda'
+import { prop, is } from 'ramda'
 
 interface Sources {
   bot: DriverExecution
@@ -665,6 +667,10 @@ test('should edit message reply markup with basic driver', t => {
 
   run()
   okDrop<TcombMessage | boolean>(t, sources, (message) => {
+    if (typeof message !== 'boolean') {
+      t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+      t.equal(message.text, 'Message with reply_markup')
+    }
     t.end()
   })
 })
@@ -735,37 +741,92 @@ test('should send game with basic driver', t => {
 })
 
 test('should set game score with basic driver', t => {
-  let basicDriver = makeTelegramDriver(ACCESS_TOKEN)
-  let main = () => ({
+  interface MessageUserScore {
+    score: TcombGameHighScore
+    user: TcombUser
+    message: TcombMessage
+  }
+
+  interface MessageUser {
+    user: TcombUser
+    message: TcombMessage
+  }
+
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1477232741000 })
+  let main = ({ bot }: Sources) => ({
     bot: $.from([
-      $.just(setGameScore())
+      $.just(sendGame(
+        { chat_id: GROUP_ID,
+          game_short_name: 'test' },
+        {})),
+
+      bot.events('message')
+        .pluck<TcombUser>('message', 'from')
+        .do(() => bot.dispose())
+        .combineLatest<TcombMessage, MessageUser>(bot.responses.take(1), (user, message) => ({ message, user }))
+        .map(({ message, user }) =>
+          getGameHighScores(
+            { user_id: user.id, message_id: message.message_id },
+            { message })),
+
+      $.combineLatest<any, any, MessageUserScore>(
+        bot.responses
+          .take(1)
+          .combineLatest(bot.events('message').do(() => bot.dispose()).pluck('message', 'from')),
+        bot.responses
+          .skip(1)
+          .filter(Array.isArray)
+          .flatMap($.from),
+        ([message, user], score) => ({ message, user, score }))
+        .filter(({user, score}) => user.id === score.user.id)
+        .map(({ score: { score }, user, message }) =>
+          setGameScore(
+            { score: score + 1, user_id: user.id, message_id: message.message_id },
+            { message })),
+
+      bot.responses
+        .skip(1)
+        .filter(prop('game'))
+        .pluck('game')
+        .do((game: TcombGame) => {
+          bot.dispose()
+          t.ok(Game.is(Game(game)), 'game satisfies typecheck')
+          t.end()
+        })
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { run } = Cycle(main, { bot: basicDriver })
 
   run()
-  okTake<TcombMessage | boolean>(t, sources, (message) => {
-    if (typeof message !== 'boolean') {
-      t.ok(Message.is(Message(message)), 'message satisfies typecheck')
-    }
-    t.end()
-  })
 })
 
 test('should get game high scores with basic driver', t => {
-  let basicDriver = makeTelegramDriver(ACCESS_TOKEN)
-  let main = () => ({
+  interface MessageUser {
+    user: TcombUser
+    message: TcombMessage
+  }
+
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1477232741000 })
+  let main = ({ bot }: Sources) => ({
     bot: $.from([
-      $.just(
-        getGameHighScores(
-          { user_id: 1, chat_id: 1 },
-          {}))
+      $.just(sendGame(
+        { chat_id: GROUP_ID,
+          game_short_name: 'test' },
+        {})),
+      bot.events('message')
+        .pluck<TcombUser>('message', 'from')
+        .do(() => bot.dispose())
+        .combineLatest<TcombMessage, MessageUser>(bot.responses.take(1), (user, message) => ({ message, user }))
+        .map(({ message, user }) =>
+          getGameHighScores(
+            { user_id: user.id, message_id: message.message_id },
+            { message }))
     ])
   })
   let { sources, run } = Cycle(main, { bot: basicDriver })
 
   run()
-  okTake<TcombGameHighScore[]>(t, sources, (gameHighScores) => {
+  okDrop<TcombGameHighScore[]>(t, sources, (gameHighScores) => {
     t.ok(tc.list(GameHighScore).is(tc.list(GameHighScore)(gameHighScores)), 'game high scores satisfies typecheck')
     t.end()
   })
