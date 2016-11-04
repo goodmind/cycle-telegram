@@ -19,6 +19,7 @@
   },
   "files": [
     "typings/index.d.ts",
+    "custom-typings/index.d.ts",
     "src/index.ts",
     "src/plugins.ts"
   ]
