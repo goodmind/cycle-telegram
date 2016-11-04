@@ -23,12 +23,21 @@ export interface TcombDocument {
     mime_type?: string;
     file_size?: number;
 }
+export declare const Animation: t.Struct<TcombAnimation>;
+export interface TcombAnimation {
+    file_id: string;
+    thumb?: TcombPhotoSize;
+    file_name?: string;
+    mime_type?: string;
+    file_size?: number;
+}
 export declare const Sticker: t.Struct<TcombSticker>;
 export interface TcombSticker {
     file_id: string;
     width: number;
     height: number;
     thumb?: TcombPhotoSize;
+    emoji?: string;
     file_size?: number;
 }
 export declare const Video: t.Struct<TcombVideo>;

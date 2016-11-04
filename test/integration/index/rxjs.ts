@@ -30,6 +30,9 @@ import {
   editMessageCaption,
   editMessageReplyMarkup,
   answerInlineQuery,
+  sendGame,
+  setGameScore,
+  getGameHighScores,
   DriverExecution
 } from '../../../lib/index'
 import {
@@ -42,7 +45,11 @@ import {
   Chat,
   TcombChat,
   ChatMember,
-  TcombChatMember
+  TcombChatMember,
+  Game,
+  TcombGame,
+  GameHighScore,
+  TcombGameHighScore
 } from '../../../lib/index'
 import {
   UserProfilePhotos,
@@ -61,7 +68,7 @@ import * as tc from 'tcomb'
 
 import Cycle from '@cycle/rxjs-run'
 import { Observable as $ } from 'rxjs'
-import { is } from 'ramda'
+import { prop, is } from 'ramda'
 
 interface Sources {
   bot: DriverExecution
@@ -708,6 +715,129 @@ test('should leave chat with basic driver', t => {
   run()
   okTake<boolean>(t, sources, (bool) => {
     t.equal(bool, true, 'bool should be true')
+    t.end()
+  })
+})
+
+// Games
+
+test('should send game with basic driver', t => {
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, { skipUpdates: true })
+  let main = () => ({
+    bot: $.from([
+      $.of(sendGame(
+        { chat_id: GROUP_ID,
+          game_short_name: 'test' },
+        {}))
+    ])
+  })
+  let { sources, run } = Cycle(main, { bot: basicDriver })
+
+  run()
+  okTake<TcombMessage>(t, sources, (message) => {
+    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+    t.end()
+  })
+})
+
+test('should set game score with basic driver', t => {
+  interface MessageUserScore {
+    score: TcombGameHighScore
+    user: TcombUser
+    message: TcombMessage
+  }
+
+  interface UserScore {
+    user: TcombUser
+    score: TcombGameHighScore
+  }
+
+  interface MessageUser {
+    user: TcombUser
+    message: TcombMessage
+  }
+
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1477232741000 })
+  let main = ({ bot }: Sources) => ({
+    bot: $.from([
+      $.of(sendGame(
+        { chat_id: GROUP_ID,
+          game_short_name: 'test' },
+        {})),
+
+      bot.events('message')
+        .pluck('message', 'from')
+        .do(() => bot.dispose())
+        .combineLatest(
+          bot.responses.take(1),
+          (user, message) => ({ message, user }))
+        .map(({ message, user }: MessageUser) =>
+          getGameHighScores(
+            { user_id: user.id, message_id: message.message_id },
+            { message })),
+
+      $.combineLatest<(TcombMessage & TcombUser)[], TcombGameHighScore, MessageUserScore>(
+        bot.responses
+          .take(1)
+          .combineLatest(bot.events('message').do(() => bot.dispose()).pluck('message', 'from')),
+        bot.responses
+          .skip(1)
+          .filter(Array.isArray)
+          .flatMap((x: TcombGameHighScore[]) => $.from(x)),
+        ([message, user], score) => ({ message, user, score }))
+        .filter(({ user, score }: UserScore) => user.id === score.user.id)
+        .map(({ score: { score }, user, message }: MessageUserScore) =>
+          setGameScore(
+            { score: score + 1, user_id: user.id, message_id: message.message_id },
+            { message })),
+
+      bot.responses
+        .skip(1)
+        .filter(prop('game'))
+        .pluck('game')
+        .do((game: TcombGame) => {
+          bot.dispose()
+          t.ok(Game.is(Game(game)), 'game satisfies typecheck')
+          t.end()
+        })
+    ])
+  })
+  let { run } = Cycle(main, { bot: basicDriver })
+
+  run()
+})
+
+test('should get game high scores with basic driver', t => {
+  interface MessageUser {
+    user: TcombUser
+    message: TcombMessage
+  }
+
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1477232741000 })
+  let main = ({ bot }: Sources) => ({
+    bot: $.from([
+      $.of(sendGame(
+        { chat_id: GROUP_ID,
+          game_short_name: 'test' },
+        {})),
+
+      bot.events('message')
+        .pluck('message', 'from')
+        .do(() => bot.dispose())
+        .combineLatest<TcombUser, TcombMessage, MessageUser>(
+          bot.responses.take(1),
+          (user, message) => ({ message, user }))
+        .map(({ message, user }) =>
+          getGameHighScores(
+            { user_id: user.id, message_id: message.message_id },
+            { message }))
+    ])
+  })
+  let { sources, run } = Cycle(main, { bot: basicDriver })
+
+  run()
+  okDrop<TcombGameHighScore[]>(t, sources, (gameHighScores) => {
+    t.ok(tc.list(GameHighScore).is(tc.list(GameHighScore)(gameHighScores)), 'game high scores satisfies typecheck')
     t.end()
   })
 })

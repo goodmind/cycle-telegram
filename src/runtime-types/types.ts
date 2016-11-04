@@ -87,19 +87,50 @@ export interface TcombMessageEntity {
   user?: TcombUser
 }
 
+export const GameHighScore = t.struct<TcombGameHighScore>({
+  position: t.Number,
+  user: User,
+  score: t.Number
+})
+export interface TcombGameHighScore {
+  position: number
+  user: TcombUser
+  score: number
+}
+
+export const Game = t.struct<TcombGame>({
+  title: t.String,
+  description: t.String,
+  photo: t.list(m.PhotoSize),
+  text: t.maybe(t.String),
+  text_entities: t.maybe(t.list(MessageEntity)),
+  animation: t.maybe(m.Animation)
+})
+export interface TcombGame {
+  title: string
+  description: string
+  photo: m.TcombPhotoSize[],
+  text?: string
+  text_entities?: TcombMessageEntity[],
+  animation?: m.TcombAnimation
+}
+
 export const Message = t.declare<TcombMessage>('Message')
 Message.define(t.struct({
   message_id: t.Number,
   from: t.maybe(User),
+  edit_date: t.maybe(t.Number),
   date: t.Number,
   chat: Chat,
   forward_from: t.maybe(User),
+  forward_from_chat: t.maybe(Chat),
   forward_date: t.maybe(t.Number),
   reply_to_message: t.maybe(Message),
   text: t.maybe(t.String),
   entities: t.maybe(t.list(MessageEntity)),
   audio: t.maybe(m.Audio),
   document: t.maybe(m.Document),
+  game: t.maybe(Game),
   photo: t.maybe(t.list(m.PhotoSize)),
   sticker: t.maybe(m.Sticker),
   video: t.maybe(m.Video),
@@ -124,14 +155,17 @@ export interface TcombMessage {
   message_id: number
   from?: TcombUser
   date: number
+  edit_date?: number
   chat: TcombChat
   forward_from?: TcombUser
+  forward_from_chat?: TcombChat
   forward_date?: number
   reply_to_message?: TcombMessage
   text?: string
   entities?: TcombMessageEntity[]
   audio?: m.TcombAudio
   document?: m.TcombDocument
+  game?: TcombGame
   photo?: m.TcombPhotoSize[]
   sticker?: m.TcombSticker
   video?: m.TcombVideo
@@ -183,12 +217,17 @@ export interface TcombChosenInlineResult {
   query: string
 }
 
+export const CallbackGame = t.struct<TcombCallbackGame>({})
+export interface TcombCallbackGame {}
+
 export const CallbackQuery = t.struct<TcombCallbackQuery>({
   id: t.String,
   from: User,
   message: t.maybe(Message),
   inline_message_id: t.maybe(t.String),
-  data: t.maybe(t.String)
+  chat_instance: t.String,
+  data: t.maybe(t.String),
+  game_short_name: t.maybe(t.String)
 })
 export interface TcombCallbackQuery {
   id: string
@@ -197,11 +236,13 @@ export interface TcombCallbackQuery {
   inline_message_id?: string
   chat_instance: string
   data?: string
+  game_short_name?: string
 }
 
 export const Update = t.struct<TcombUpdate>({
   update_id: t.Number,
   message: t.maybe(Message),
+  edited_message: t.maybe(Message),
   inline_query: t.maybe(InlineQuery),
   chosen_inline_result: t.maybe(ChosenInlineResult),
   callback_query: t.maybe(CallbackQuery)
@@ -209,6 +250,7 @@ export const Update = t.struct<TcombUpdate>({
 export interface TcombUpdate {
   update_id: number,
   message?: TcombMessage,
+  edited_message?: TcombMessage,
   inline_query?: TcombInlineQuery,
   chosen_inline_result?: TcombChosenInlineResult,
   callback_query?: TcombCallbackQuery
@@ -265,21 +307,6 @@ export interface TcombUpdatesState {
   updates: TcombUpdate[]
 }
 
-export const Request = t.struct<TcombRequest>({
-  type: t.enums.of(['sink']),
-  multipart: t.maybe(t.Boolean),
-  method: t.String,
-  returnType: t.maybe(t.String),
-  options: t.Object
-})
-export interface TcombRequest {
-  type: 'sink',
-  multipart?: boolean,
-  method: string,
-  returnType?: string
-  options: any
-}
-
 export const WebhookInfo = t.struct<TcombWebhookInfo>({
   url: t.String,
   has_custom_certificate: t.Boolean,
@@ -293,6 +320,21 @@ export interface TcombWebhookInfo {
   pending_update_count: number
   last_error_date?: number
   last_error_message?: string
+}
+
+export const Request = t.struct<TcombRequest>({
+  type: t.enums.of(['sink']),
+  multipart: t.maybe(t.Boolean),
+  method: t.String,
+  returnType: t.maybe(t.String),
+  options: t.Object
+})
+export interface TcombRequest {
+  type: 'sink',
+  multipart?: boolean,
+  method: string,
+  returnType?: string
+  options: any
 }
 
 export const WebhookResponse = t.struct<TcombWebhookResponse>({

@@ -29,19 +29,37 @@ export interface TcombMessageEntity {
     url?: string;
     user?: TcombUser;
 }
+export declare const GameHighScore: t.Struct<TcombGameHighScore>;
+export interface TcombGameHighScore {
+    position: number;
+    user: TcombUser;
+    score: number;
+}
+export declare const Game: t.Struct<TcombGame>;
+export interface TcombGame {
+    title: string;
+    description: string;
+    photo: m.TcombPhotoSize[];
+    text?: string;
+    text_entities?: TcombMessageEntity[];
+    animation?: m.TcombAnimation;
+}
 export declare const Message: t.Declare<TcombMessage>;
 export interface TcombMessage {
     message_id: number;
     from?: TcombUser;
     date: number;
+    edit_date?: number;
     chat: TcombChat;
     forward_from?: TcombUser;
+    forward_from_chat?: TcombChat;
     forward_date?: number;
     reply_to_message?: TcombMessage;
     text?: string;
     entities?: TcombMessageEntity[];
     audio?: m.TcombAudio;
     document?: m.TcombDocument;
+    game?: TcombGame;
     photo?: m.TcombPhotoSize[];
     sticker?: m.TcombSticker;
     video?: m.TcombVideo;
@@ -78,6 +96,9 @@ export interface TcombChosenInlineResult {
     inline_message_id?: string;
     query: string;
 }
+export declare const CallbackGame: t.Struct<TcombCallbackGame>;
+export interface TcombCallbackGame {
+}
 export declare const CallbackQuery: t.Struct<TcombCallbackQuery>;
 export interface TcombCallbackQuery {
     id: string;
@@ -86,11 +107,13 @@ export interface TcombCallbackQuery {
     inline_message_id?: string;
     chat_instance: string;
     data?: string;
+    game_short_name?: string;
 }
 export declare const Update: t.Struct<TcombUpdate>;
 export interface TcombUpdate {
     update_id: number;
     message?: TcombMessage;
+    edited_message?: TcombMessage;
     inline_query?: TcombInlineQuery;
     chosen_inline_result?: TcombChosenInlineResult;
     callback_query?: TcombCallbackQuery;
@@ -121,14 +144,6 @@ export interface TcombUpdatesState {
     offset: number;
     updates: TcombUpdate[];
 }
-export declare const Request: t.Struct<TcombRequest>;
-export interface TcombRequest {
-    type: 'sink';
-    multipart?: boolean;
-    method: string;
-    returnType?: string;
-    options: any;
-}
 export declare const WebhookInfo: t.Struct<TcombWebhookInfo>;
 export interface TcombWebhookInfo {
     url: string;
@@ -136,6 +151,14 @@ export interface TcombWebhookInfo {
     pending_update_count: number;
     last_error_date?: number;
     last_error_message?: string;
+}
+export declare const Request: t.Struct<TcombRequest>;
+export interface TcombRequest {
+    type: 'sink';
+    multipart?: boolean;
+    method: string;
+    returnType?: string;
+    options: any;
 }
 export declare const WebhookResponse: t.Struct<TcombWebhookResponse>;
 export interface TcombWebhookResponse {
