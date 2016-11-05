@@ -12,38 +12,45 @@ export interface TcombInputMessageContent {
   disable_web_page_preview?: boolean
 }
 
-export const InlineQueryResult = t.struct<TcombInlineQueryResult>({
-  type: t.String,
-  id: t.String,
-  reply_markup: t.maybe(k.InlineKeyboardMarkup),
-  input_message_content: t.maybe(InputMessageContent)
-})
-export interface TcombInlineQueryResult {
+const BaseInlineQuery = function <T>(props: any, name: string = 'Unknown') {
+  return t.struct<T>(
+    Object.assign(
+      {},
+      {
+        type: t.String,
+        id: t.String,
+        reply_markup: t.maybe(k.InlineKeyboardMarkup),
+        input_message_content: t.maybe(InputMessageContent)
+      },
+      props),
+    name)
+}
+export interface BaseInlineQueryResult {
   type: string
   id: string
   reply_markup?: k.TcombInlineKeyboardMarkup,
   input_message_content?: TcombInputMessageContent
 }
 
-export const InlineQueryResultCachedAudio = InlineQueryResult.extend<TcombInlineQueryResultCachedAudio>({
+export const InlineQueryResultCachedAudio = BaseInlineQuery<TcombInlineQueryResultCachedAudio>({
   type: t.enums.of(['audio']),
   audio_file_id: t.String,
   caption: t.maybe(t.String)
 })
-export interface TcombInlineQueryResultCachedAudio extends TcombInlineQueryResult {
+export interface TcombInlineQueryResultCachedAudio extends BaseInlineQueryResult {
   type: 'audio'
   audio_file_id: string
   caption?: string
 }
 
-export const InlineQueryResultCachedDocument = InlineQueryResult.extend<TcombInlineQueryResultCachedDocument>({
+export const InlineQueryResultCachedDocument = BaseInlineQuery<TcombInlineQueryResultCachedDocument>({
   type: t.enums.of(['document']),
   title: t.String,
   document_file_id: t.String,
   description: t.maybe(t.String),
   caption: t.maybe(t.String)
 })
-export interface TcombInlineQueryResultCachedDocument extends TcombInlineQueryResult {
+export interface TcombInlineQueryResultCachedDocument extends BaseInlineQueryResult {
   type: 'document',
   title: string
   document_file_id: string
@@ -51,25 +58,25 @@ export interface TcombInlineQueryResultCachedDocument extends TcombInlineQueryRe
   caption?: string
 }
 
-export const InlineQueryResultCachedGif = InlineQueryResult.extend<TcombInlineQueryResultCachedGif>({})
-export interface TcombInlineQueryResultCachedGif extends TcombInlineQueryResult {}
+export const InlineQueryResultCachedGif = BaseInlineQuery<TcombInlineQueryResultCachedGif>({})
+export interface TcombInlineQueryResultCachedGif extends BaseInlineQueryResult {}
 
-export const InlineQueryResultCachedMpeg4Gif = InlineQueryResult.extend<TcombInlineQueryResultCachedMpeg4Gif>({})
-export interface TcombInlineQueryResultCachedMpeg4Gif extends TcombInlineQueryResult {}
+export const InlineQueryResultCachedMpeg4Gif = BaseInlineQuery<TcombInlineQueryResultCachedMpeg4Gif>({})
+export interface TcombInlineQueryResultCachedMpeg4Gif extends BaseInlineQueryResult {}
 
-export const InlineQueryResultCachedPhoto = InlineQueryResult.extend<TcombInlineQueryResultCachedPhoto>({})
-export interface TcombInlineQueryResultCachedPhoto extends TcombInlineQueryResult {}
+export const InlineQueryResultCachedPhoto = BaseInlineQuery<TcombInlineQueryResultCachedPhoto>({})
+export interface TcombInlineQueryResultCachedPhoto extends BaseInlineQueryResult {}
 
-export const InlineQueryResultCachedSticker = InlineQueryResult.extend<TcombInlineQueryResultCachedSticker>({})
-export interface TcombInlineQueryResultCachedSticker extends TcombInlineQueryResult {}
+export const InlineQueryResultCachedSticker = BaseInlineQuery<TcombInlineQueryResultCachedSticker>({})
+export interface TcombInlineQueryResultCachedSticker extends BaseInlineQueryResult {}
 
-export const InlineQueryResultCachedVideo = InlineQueryResult.extend<TcombInlineQueryResultCachedVideo>({})
-export interface TcombInlineQueryResultCachedVideo extends TcombInlineQueryResult {}
+export const InlineQueryResultCachedVideo = BaseInlineQuery<TcombInlineQueryResultCachedVideo>({})
+export interface TcombInlineQueryResultCachedVideo extends BaseInlineQueryResult {}
 
-export const InlineQueryResultCachedVoice = InlineQueryResult.extend<TcombInlineQueryResultCachedVoice>({})
-export interface TcombInlineQueryResultCachedVoice extends TcombInlineQueryResult {}
+export const InlineQueryResultCachedVoice = BaseInlineQuery<TcombInlineQueryResultCachedVoice>({})
+export interface TcombInlineQueryResultCachedVoice extends BaseInlineQueryResult {}
 
-export const InlineQueryResultArticle = InlineQueryResult.extend<TcombInlineQueryResultArticle>({
+export const InlineQueryResultArticle = BaseInlineQuery<TcombInlineQueryResultArticle>({
   type: t.enums.of(['article']),
   title: t.String,
   input_message_content: InputMessageContent,
@@ -81,7 +88,7 @@ export const InlineQueryResultArticle = InlineQueryResult.extend<TcombInlineQuer
   thumb_width: t.maybe(t.Number),
   thumb_height: t.maybe(t.Number)
 })
-export interface TcombInlineQueryResultArticle extends TcombInlineQueryResult {
+export interface TcombInlineQueryResultArticle extends BaseInlineQueryResult {
   type: 'article'
   title: string
   input_message_content: TcombInputMessageContent
@@ -94,41 +101,85 @@ export interface TcombInlineQueryResultArticle extends TcombInlineQueryResult {
   thumb_height?: number
 }
 
-export const InlineQueryResultAudio = InlineQueryResult.extend<TcombInlineQueryResultAudio>({})
-export interface TcombInlineQueryResultAudio extends TcombInlineQueryResult {}
+export const InlineQueryResultAudio = BaseInlineQuery<TcombInlineQueryResultAudio>({})
+export interface TcombInlineQueryResultAudio extends BaseInlineQueryResult {}
 
-export const InlineQueryResultContact = InlineQueryResult.extend<TcombInlineQueryResultContact>({})
-export interface TcombInlineQueryResultContact extends TcombInlineQueryResult {}
+export const InlineQueryResultContact = BaseInlineQuery<TcombInlineQueryResultContact>({})
+export interface TcombInlineQueryResultContact extends BaseInlineQueryResult {}
 
-export const InlineQueryResultGame = InlineQueryResult.extend<TcombInlineQueryResultGame>({
+export const InlineQueryResultGame = BaseInlineQuery<TcombInlineQueryResultGame>({
   type: t.enums.of(['game']),
   game_short_name: t.String
 })
-export interface TcombInlineQueryResultGame extends TcombInlineQueryResult {
+export interface TcombInlineQueryResultGame extends BaseInlineQueryResult {
   type: 'game'
   game_short_name: string
 }
 
-export const InlineQueryResultDocument = InlineQueryResult.extend<TcombInlineQueryResultDocument>({})
-export interface TcombInlineQueryResultDocument extends TcombInlineQueryResult {}
+export const InlineQueryResultDocument = BaseInlineQuery<TcombInlineQueryResultDocument>({})
+export interface TcombInlineQueryResultDocument extends BaseInlineQueryResult {}
 
-export const InlineQueryResultGif = InlineQueryResult.extend<TcombInlineQueryResultGif>({})
-export interface TcombInlineQueryResultGif extends TcombInlineQueryResult {}
+export const InlineQueryResultGif = BaseInlineQuery<TcombInlineQueryResultGif>({})
+export interface TcombInlineQueryResultGif extends BaseInlineQueryResult {}
 
-export const InlineQueryResultLocation = InlineQueryResult.extend<TcombInlineQueryResultLocation>({})
-export interface TcombInlineQueryResultLocation extends TcombInlineQueryResult {}
+export const InlineQueryResultLocation = BaseInlineQuery<TcombInlineQueryResultLocation>({})
+export interface TcombInlineQueryResultLocation extends BaseInlineQueryResult {}
 
-export const InlineQueryResultMpeg4Gif = InlineQueryResult.extend<TcombInlineQueryResultMpeg4Gif>({})
-export interface TcombInlineQueryResultMpeg4Gif extends TcombInlineQueryResult {}
+export const InlineQueryResultMpeg4Gif = BaseInlineQuery<TcombInlineQueryResultMpeg4Gif>({})
+export interface TcombInlineQueryResultMpeg4Gif extends BaseInlineQueryResult {}
 
-export const InlineQueryResultPhoto = InlineQueryResult.extend<TcombInlineQueryResultPhoto>({})
-export interface TcombInlineQueryResultPhoto extends TcombInlineQueryResult {}
+export const InlineQueryResultPhoto = BaseInlineQuery<TcombInlineQueryResultPhoto>({})
+export interface TcombInlineQueryResultPhoto extends BaseInlineQueryResult {}
 
-export const InlineQueryResultVenue = InlineQueryResult.extend<TcombInlineQueryResultVenue>({})
-export interface TcombInlineQueryResultVenue extends TcombInlineQueryResult {}
+export const InlineQueryResultVenue = BaseInlineQuery<TcombInlineQueryResultVenue>({})
+export interface TcombInlineQueryResultVenue extends BaseInlineQueryResult {}
 
-export const InlineQueryResultVideo = InlineQueryResult.extend<TcombInlineQueryResultVideo>({})
-export interface TcombInlineQueryResultVideo extends TcombInlineQueryResult {}
+export const InlineQueryResultVideo = BaseInlineQuery<TcombInlineQueryResultVideo>({})
+export interface TcombInlineQueryResultVideo extends BaseInlineQueryResult {}
 
-export const InlineQueryResultVoice = InlineQueryResult.extend<TcombInlineQueryResultVoice>({})
-export interface TcombInlineQueryResultVoice extends TcombInlineQueryResult {}
+export const InlineQueryResultVoice = BaseInlineQuery<TcombInlineQueryResultVoice>({})
+export interface TcombInlineQueryResultVoice extends BaseInlineQueryResult {}
+
+export const InlineQueryResult = t.union<TcombInlineQueryResult>([
+  InlineQueryResultCachedAudio,
+  InlineQueryResultCachedDocument,
+  InlineQueryResultCachedGif,
+  InlineQueryResultCachedMpeg4Gif,
+  InlineQueryResultCachedPhoto,
+  InlineQueryResultCachedSticker,
+  InlineQueryResultCachedVideo,
+  InlineQueryResultCachedVoice,
+  InlineQueryResultArticle,
+  InlineQueryResultAudio,
+  InlineQueryResultContact,
+  InlineQueryResultGame,
+  InlineQueryResultDocument,
+  InlineQueryResultGif,
+  InlineQueryResultLocation,
+  InlineQueryResultMpeg4Gif,
+  InlineQueryResultPhoto,
+  InlineQueryResultVenue,
+  InlineQueryResultVideo,
+  InlineQueryResultVoice
+])
+export type TcombInlineQueryResult =
+  TcombInlineQueryResultCachedAudio |
+  TcombInlineQueryResultCachedDocument |
+  TcombInlineQueryResultCachedGif |
+  TcombInlineQueryResultCachedMpeg4Gif |
+  TcombInlineQueryResultCachedPhoto |
+  TcombInlineQueryResultCachedSticker |
+  TcombInlineQueryResultCachedVideo |
+  TcombInlineQueryResultCachedVoice |
+  TcombInlineQueryResultArticle |
+  TcombInlineQueryResultAudio |
+  TcombInlineQueryResultContact |
+  TcombInlineQueryResultGame |
+  TcombInlineQueryResultDocument |
+  TcombInlineQueryResultGif |
+  TcombInlineQueryResultLocation |
+  TcombInlineQueryResultMpeg4Gif |
+  TcombInlineQueryResultPhoto |
+  TcombInlineQueryResultVenue |
+  TcombInlineQueryResultVideo |
+  TcombInlineQueryResultVoice
