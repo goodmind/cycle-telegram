@@ -10,10 +10,10 @@
   ],
   "directories": {},
   "publishConfig": {
-    "tag": "next"
+    "tag": "dev"
   },
   "release": {
-    "branch": "diversity"
+    "branch": "development"
   },
   "scripts": {
     "clean": "rm -rf lib/ && mkdir -p lib && typings install",
