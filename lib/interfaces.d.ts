@@ -20,21 +20,29 @@ export interface DriverExecution extends IDisposable {
     responses: GenericStream<any>;
     events(eventName: string): GenericStream<TcombUpdate>;
 }
-export interface TelegramAPIRequest {
-    token: Token;
-    method: string;
-    query: any;
-    httpMethod?: string;
-}
-export interface TelegramAPIError {
-    ok: boolean;
-    description: string;
-    error_code: number;
-}
-export interface TelegramAPIResponseResult {
-}
-export interface TelegramAPIResponse {
-    ok: boolean;
-    description?: string;
-    result: TelegramAPIResponseResult;
+export declare namespace TelegramAPI {
+    interface Request {
+        token: Token;
+        method: string;
+        query: any;
+        httpMethod?: string;
+        returnType?: string;
+    }
+    interface ResponseParameters {
+        migrate_to_chat_id: string;
+        retry_after: number;
+    }
+    interface Error {
+        ok: boolean;
+        description: string;
+        error_code: number;
+        parameters?: ResponseParameters;
+    }
+    interface ResponseResult {
+    }
+    interface Response {
+        ok: boolean;
+        description?: string;
+        result: ResponseResult;
+    }
 }

@@ -1,9 +1,14 @@
-import { TelegramAPIRequest, TelegramAPIResponse, TelegramAPIResponseResult, TelegramAPIError } from '../interfaces'
+import { TelegramAPI } from '../interfaces'
 
 import { Observable, Observer, Observable as $ } from 'rx'
 import * as request from 'superagent'
 import { Request, Response } from 'superagent'
 import { propOr, last, values, pipe, mapObjIndexed, curryN, ifElse } from 'ramda'
+
+export type OriginalResponseStream = Observable<TelegramAPI.ResponseResult | TelegramAPI.Error>
+export type ResponseStream =
+  Observable<TelegramAPI.ResponseResult | TelegramAPI.Error> &
+  { request: TelegramAPI.Request }
 
 let fromSuperagent =
   (request: Request): Observable<any> => $.create((obs: Observer<Response>): () => void => {
@@ -31,24 +36,37 @@ let transformReq = curryN(2, (req: Request, multipart: boolean) => ifElse(
   req.send.bind(req)
 ))
 
-export function makeAPIRequest (
-  {
-    token,
-    method,
-    query,
-    httpMethod = 'POST'
-  }: TelegramAPIRequest,
-  multipart = false
-): Observable<TelegramAPIResponseResult | TelegramAPIError> {
+function createResponse (
+  { token, method, query, httpMethod = 'POST' }: TelegramAPI.Request,
+  multipart: boolean
+): OriginalResponseStream {
   let endpoint = `https://api.telegram.org/bot${token}`
   let url = `${endpoint}/${method}`
   let req = transformReq(request(httpMethod, url).redirects(0), multipart)(query)
 
   return fromSuperagent(req)
     .catch(e => $.throw(e instanceof Error ? e : new Error(e)))
-    .map<TelegramAPIResponse>(res => res.body)
+    .map<TelegramAPI.Response>(res => res.body)
     .map(body => body.ok
       ? $.just(body.result)
       : $.throw(body))
-    .switch()
+}
+
+function makeRequestToResponse (request: TelegramAPI.Request) {
+  return function requestToResponse (response: OriginalResponseStream): ResponseStream {
+    Object.defineProperty(response, 'request', {
+      value: request,
+      writable: false
+    })
+
+    return (response as ResponseStream)
+  }
+}
+
+export function makeAPIRequest (
+  apiReq: TelegramAPI.Request,
+  multipart = false
+) {
+  return createResponse(apiReq, multipart)
+    .map(makeRequestToResponse(apiReq))
 }

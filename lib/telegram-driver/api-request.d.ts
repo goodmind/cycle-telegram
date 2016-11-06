@@ -1,3 +1,7 @@
-import { TelegramAPIRequest, TelegramAPIResponseResult, TelegramAPIError } from '../interfaces';
+import { TelegramAPI } from '../interfaces';
 import { Observable } from 'rx';
-export declare function makeAPIRequest({token, method, query, httpMethod}: TelegramAPIRequest, multipart?: boolean): Observable<TelegramAPIResponseResult | TelegramAPIError>;
+export declare type OriginalResponseStream = Observable<TelegramAPI.ResponseResult | TelegramAPI.Error>;
+export declare type ResponseStream = Observable<TelegramAPI.ResponseResult | TelegramAPI.Error> & {
+    request: TelegramAPI.Request;
+};
+export declare function makeAPIRequest(apiReq: TelegramAPI.Request, multipart?: boolean): Observable<ResponseStream>;
