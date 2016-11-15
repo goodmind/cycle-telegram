@@ -1,6 +1,9 @@
 import * as t from 'tcomb'
 import * as m from './multimedia-types'
 
+export const InputFile = t.Any
+export interface TcombInputFile {}
+
 export const User = t.struct<TcombUser>({
   id: t.Number,
   first_name: t.String,
@@ -39,7 +42,8 @@ export const Chat = t.struct<TcombChat>({
   title: t.maybe(t.String),
   username: t.maybe(t.String),
   first_name: t.maybe(t.String),
-  last_name: t.maybe(t.String)
+  last_name: t.maybe(t.String),
+  all_members_are_administrators: t.maybe(t.Boolean)
 })
 export interface TcombChat {
   id: number
@@ -47,7 +51,8 @@ export interface TcombChat {
   title?: string
   username?: string
   first_name?: string
-  last_name?: string
+  last_name?: string,
+  all_members_are_administrators: boolean
 }
 
 export const MessageEntity = t.struct<TcombMessageEntity>({
