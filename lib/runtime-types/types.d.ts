@@ -1,5 +1,8 @@
 import * as t from 'tcomb';
 import * as m from './multimedia-types';
+export declare const InputFile: t.Irreducible<any>;
+export interface TcombInputFile {
+}
 export declare const User: t.Struct<TcombUser>;
 export interface TcombUser {
     id: number;
@@ -20,6 +23,7 @@ export interface TcombChat {
     username?: string;
     first_name?: string;
     last_name?: string;
+    all_members_are_administrators: boolean;
 }
 export declare const MessageEntity: t.Struct<TcombMessageEntity>;
 export interface TcombMessageEntity {
