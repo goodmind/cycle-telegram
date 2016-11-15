@@ -300,7 +300,7 @@ export const InlineQueryResultLocation = BaseInlineQuery<TcombInlineQueryResultL
   title: t.String,
   thumb_url: t.maybe(t.String),
   thumb_width: t.maybe(t.Number),
-  thumb_height: t.maybe(t.Number),
+  thumb_height: t.maybe(t.Number)
 })
 export interface TcombInlineQueryResultLocation extends BaseInlineQueryResult {
   type: 'location'
@@ -319,7 +319,7 @@ export const InlineQueryResultMpeg4Gif = BaseInlineQuery<TcombInlineQueryResultM
   mpeg4_height: t.Number,
   thumb_url: t.String,
   title: t.maybe(t.String),
-  caption: t.maybe(t.String),
+  caption: t.maybe(t.String)
 })
 export interface TcombInlineQueryResultMpeg4Gif extends BaseInlineQueryResult {
   type: 'mpeg4_gif'
