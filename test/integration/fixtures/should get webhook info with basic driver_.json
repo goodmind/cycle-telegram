@@ -1,0 +1,28 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getWebhookInfo",
+        "body": {},
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "url": "https://example.com/123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/updates",
+                "has_custom_certificate": false,
+                "pending_update_count": 0
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 16 Oct 2016 12:36:25 GMT",
+            "content-type": "application/json",
+            "content-length": "164",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

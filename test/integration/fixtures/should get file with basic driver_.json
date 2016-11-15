@@ -1,0 +1,30 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getFile",
+        "body": {
+            "file_id": "AgADAgADx6cxGxnDdgxSdsYg3HzwDz8McQ0ABDBxKl75YR5CapIBAAEC"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "file_id": "AgADAgADx6cxGxnDdgxSdsYg3HzwDz8McQ0ABDBxKl75YR5CapIBAAEC",
+                "file_size": 8302,
+                "file_path": "photo/file_6"
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:52 GMT",
+            "content-type": "application/json",
+            "content-length": "136",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

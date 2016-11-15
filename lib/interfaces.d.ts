@@ -1,35 +1,24 @@
 import { Observable, IDisposable } from 'rx';
-import { TcombWebhookResponse, TcombRequest } from './runtime-types/types';
+import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } from './runtime-types/types';
 export declare type Token = string;
-export interface Update {
-    update_id: number;
-    message?: any;
-    inline_query?: any;
-    chosen_inline_result?: any;
-    callback_query?: any;
-}
-export interface TelegramDriverState {
-    startDate: number;
-    offset: number;
-    updates: Update[];
-}
-export interface TelegramDriverOptions {
+export declare type GenericStream<T> = any;
+export declare type DriverSink = TcombRequest | TcombWebhookResponse;
+export interface DriverOptions {
     webhook?: boolean;
     startDate?: number;
+    skipUpdates?: boolean;
 }
-export declare type EventsFn = (eventName: string) => Observable<Update>;
-export interface TelegramDriverExecution extends IDisposable {
+export interface DriverSources {
+    message: Observable<TcombUpdate>;
+    inlineQuery: Observable<TcombUpdate>;
+    chosenInlineResult: Observable<TcombUpdate>;
+    callbackQuery: Observable<TcombUpdate>;
+}
+export interface DriverExecution extends IDisposable {
     token: Token;
-    updates: Observable<TelegramDriverState>;
-    responses: Observable<TelegramAPIResponseResult>;
-    events: EventsFn;
-}
-export declare type TelegramDriverSink = TcombRequest | TcombWebhookResponse;
-export interface TelegramDriverSources {
-    message: Observable<Update>;
-    inlineQuery: Observable<Update>;
-    chosenInlineResult: Observable<Update>;
-    callbackQuery: Observable<Update>;
+    updates: GenericStream<TcombUpdatesState>;
+    responses: GenericStream<any>;
+    events(eventName: string): GenericStream<TcombUpdate>;
 }
 export interface TelegramAPIRequest {
     token: Token;
@@ -37,12 +26,12 @@ export interface TelegramAPIRequest {
     query: any;
     httpMethod?: string;
 }
-export interface TelegramAPIResponseResult {
-}
 export interface TelegramAPIError {
     ok: boolean;
     description: string;
     error_code: number;
+}
+export interface TelegramAPIResponseResult {
 }
 export interface TelegramAPIResponse {
     ok: boolean;

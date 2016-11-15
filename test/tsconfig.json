@@ -1,11 +1,30 @@
 {
   "compilerOptions": {
-    "module": "commonjs"
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "declaration": true,
+    "sourceMap": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es5", "es6", "dom"],
+    "outDir": "lib/",
+    "types": [
+      "node"
+    ]
+  },
+  "formatCodeOptions": {
+    "indentSize": 2,
+    "tabSize": 2
   },
   "files": [
-    "custom-typings/index.d.ts",
     "../lib/index.d.ts",
     "../typings/index.d.ts",
-    "index.ts"
+    "../custom-typings/index.d.ts",
+    "./index.ts",
+    "./integration/plugins.ts"
   ]
 }

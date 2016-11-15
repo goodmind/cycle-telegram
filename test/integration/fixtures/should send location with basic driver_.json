@@ -1,0 +1,48 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendLocation",
+        "body": {
+            "reply_markup": "{}",
+            "chat_id": -175523088,
+            "latitude": 55.751244,
+            "longitude": 37.618423,
+            "disable_notification": null,
+            "reply_to_message_id": null
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5022,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group"
+                },
+                "date": 1472895288,
+                "location": {
+                    "latitude": 55.751256,
+                    "longitude": 37.618412
+                }
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:48 GMT",
+            "content-type": "application/json",
+            "content-length": "262",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

@@ -1,33 +1,23 @@
+import RxAdapter from '@cycle/rx-adapter'
+import { StreamAdapter } from '@cycle/base'
 import { Observable, Subject, Observable as $ } from 'rx'
-import { makeSources, makeUpdates, makeWebHook } from './sources'
-import { makeAPIRequest } from './api-request'
+import { mapObjIndexed } from 'ramda'
 
 import {
-  TelegramDriverOptions,
-  TelegramDriverExecution,
-  TelegramDriverSources,
-  TelegramDriverState,
-  TelegramDriverSink,
-  Update,
+  DriverOptions,
+  DriverExecution,
+  DriverSources,
+  DriverSink,
   Token
 } from '../interfaces'
+import { makeSources, makeUpdates, makeWebHook } from './sources'
+import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '.'
-import { TcombWebhookResponse, TcombRequest } from '.'
+import { TcombUpdate, TcombUpdatesState, TcombWebhookResponse, TcombRequest } from '.'
+import { adapter, isWebhookResponse, convertStream } from '../helpers'
 
-function isWebhookResponse (
-  request: Observable<Observable<any>>,
-  options: any
-): request is Observable<Observable<TcombWebhookResponse>> {
-  return options.webhook
-}
-
-function makeEventsSelector ({
-  message,
-  inlineQuery,
-  chosenInlineResult,
-  callbackQuery
-}: TelegramDriverSources) {
-  return function events (eventName: string): Observable<Update> {
+function makeEventsSelector ({message, inlineQuery, chosenInlineResult, callbackQuery}: DriverSources) {
+  return function events (eventName: string): Observable<TcombUpdate> {
     return $.case(() => eventName, {
       'message': message.share(),
       'inline_query': inlineQuery.share(),
@@ -37,12 +27,16 @@ function makeEventsSelector ({
   }
 }
 
-let handleWebhook = (token: Token, request: Observable<Observable<TcombWebhookResponse>>, proxy: Subject<Update[]>) => {
+let handleWebhook = (
+  token: Token,
+  request: Observable<Observable<TcombWebhookResponse>>,
+  proxy: Subject<TcombUpdate[]>
+) => {
   return request.mergeAll()
     .filter(WebhookResponse.is)
     .pluck('update')
     .subscribe(
-      (upd: Update) => proxy.onNext([upd]),
+      (upd: TcombUpdate) => proxy.onNext([upd]),
       (err: any) => console.error('request error: ', err))
 }
 
@@ -51,21 +45,22 @@ let handleRequest = (token: Token, request: Observable<Observable<TcombRequest>>
     .filter(Request.is)
     .flatMap(({
       method,
+      multipart,
       options: query
-    }) => makeAPIRequest({token, method, query}))
+    }) => makeAPIRequest({token, method, query}, multipart))
 }
 
 export function makeTelegramDriver (
   token: Token,
-  options: TelegramDriverOptions = {}
-): (request: Observable<Observable<TelegramDriverSink>>) => TelegramDriverExecution {
-  let state: TelegramDriverState = {
+  options: DriverOptions = {}
+) {
+  let state: TcombUpdatesState = {
     startDate: options.startDate || Date.now(),
     offset: 0,
     updates: []
   }
 
-  let proxyUpdates = makeUpdates(state, token)
+  let proxyUpdates = options.skipUpdates ? $.never<TcombUpdatesState>() : makeUpdates(state, token)
   let proxyWebHook = new Subject<any>()
 
   if (options.webhook) {
@@ -83,7 +78,10 @@ export function makeTelegramDriver (
   let sources = makeSources(updates)
   let disposable = updates.connect()
 
-  return function telegramDriver (request) {
+  function telegramDriver (sourceRequest: Observable<Observable<DriverSink>>, runSA: StreamAdapter): DriverExecution {
+    let adapt = adapter(runSA)
+    let request = sourceRequest.map(x => convertStream(x, runSA, RxAdapter))
+
     if (isWebhookResponse(request, options)) {
       handleWebhook(token, request, proxyWebHook)
     }
@@ -91,13 +89,19 @@ export function makeTelegramDriver (
     let responses = handleRequest(token, request as Observable<Observable<TcombRequest>>).share()
     responses.subscribeOnError((err: any) => console.error('request error: ', err))
 
-    // return interface
-    return {
-      token,
-      updates,
-      responses,
-      events: makeEventsSelector(sources),
-      dispose: () => disposable.dispose()
-    }
+    return Object.assign(
+      {
+        token,
+        dispose: () => disposable.dispose()
+      },
+      mapObjIndexed(adapt, {
+        events: makeEventsSelector(sources),
+        updates,
+        responses
+      })) as DriverExecution
   }
+
+  (telegramDriver as any).streamAdapter = RxAdapter
+
+  return telegramDriver
 }

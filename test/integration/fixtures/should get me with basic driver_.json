@@ -1,0 +1,28 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getMe",
+        "body": {},
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "id": 209109785,
+                "first_name": "Cycle.js",
+                "username": "cyclejs_bot"
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:40 GMT",
+            "content-type": "application/json",
+            "content-length": "86",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

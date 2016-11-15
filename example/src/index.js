@@ -1,14 +1,16 @@
-import { Observable as $ } from 'rx'
-import { run } from '@cycle/core'
+import { Observable as $ } from 'rxjs'
+import Cycle from '@cycle/rxjs-run'
 
 import { makeTelegramDriver, entityIs } from 'cycle-telegram'
 import { matchPlugin } from 'cycle-telegram/plugins'
 
 import { plugins } from './plugins'
 
+const ACCESS_TOKEN = process.env['ACCESS_TOKEN'] || '<YOUR_TOKEN_HERE>'
+
 let main = ({bot}) => {
   let intents = {
-    uptime: bot.observable
+    uptime: bot.updates
       .first()
       .share(),
 
@@ -42,7 +44,7 @@ let main = ({bot}) => {
   }
 }
 
-run(main, {
-  bot: makeTelegramDriver('<YOUR_TOKEN_HERE>'),
+Cycle.run(main, {
+  bot: makeTelegramDriver(ACCESS_TOKEN),
   log: (m) => m.forEach(::console.log)
 })

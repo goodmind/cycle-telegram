@@ -1,0 +1,301 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 0,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 138769367,
+                    "message": {
+                        "message_id": 5283,
+                        "from": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka!",
+                            "username": "goodmind"
+                        },
+                        "chat": {
+                            "id": -175523088,
+                            "title": "cycle-telegram recording",
+                            "type": "group",
+                            "all_members_are_administrators": false
+                        },
+                        "date": 1477232741,
+                        "text": "sas"
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 23 Oct 2016 14:29:55 GMT",
+            "content-type": "application/json",
+            "content-length": "300",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendGame",
+        "body": {
+            "chat_id": -175523088,
+            "game_short_name": "test"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5287,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group",
+                    "all_members_are_administrators": false
+                },
+                "date": 1477232995,
+                "game": {
+                    "title": "test",
+                    "text": "Top Players\n1. andretshurotshka! – 29\n2. Cycle.js – 2",
+                    "text_entities": [
+                        {
+                            "type": "bold",
+                            "offset": 0,
+                            "length": 11
+                        },
+                        {
+                            "type": "bold",
+                            "offset": 35,
+                            "length": 2
+                        },
+                        {
+                            "type": "bold",
+                            "offset": 52,
+                            "length": 1
+                        }
+                    ],
+                    "description": "test",
+                    "photo": [
+                        {
+                            "file_id": "AgADAgADRMwxG-uvXgLymjNZ7VXuuzzNgQ0ABONWajYT7KplXn0BAAEC",
+                            "file_size": 426,
+                            "width": 90,
+                            "height": 51
+                        },
+                        {
+                            "file_id": "AgADAgADRMwxG-uvXgLymjNZ7VXuuzzNgQ0ABLbS7z5KZPiWXX0BAAEC",
+                            "file_size": 1909,
+                            "width": 320,
+                            "height": 180
+                        },
+                        {
+                            "file_id": "AgADAgADRMwxG-uvXgLymjNZ7VXuuzzNgQ0ABPqaEg8KXx_zXH0BAAEC",
+                            "file_size": 4529,
+                            "width": 640,
+                            "height": 360
+                        }
+                    ]
+                }
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 23 Oct 2016 14:29:55 GMT",
+            "content-type": "application/json",
+            "content-length": "846",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 138769368,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 138769368,
+                    "message": {
+                        "message_id": 5288,
+                        "from": {
+                            "id": 39759851,
+                            "first_name": "andretshurotshka!",
+                            "username": "goodmind"
+                        },
+                        "chat": {
+                            "id": -175523088,
+                            "title": "cycle-telegram recording",
+                            "type": "group",
+                            "all_members_are_administrators": false
+                        },
+                        "date": 1477233002,
+                        "text": "lol"
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 23 Oct 2016 14:30:02 GMT",
+            "content-type": "application/json",
+            "content-length": "300",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getGameHighScores",
+        "body": {
+            "user_id": 39759851,
+            "chat_id": -175523088,
+            "message_id": 5287
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "position": 1,
+                    "user": {
+                        "id": 39759851,
+                        "first_name": "andretshurotshka!",
+                        "username": "goodmind"
+                    },
+                    "score": 29
+                },
+                {
+                    "position": 2,
+                    "user": {
+                        "id": 209109785,
+                        "first_name": "Cycle.js",
+                        "username": "cyclejs_bot"
+                    },
+                    "score": 2
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 23 Oct 2016 14:30:03 GMT",
+            "content-type": "application/json",
+            "content-length": "224",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/setGameScore",
+        "body": {
+            "user_id": 39759851,
+            "chat_id": -175523088,
+            "score": 30,
+            "message_id": 5287
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 5287,
+                "from": {
+                    "id": 209109785,
+                    "first_name": "Cycle.js",
+                    "username": "cyclejs_bot"
+                },
+                "chat": {
+                    "id": -175523088,
+                    "title": "cycle-telegram recording",
+                    "type": "group",
+                    "all_members_are_administrators": false
+                },
+                "date": 1477232995,
+                "game": {
+                    "title": "test",
+                    "text": "Top Players\n1. andretshurotshka! – 29\n2. Cycle.js – 2",
+                    "text_entities": [
+                        {
+                            "type": "bold",
+                            "offset": 0,
+                            "length": 11
+                        },
+                        {
+                            "type": "bold",
+                            "offset": 35,
+                            "length": 2
+                        },
+                        {
+                            "type": "bold",
+                            "offset": 52,
+                            "length": 1
+                        }
+                    ],
+                    "description": "test",
+                    "photo": [
+                        {
+                            "file_id": "AgADAgADRMwxG-uvXgLymjNZ7VXuuzzNgQ0ABONWajYT7KplXn0BAAEC",
+                            "file_size": 426,
+                            "width": 90,
+                            "height": 51
+                        },
+                        {
+                            "file_id": "AgADAgADRMwxG-uvXgLymjNZ7VXuuzzNgQ0ABLbS7z5KZPiWXX0BAAEC",
+                            "file_size": 1909,
+                            "width": 320,
+                            "height": 180
+                        },
+                        {
+                            "file_id": "AgADAgADRMwxG-uvXgLymjNZ7VXuuzzNgQ0ABPqaEg8KXx_zXH0BAAEC",
+                            "file_size": 4529,
+                            "width": 640,
+                            "height": 360
+                        }
+                    ]
+                }
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 23 Oct 2016 14:30:03 GMT",
+            "content-type": "application/json",
+            "content-length": "846",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

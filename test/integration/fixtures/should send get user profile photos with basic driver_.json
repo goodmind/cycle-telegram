@@ -1,0 +1,58 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUserProfilePhotos",
+        "body": {
+            "user_id": 39759851,
+            "offset": null,
+            "limit": null
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "total_count": 24,
+                "photos": [
+                    [
+                        {
+                            "file_id": "AgADAgAD88gxG-uvXgIGsBlT4J7HfO7BRw0ABOa5ZeVCpDvr0RMBAAEC",
+                            "file_size": 10494,
+                            "width": 160,
+                            "height": 160
+                        },
+                        {
+                            "file_id": "AgADAgAD88gxG-uvXgIGsBlT4J7HfO7BRw0ABNj1K-wI7G8w0hMBAAEC",
+                            "file_size": 30192,
+                            "width": 320,
+                            "height": 320
+                        },
+                        {
+                            "file_id": "AgADAgAD88gxG-uvXgIGsBlT4J7HfO7BRw0ABDMxrXpW_XV60xMBAAEC",
+                            "file_size": 81207,
+                            "width": 640,
+                            "height": 640
+                        },
+                        {
+                            "file_id": "AgADAgAD88gxG-uvXgIGsBlT4J7HfO7BRw0ABFjDbS9E0Hk51BMBAAEC",
+                            "file_size": 65590,
+                            "width": 718,
+                            "height": 718
+                        }
+                    ]
+                ]
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:51 GMT",
+            "content-type": "application/json",
+            "content-length": "508",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]
