@@ -3,6 +3,7 @@ import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } fr
 export declare type Token = string;
 export declare type GenericStream<T> = any;
 export declare type DriverSink = TcombRequest | TcombWebhookResponse;
+export declare type EventNames = 'message' | 'inline_query' | 'chosen_inline_result' | 'callback_query';
 export interface DriverOptions {
     webhook?: boolean;
     startDate?: number;
