@@ -156,5 +156,4 @@ export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExec
   return { matchWith, matchStream }
 }
 
-let { matchWith, matchStream } = makePlugins()
-export { matchWith, matchStream }
+export let { matchWith, matchStream } = makePlugins()

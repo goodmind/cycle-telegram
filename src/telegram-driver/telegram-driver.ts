@@ -8,7 +8,7 @@ import {
   DriverExecution,
   DriverSources,
   DriverSink,
-  Token
+  Token, EventNames
 } from '../interfaces'
 import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
@@ -17,7 +17,7 @@ import { TcombUpdate, TcombUpdatesState, TcombWebhookResponse, TcombRequest } fr
 import { adapter, isWebhookResponse, convertStream } from '../helpers'
 
 function makeEventsSelector ({message, inlineQuery, chosenInlineResult, callbackQuery}: DriverSources) {
-  return function events (eventName: string): Observable<TcombUpdate> {
+  return function events (eventName: EventNames): Observable<TcombUpdate> {
     return $.case(() => eventName, {
       'message': message.share(),
       'inline_query': inlineQuery.share(),

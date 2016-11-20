@@ -22,4 +22,6 @@ export interface PluginsExecution {
     matchStream(sourceObservable: GenericStream<TcombUpdate>, ...args: any[]): GenericStream<ComponentSinks>;
 }
 export declare function makePlugins(externalSA?: StreamAdapter): PluginsExecution;
-export { matchWith, matchStream };
+export declare let matchWith: (this: any, plugins: Plugin[], sources: ComponentSources, {dupe}?: {
+    dupe?: boolean;
+}) => any, matchStream: (sourceObservable: any, ...args: any[]) => any;

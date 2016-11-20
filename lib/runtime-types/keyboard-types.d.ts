@@ -13,8 +13,8 @@ export interface TcombReplyKeyboardMarkup {
     one_time_keyboard?: boolean;
     selective?: boolean;
 }
-export declare const ReplyKeyboardHide: t.Struct<TcombReplyKeyboardHide>;
-export interface TcombReplyKeyboardHide {
+export declare const ReplyKeyboardRemove: t.Struct<TcombReplyKeyboardRemove>;
+export interface TcombReplyKeyboardRemove {
     hide_keyboard: boolean;
     selective?: boolean;
 }
