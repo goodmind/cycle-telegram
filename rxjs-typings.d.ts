@@ -1,6 +1,6 @@
 import { TcombUpdate, TcombUpdatesState, Token } from './lib'
 import { Observable } from 'rxjs'
-import { ComponentSinks, ComponentSources } from './src/plugins';
+import { ComponentSinks, ComponentSources } from './lib/plugins';
 
 declare module './lib' {
   interface DriverExecution {
@@ -23,16 +23,14 @@ declare module './lib/plugins' {
                  ...args: any[]): Observable<ComponentSinks>
   }
 
-  function matchWith (
-    this: Observable<TcombUpdate>,
+  interface matchWith {
+    (this: Observable<TcombUpdate>,
     plugins: Plugin[],
     sources: ComponentSources,
-    {dupe}?: {dupe?: boolean}
-  ): Observable<ComponentSinks>
+    {dupe}?: {dupe?: boolean}): Observable<ComponentSinks> }
 
-  function matchStream (
-    sourceObservable: Observable<TcombUpdate>,
-    ...args: any[]
-  ): Observable<ComponentSinks>
+  interface matchStream {
+    (sourceObservable: Observable<TcombUpdate>,
+    ...args: any[]): Observable<ComponentSinks> }
 }
 
