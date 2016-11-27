@@ -66,7 +66,6 @@ test('should reply to command `/help` with basic driver', t => {
       })
     },
     {
-      type: Update,
       name: 'not-found',
       component: ({ props }) => {
         t.fail(`wrong command \`${props[0]}\``)

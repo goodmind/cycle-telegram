@@ -62,13 +62,14 @@ test('should reply to command `/help` with basic driver', t => {
       pattern: /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/,
       component: (sources, u) => ({
         bot: $.of(reply('Cycle Telegram v1.1.1 (https://git.io/vrs3P)', u))
-      })},
+      })
+    },
     {
-      type: Update,
       name: 'not-found',
       component: ({ props }) => {
         t.fail(`wrong command \`${props[0]}\``)
-      }}
+      }
+    }
   ]
   let main = (s: Sources) => ({
     bot: $.from([
