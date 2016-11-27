@@ -1,5 +1,11 @@
-import { map, when, isEmpty, curryN, match, find, filter, not, isNil, compose, merge, prop, last, test } from 'ramda'
+import {
+  map, when, isEmpty, curryN, match,
+  find, filter, not, isNil, compose,
+  merge, prop, last, test,
+  cond, allPass, T, F, both
+} from 'ramda'
 import { StreamAdapter } from '@cycle/base'
+import { Observable } from 'rx'
 import RxAdapter from '@cycle/rx-adapter'
 import isolate from '@cycle/isolate'
 import * as t from 'tcomb'
@@ -33,10 +39,25 @@ export type ComponentSinks = { [driverName: string]: GenericStream<any> } | void
 export type Component = (sources: ComponentSources, update: TcombUpdate) => ComponentSinks
 type CurriedToComponent = (plugins: Plugin[], sources: ComponentSources) => ComponentSinks[]
 
-export interface Plugin {
+export type Plugin = {
   type: t.Type<any>
-  name: string
   pattern?: RegExp
+  name?: string
+  component: Component
+} | {
+  type?: t.Type<any>
+  pattern: RegExp
+  name?: string
+  component: Component
+} | {
+  type: t.Type<any>
+  pattern: RegExp
+  name?: string
+  component: Component
+} | {
+  type?: t.Type<any>
+  pattern?: RegExp
+  name?: string
   component: Component
 }
 
@@ -74,6 +95,10 @@ let testPattern =
   curryN(2, (query: string, {pattern}: Plugin): boolean =>
     pattern ? test(pattern, query) : false)
 
+let testType =
+  curryN(2, (update: TcombUpdate, {type}: Plugin): boolean =>
+    type ? type.is(update) : false)
+
 let getProps = matchPattern
 
 let toProps =
@@ -109,29 +134,35 @@ let transform =
     when(
       isEmpty,
       () => [pluginNotFound],
-      filter(prop('pattern'), plugins)))
+      plugins))
 
 let makeComponentSelector =
-  curryN(4, (f: (query: string, plugins: Plugin[]) => Plugin[],
+  curryN(4, (f: (query: string, update: TcombUpdate, plugins: Plugin[]) => Plugin[],
    update: TcombUpdate,
    plugins: Plugin[],
    sources: ComponentSources): ComponentSinks[] => when(isNil, () => [], transform(
-    f(getQuery(update), plugins),
+    f(getQuery(update), update, plugins),
     sources,
     update,
     last(plugins))))
 
-let toComponents: (u: TcombUpdate) =>
-  (plugins: Plugin[], sources: ComponentSources) =>
-    ComponentSinks[] = makeComponentSelector(
-  (query: string, plugins: Plugin[]) =>
-    filter(testPattern(query), plugins))
+let checkTypeAndQuery =
+  curryN(2, (update: TcombUpdate, query: string) => cond([
+    [allPass([prop('type'), prop('pattern')]), both(testType(update), testPattern(query))],
+    [prop('type'), testType(update)],
+    [prop('pattern'), testPattern(query)],
+    [T, F]
+  ]))
 
-let toComponent: (u: TcombUpdate) =>
-  (plugins: Plugin[], sources: ComponentSources) =>
-    ComponentSinks[] = makeComponentSelector(
-  (query: string, plugins: Plugin[]) =>
-    [find(testPattern(query), plugins)])
+interface ToComponents { (u: TcombUpdate): (plugins: Plugin[], sources: ComponentSources) => ComponentSinks[] }
+let toComponents: ToComponents = makeComponentSelector(
+  (query: string, update: TcombUpdate, plugins: Plugin[]) =>
+    filter(checkTypeAndQuery(update, query), plugins))
+
+interface ToComponent { (u: TcombUpdate): (plugins: Plugin[], sources: ComponentSources) => ComponentSinks[] }
+let toComponent: ToComponent = makeComponentSelector(
+  (query: string, update: TcombUpdate, plugins: Plugin[]) =>
+    [find(checkTypeAndQuery(update, query), plugins)])
 
 export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExecution {
   function matchWith (
@@ -141,8 +172,8 @@ export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExec
     {dupe = true} = {dupe: true}
   ) {
     return convertStream(
-      convertStream(this, externalSA, RxAdapter)
-        .map((u: TcombUpdate) => dupe ? toComponents(u) : toComponent(u))
+      (convertStream(this, externalSA, RxAdapter) as Observable<TcombUpdate>)
+        .map(u => dupe ? toComponents(u) : toComponent(u))
         .flatMap((f: CurriedToComponent) => f(plugins, sources))
         .filter(prop('bot')),
       RxAdapter,
