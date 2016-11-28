@@ -3,7 +3,6 @@ import {
   makeTelegramDriver,
   reply,
   UpdateMessage,
-  Update,
   entityIs,
   DriverExecution
 } from '../../../lib/index'
