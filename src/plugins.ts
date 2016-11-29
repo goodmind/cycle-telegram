@@ -169,13 +169,13 @@ export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExec
     this: GenericStream<TcombUpdate>,
     plugins: Plugin[],
     sources: ComponentSources,
-    {dupe = true} = {dupe: true}
+    {dupe = true, sourceName = 'bot'} = {dupe: true, sourceName: 'bot'}
   ) {
     return convertStream(
       (convertStream(this, externalSA, RxAdapter) as Observable<TcombUpdate>)
         .map(u => dupe ? toComponents(u) : toComponent(u))
         .flatMap((f: CurriedToComponent) => f(plugins, sources))
-        .filter(prop('bot')),
+        .filter(prop(sourceName)),
       RxAdapter,
       externalSA)
   }
