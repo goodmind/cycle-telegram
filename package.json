@@ -43,7 +43,7 @@
     "tcomb": "^3.2.15"
   },
   "devDependencies": {
-    "@cycle/base": "^4.0.1",
+    "@cycle/base": "^4.1.1",
     "@cycle/most-adapter": "^4.1.0",
     "@cycle/most-run": "^4.2.0",
     "@cycle/rx-run": "^7.0.1",
@@ -55,11 +55,11 @@
     "rxjs": "^5.0.0-beta.8",
     "semantic-release": "^6.3.2",
     "tap-spec": "^4.1.1",
-    "tape": "^4.6.2",
-    "tape-nock": "^1.2.3",
+    "tape": "^4.6.3",
+    "tape-nock": "^1.4.0",
     "ts-node": "^1.5.2",
-    "tslint": "^3.15.1",
-    "tslint-config-standard": "^1.5.0",
+    "tslint": "^4.0.2",
+    "tslint-config-standard": "^2.0.0",
     "typescript": "^2.2.0-dev.20161120",
     "typings": "^2.0.0",
     "xstream": "^8.0.0"
