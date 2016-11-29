@@ -17,7 +17,7 @@ declare module './lib/plugins' {
     matchWith (this: Observable<TcombUpdate>,
                plugins: Plugin[],
                sources: ComponentSources,
-      {dupe}?: {dupe?: boolean}): Observable<ComponentSinks>
+      {dupe, sourceName}?: {dupe?: boolean, sourceName?: string}): Observable<ComponentSinks>
 
     matchStream (sourceObservable: Observable<TcombUpdate>,
                  ...args: any[]): Observable<ComponentSinks>
@@ -27,7 +27,7 @@ declare module './lib/plugins' {
     (this: Observable<TcombUpdate>,
     plugins: Plugin[],
     sources: ComponentSources,
-    {dupe}?: {dupe?: boolean}): Observable<ComponentSinks> }
+    {dupe, sourceName}?: {dupe?: boolean, sourceName?: string}): Observable<ComponentSinks> }
 
   interface matchStream {
     (sourceObservable: Observable<TcombUpdate>,
