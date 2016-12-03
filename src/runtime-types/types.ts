@@ -248,16 +248,18 @@ export const Update = t.struct<TcombUpdate>({
   update_id: t.Number,
   message: t.maybe(Message),
   edited_message: t.maybe(Message),
+  channel_post: t.maybe(Message),
   inline_query: t.maybe(InlineQuery),
   chosen_inline_result: t.maybe(ChosenInlineResult),
   callback_query: t.maybe(CallbackQuery)
 })
 export interface TcombUpdate {
-  update_id: number,
-  message?: TcombMessage,
-  edited_message?: TcombMessage,
-  inline_query?: TcombInlineQuery,
-  chosen_inline_result?: TcombChosenInlineResult,
+  update_id: number
+  message?: TcombMessage
+  edited_message?: TcombMessage
+  channel_post?: TcombMessage
+  inline_query?: TcombInlineQuery
+  chosen_inline_result?: TcombChosenInlineResult
   callback_query?: TcombCallbackQuery
 }
 
