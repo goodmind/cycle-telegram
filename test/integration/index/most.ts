@@ -155,7 +155,7 @@ test('should get webhook info with basic driver', t => {
   })
 })
 
-test.only('should reply to channel posts with basic driver', t => {
+test('should reply to channel posts with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1480790772000 })
   let main = ({ bot }: Sources) => ({
     bot: most.from([
