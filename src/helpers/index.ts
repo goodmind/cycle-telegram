@@ -2,7 +2,7 @@ import { StreamAdapter } from '@cycle/base'
 import RxAdapter from '@cycle/rx-adapter'
 import { identity, curryN, compose, evolve, pickAll, chain, keys, ifElse, is } from 'ramda'
 import { Observable, Observable as $ } from 'rx'
-import { TcombWebhookResponse } from '../runtime-types'
+import { TcombWebhookResponse, TcombUpdate } from '../runtime-types'
 
 export * from './entities'
 
@@ -43,6 +43,16 @@ export function adapter (runSA: StreamAdapter) {
   }
 
   return adapt
+}
+
+export function messageCase (update: TcombUpdate) {
+  if (update.channel_post) {
+    return { ...update, message: update.channel_post }
+  }
+  if (update.edited_message) {
+    return { ...update, message: update.edited_message }
+  }
+  return update
 }
 
 export let defaults = curryN(2, (transformations, obj) => compose<any, any, any, () => any>(
