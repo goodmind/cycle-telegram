@@ -49,6 +49,9 @@ export function messageCase (update: TcombUpdate) {
   if (update.channel_post) {
     return { ...update, message: update.channel_post }
   }
+  if (update.edited_channel_post) {
+    return { ...update, message: update.edited_channel_post }
+  }
   if (update.edited_message) {
     return { ...update, message: update.edited_message }
   }

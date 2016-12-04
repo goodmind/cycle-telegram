@@ -16,11 +16,19 @@ import { Request, WebhookResponse } from '.'
 import { TcombUpdate, TcombUpdatesState, TcombWebhookResponse, TcombRequest } from '.'
 import { adapter, isWebhookResponse, convertStream } from '../helpers'
 
-function makeEventsSelector ({message, channelPost, inlineQuery, chosenInlineResult, callbackQuery}: DriverSources) {
+function makeEventsSelector ({
+  message,
+  channelPost,
+  editedChannelPost,
+  inlineQuery,
+  chosenInlineResult,
+  callbackQuery
+}: DriverSources) {
   return function events (eventName: EventNames): Observable<TcombUpdate> {
     return $.case(() => eventName, {
       'message': message.share(),
       'channel_post': channelPost.share(),
+      'edited_channel_post': editedChannelPost.share(),
       'inline_query': inlineQuery.share(),
       'chosen_inline_result': chosenInlineResult.share(),
       'callback_query': callbackQuery.share()
