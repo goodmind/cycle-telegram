@@ -172,6 +172,23 @@ test('should reply to channel posts with basic driver', t => {
   })
 })
 
+test('should reply to edited channel posts with basic driver', t => {
+  let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1480844725000 })
+  let main = ({ bot }: Sources) => ({
+    bot: $.from([
+      bot.events('edited_channel_post').map(reply('Cycle.js'))
+    ])
+  })
+  let { sources, run } = Cycle(main, { bot: basicDriver })
+
+  run()
+  okTake<TcombMessage>(t, sources, (message) => {
+    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+    t.equal(message.text, 'Cycle.js', 'message text should be equal to `Cycle.js`')
+    t.end()
+  })
+})
+
 test('should reply to messages with basic driver', t => {
   let basicDriver = makeTelegramDriver(ACCESS_TOKEN, isRecord ? {} : { startDate: 1464342407440 })
   let main = ({ bot }: Sources) => ({
