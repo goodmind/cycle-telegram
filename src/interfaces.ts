@@ -4,7 +4,8 @@ import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } fr
 export type Token = string
 export type GenericStream<T> = any
 export type DriverSink = TcombRequest | TcombWebhookResponse
-export type EventNames = 'message'
+export type EventNames =
+  | 'message'
   | 'channel_post'
   | 'edited_channel_post'
   | 'inline_query'
