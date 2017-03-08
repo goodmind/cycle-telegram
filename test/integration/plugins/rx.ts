@@ -11,7 +11,7 @@ import {
   Message,
   TcombMessage
 } from '../../../lib/index'
-import { matchStream, Plugin } from '../../../lib/plugins'
+import { makePlugins, Plugin } from '../../../lib/plugins'
 import { OkTakeFn, OnErrorFn } from '../../interfaces'
 
 import * as path from 'path'
@@ -19,12 +19,14 @@ import * as tape from 'tape'
 import * as tapeNock from 'tape-nock'
 
 import Cycle from '@cycle/rx-run'
+import RxAdapter from '@cycle/rx-adapter'
 import { Observable as $ } from 'rx'
 
 interface Sources {
   bot: DriverExecution
 }
 
+const { matchStream } = makePlugins(RxAdapter)
 const isRecord = process.env['NOCK_BACK_MODE'] === 'record'
 const FIXTURES_WRITE_PATH = path.join(__dirname, '..', isRecord ? 'record-fixtures' : 'fixtures')
 const test = tapeNock(tape, {
