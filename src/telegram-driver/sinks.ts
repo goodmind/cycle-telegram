@@ -1,4 +1,4 @@
-import { Request, WebhookResponse } from '../runtime-types'
+import { Request, Chat, WebhookResponse } from '../runtime-types'
 /* tslint:disable */
 import { TcombRequest, TcombWebhookResponse, TcombUpdate as Update } from '../runtime-types/types'
 /* tslint:enable */
@@ -389,6 +389,7 @@ export let getChat = curryN(2, ({ chat_id }: SinkPayload, update: Update) => {
   return Request({
     type: 'sink',
     method: 'getChat',
+    returnType: Chat,
     options
   })
 })
