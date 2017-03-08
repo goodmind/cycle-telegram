@@ -1,8 +1,11 @@
 import { StreamAdapter } from '@cycle/base'
-import RxAdapter from '@cycle/rx-adapter'
-import { identity, curryN, compose, evolve, pickAll, chain, keys, ifElse, is } from 'ramda'
-import { Observable, Observable as $ } from 'rx'
+import RxJSAdapter from '@cycle/rxjs-adapter'
+import { Observable } from 'rxjs'
 import { TcombWebhookResponse } from '../runtime-types'
+import {
+  identity, curryN, compose, evolve,
+  pickAll, chain, keys, ifElse, is
+} from 'ramda'
 
 export * from './entities'
 
@@ -14,7 +17,7 @@ export function isWebhookResponse (
 }
 
 export function isObservable<T> (o: any): o is Observable<T> {
-  return $.isObservable(o)
+  return o && is(Function, o.subscribe)
 }
 
 export type StreamFunction = (...args: any[]) => Observable<any>
@@ -35,7 +38,7 @@ export function adapter (runSA: StreamAdapter) {
       identity))
 
   function adaptStream (stream: Observable<any>) {
-    return convertStream(stream, RxAdapter, runSA)
+    return convertStream(stream, RxJSAdapter, runSA)
   }
 
   function adaptFunction (func: StreamFunction) {
@@ -45,7 +48,7 @@ export function adapter (runSA: StreamAdapter) {
   return adapt
 }
 
-export let defaults = curryN(2, (transformations, obj) => compose<any, any, any, () => any>(
+export let defaults = curryN(2, (transformations, obj) => compose<any, any, any, any>(
   evolve(transformations),
   pickAll)(
     chain(keys, [transformations, obj]),
