@@ -14,7 +14,11 @@ import {
 
 let messageLife =
   ([update, startDate]: [TcombUpdate, number]) =>
-    (startDate - (update.message || update.channel_post || update.edited_channel_post).date * 1000) <= 30000
+    (startDate -
+        (update.message
+      || update.edited_message
+      || update.channel_post
+      || update.edited_channel_post).date * 1000) <= 30000
 
 let max =
   curryN(3, (property: any, acc: any, current: any) =>
@@ -82,6 +86,7 @@ export function makeSources (state: Observable<TcombUpdatesState>): DriverSource
   return {
     message: messageLike('message'),
     channelPost: messageLike('channel_post'),
+    editedMessage: messageLike('edited_message'),
     editedChannelPost: messageLike('edited_channel_post'),
 
     inlineQuery: updates

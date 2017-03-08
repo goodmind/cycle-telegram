@@ -7,6 +7,7 @@ export type DriverSink = TcombRequest | TcombWebhookResponse
 export type EventNames =
   | 'message'
   | 'channel_post'
+  | 'edited_message'
   | 'edited_channel_post'
   | 'inline_query'
   | 'chosen_inline_result'
@@ -21,6 +22,7 @@ export interface DriverOptions {
 export interface DriverSources {
   message: Observable<TcombUpdate>
   channelPost: Observable<TcombUpdate>
+  editedMessage: Observable<TcombUpdate>
   editedChannelPost: Observable<TcombUpdate>
   inlineQuery: Observable<TcombUpdate>
   chosenInlineResult: Observable<TcombUpdate>
