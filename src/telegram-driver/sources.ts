@@ -1,4 +1,4 @@
-import { Observable, Subject, Observable as $ } from 'rx'
+import { Observable, Subject, Observable as $ } from 'rxjs'
 import { curryN, reduce, propIs } from 'ramda'
 import { makeAPIRequest } from './api-request'
 import { Token, DriverSources } from '../interfaces'
@@ -28,7 +28,7 @@ export function makeUpdates (initialState: TcombUpdatesState, token: Token): Obs
 
   let resolve = makeUpdatesResolver(token)
 
-  return $.return(initialState).expand(({offset}) => resolve(offset)
+  return $.of(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
       $.interval(500).take(1),
       (updates: TcombUpdate[], _: any) => UpdatesState({
@@ -47,7 +47,7 @@ export function makeWebHook (
   let webHookUpdates = action.share()
 
   return $.concat<TcombUpdatesState>(
-    $.just(initialState),
+    $.of(initialState),
     webHookUpdates.map((updates: TcombUpdate[]) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
@@ -58,13 +58,13 @@ export function makeWebHook (
 
 export function makeSources (state: Observable<TcombUpdatesState>): DriverSources {
   let updates = state
-    .pluck<TcombUpdate[]>('updates')
+    .pluck('updates')
     .map((u: TcombUpdate[]) => $.from(u))
     .switch()
     .share()
 
   let startDate = state
-    .pluck('startDate')
+    .pluck<TcombUpdatesState, number>('startDate')
     .share()
 
   return {
