@@ -9,11 +9,8 @@
     "telegram"
   ],
   "directories": {},
-  "publishConfig": {
-    "tag": "dev"
-  },
   "release": {
-    "branch": "development"
+    "branch": "master"
   },
   "scripts": {
     "clean": "rm -rf lib/ && mkdir -p lib && typings install",
