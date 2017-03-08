@@ -19,6 +19,7 @@ import { adapter, isWebhookResponse, convertStream } from '../helpers'
 function makeEventsSelector ({
   message,
   channelPost,
+  editedMessage,
   editedChannelPost,
   inlineQuery,
   chosenInlineResult,
@@ -29,6 +30,7 @@ function makeEventsSelector ({
       'message': message.share(),
       'channel_post': channelPost.share(),
       'edited_channel_post': editedChannelPost.share(),
+      'edited_message': editedMessage.share(),
       'inline_query': inlineQuery.share(),
       'chosen_inline_result': chosenInlineResult.share(),
       'callback_query': callbackQuery.share()
