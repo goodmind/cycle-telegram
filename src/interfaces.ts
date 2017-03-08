@@ -1,9 +1,10 @@
-import { Observable, IDisposable } from 'rx'
+import { Observable } from 'rxjs'
 import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } from './runtime-types/types'
 
 export type Token = string
 export type GenericStream<T> = any
 export type DriverSink = TcombRequest | TcombWebhookResponse
+export type PartialUpdate = Partial<TcombUpdate>
 export type EventNames =
   | 'message'
   | 'channel_post'
@@ -29,11 +30,12 @@ export interface DriverSources {
   callbackQuery: Observable<TcombUpdate>
 }
 
-export interface DriverExecution extends IDisposable {
+export interface DriverExecution {
   token: Token
   updates: GenericStream<TcombUpdatesState>
   responses: GenericStream<any>
   events (eventName: string): GenericStream<TcombUpdate>
+  dispose (): void
 }
 
 export interface TelegramAPIRequest {

@@ -1,6 +1,6 @@
 import { TelegramAPIRequest, TelegramAPIResponse, TelegramAPIResponseResult, TelegramAPIError } from '../interfaces'
 
-import { Observable, Observer, Observable as $ } from 'rx'
+import { Observable, Observer, Observable as $ } from 'rxjs'
 import * as request from 'superagent'
 import { Request, Response } from 'superagent'
 import { propOr, last, values, pipe, mapObjIndexed, curryN, ifElse } from 'ramda'
@@ -9,11 +9,11 @@ let fromSuperagent =
   (request: Request): Observable<any> => $.create((obs: Observer<Response>): () => void => {
     request.end((err, res) => {
       if (err) {
-        obs.onError(err)
+        obs.error(err)
       } else {
-        obs.onNext(res)
+        obs.next(res)
       }
-      obs.onCompleted()
+      obs.complete()
     })
 
   return () => request.abort()
@@ -46,9 +46,9 @@ export function makeAPIRequest (
 
   return fromSuperagent(req)
     .catch(e => $.throw(e instanceof Error ? e : new Error(e)))
-    .map<TelegramAPIResponse>(res => res.body)
+    .map<any, TelegramAPIResponse>(res => res.body)
     .map(body => body.ok
-      ? $.just(body.result)
+      ? $.of(body.result)
       : $.throw(body))
     .switch()
 }
