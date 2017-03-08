@@ -118,6 +118,7 @@ export interface TcombUpdate {
     update_id: number;
     message?: TcombMessage;
     edited_message?: TcombMessage;
+    channel_post?: TcombMessage;
     inline_query?: TcombInlineQuery;
     chosen_inline_result?: TcombChosenInlineResult;
     callback_query?: TcombCallbackQuery;

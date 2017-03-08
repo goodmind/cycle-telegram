@@ -1,5 +1,5 @@
 import { Observable, Subject, Observable as $ } from 'rx'
-import { curryN, reduce, propIs } from 'ramda'
+import { unary, curryN, reduce, propIs, pipe, head } from 'ramda'
 import { makeAPIRequest } from './api-request'
 import { Token, DriverSources } from '../interfaces'
 import {
@@ -11,6 +11,10 @@ import {
   TcombUpdate,
   TcombUpdatesState
 } from '../runtime-types/types'
+
+let messageLife =
+  ([update, startDate]: [TcombUpdate, number]) =>
+    (startDate - (update.message || update.channel_post).date * 1000) <= 30000
 
 let max =
   curryN(3, (property: any, acc: any, current: any) =>
@@ -59,7 +63,7 @@ export function makeWebHook (
 export function makeSources (state: Observable<TcombUpdatesState>): DriverSources {
   let updates = state
     .pluck<TcombUpdate[]>('updates')
-    .map((u: TcombUpdate[]) => $.from(u))
+    .map(unary($.from))
     .switch()
     .share()
 
@@ -69,9 +73,15 @@ export function makeSources (state: Observable<TcombUpdatesState>): DriverSource
 
   return {
     message: $.zip(updates, startDate)
-      .filter(([update]) => Message.is(update.message))
-      .filter(([update, startDate]) => (startDate - update.message.date * 1000) <= 30000)
-      .map(([update]) => update)
+      .filter(pipe(head, propIs(Message, 'message')))
+      .filter(messageLife)
+      .map<TcombUpdate>(head)
+      .share(),
+
+    channelPost: $.zip(updates, startDate)
+      .filter(pipe(head, propIs(Message, 'channel_post')))
+      .filter(messageLife)
+      .map<TcombUpdate>(head)
       .share(),
 
     inlineQuery: updates

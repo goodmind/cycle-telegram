@@ -8,7 +8,7 @@ import {
   defaultTo, compose,
   is, isArrayLike
 } from 'ramda'
-import { defaults } from '../helpers'
+import { defaults, messageCase } from '../helpers'
 
 interface SinkPayload { [s: string]: any }
 
@@ -40,7 +40,7 @@ export let broadcast = curryN(2, (options = {}, update: Update) => Request({
   method: 'sendMessage',
   options: defaults(
     {
-      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+      chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
       text: defaultTo('Null-catch: no text provided'),
       reply_markup: JSON.stringify
     },
@@ -52,8 +52,8 @@ export let reply = curryN(2, (options = {}, update: Update) => Request({
   method: 'sendMessage',
   options: defaults(
     {
-      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-      reply_to_message_id: defaultTo(path(['message', 'message_id'], update)),
+      chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
+      reply_to_message_id: defaultTo(path(['message', 'message_id'], messageCase(update))),
       text: defaultTo('Null-catch: no text provided'),
       reply_markup: JSON.stringify
     },
@@ -65,8 +65,8 @@ export let forwardMessage = curryN(2, (options = {}, update: Update) => Request(
   method: 'forwardMessage',
   options: defaults(
     {
-      from_chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-      message_id: defaultTo(path(['message', 'message_id'], update))
+      from_chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
+      message_id: defaultTo(path(['message', 'message_id'], messageCase(update)))
     },
     is(Number, options) ? {chat_id: options} : options)
 }))
@@ -95,7 +95,7 @@ export let sendPhoto = curryN(2, ({
     method: 'sendPhoto',
     options: defaults(
       {
-        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
         reply_markup: JSON.stringify
       },
       options)

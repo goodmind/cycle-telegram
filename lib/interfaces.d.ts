@@ -3,7 +3,7 @@ import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } fr
 export declare type Token = string;
 export declare type GenericStream<T> = any;
 export declare type DriverSink = TcombRequest | TcombWebhookResponse;
-export declare type EventNames = 'message' | 'inline_query' | 'chosen_inline_result' | 'callback_query';
+export declare type EventNames = 'message' | 'channel_post' | 'inline_query' | 'chosen_inline_result' | 'callback_query';
 export interface DriverOptions {
     webhook?: boolean;
     startDate?: number;
@@ -11,6 +11,7 @@ export interface DriverOptions {
 }
 export interface DriverSources {
     message: Observable<TcombUpdate>;
+    channelPost: Observable<TcombUpdate>;
     inlineQuery: Observable<TcombUpdate>;
     chosenInlineResult: Observable<TcombUpdate>;
     callbackQuery: Observable<TcombUpdate>;
