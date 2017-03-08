@@ -1,5 +1,5 @@
 import { StreamAdapter } from '@cycle/base';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { TcombWebhookResponse } from '../runtime-types';
 export * from './entities';
 export declare function isWebhookResponse(request: Observable<Observable<any>>, options: any): request is Observable<Observable<TcombWebhookResponse>>;

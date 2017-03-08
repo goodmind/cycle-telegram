@@ -1,4 +1,4 @@
-import { Observable, IDisposable } from 'rx';
+import { Observable } from 'rxjs';
 import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } from './runtime-types/types';
 export declare type Token = string;
 export declare type GenericStream<T> = any;
@@ -15,11 +15,12 @@ export interface DriverSources {
     chosenInlineResult: Observable<TcombUpdate>;
     callbackQuery: Observable<TcombUpdate>;
 }
-export interface DriverExecution extends IDisposable {
+export interface DriverExecution {
     token: Token;
     updates: GenericStream<TcombUpdatesState>;
     responses: GenericStream<any>;
     events(eventName: string): GenericStream<TcombUpdate>;
+    dispose(): void;
 }
 export interface TelegramAPIRequest {
     token: Token;

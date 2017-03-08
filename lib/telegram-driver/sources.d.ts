@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rx';
+import { Observable, Subject } from 'rxjs';
 import { Token, DriverSources } from '../interfaces';
 import { TcombUpdate, TcombUpdatesState } from '../runtime-types/types';
 export declare function makeUpdates(initialState: TcombUpdatesState, token: Token): Observable<TcombUpdatesState>;
