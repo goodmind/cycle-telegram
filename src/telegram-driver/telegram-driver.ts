@@ -1,7 +1,8 @@
 import RxAdapter from '@cycle/rx-adapter'
 import { StreamAdapter } from '@cycle/base'
 import { Observable, Subject, Observable as $ } from 'rx'
-import { mapObjIndexed } from 'ramda'
+import { T, last, always, and, is, identity, mapObjIndexed, both, invoker, cond } from 'ramda'
+import { isType, Type } from 'tcomb'
 
 import {
   DriverOptions,
@@ -27,6 +28,35 @@ function makeEventsSelector ({message, inlineQuery, chosenInlineResult, callback
   }
 }
 
+function makeResponsesSelector (res: Observable<any>) {
+  const emptyType = Object.assign(identity.bind({}), { is: () => true })
+  const filter = (invoker as any)(1, 'filter')
+
+  return function responses<T, R> ({
+    responseType,
+    method
+  }: { responseType?: Type<R>, method?: string } = {}): Observable<T> {
+    const responseFilter = ([_, v]: any) => responseType.is(responseType(v))
+    const methodRFilter = ([{ request: { returnType: Type = emptyType } }, v]: any) => Type.is(Type(v))
+    const requestFilter = ([{ request: { returnType: Type = responseType } }, v]: any) => Type.is(Type(v))
+    const methodFilter = ([{ request: r }]: any) => r.method === method
+    let selectedRes = cond([
+      [
+        always(and(isType(responseType), !method)),
+        filter(responseFilter)],
+      [
+        always(and(is(String, method), !responseType)),
+        filter(both(methodFilter, methodRFilter))],
+      [
+        always(and(isType(responseType), is(String, method))),
+        filter(both(methodFilter, requestFilter))],
+      [T, identity]
+    ])($.zip(res, res.switch())) as Observable<[any, any]>
+
+    return selectedRes.map<T>(last)
+  }
+}
+
 let handleWebhook = (
   token: Token,
   request: Observable<Observable<TcombWebhookResponse>>,
@@ -46,8 +76,9 @@ let handleRequest = (token: Token, request: Observable<Observable<TcombRequest>>
     .flatMap(({
       method,
       multipart,
+      returnType,
       options: query
-    }) => makeAPIRequest({token, method, query}, multipart))
+    }) => makeAPIRequest({returnType, token, method, query}, multipart))
 }
 
 export function makeTelegramDriver (
@@ -61,7 +92,7 @@ export function makeTelegramDriver (
   }
 
   let proxyUpdates = options.skipUpdates ? $.never<TcombUpdatesState>() : makeUpdates(state, token)
-  let proxyWebHook = new Subject<any>()
+  let proxyWebHook = new Subject<TcombUpdate[]>()
 
   if (options.webhook) {
     proxyUpdates = makeWebHook(state, proxyWebHook)
@@ -96,8 +127,9 @@ export function makeTelegramDriver (
       },
       mapObjIndexed(adapt, {
         events: makeEventsSelector(sources),
-        updates,
-        responses
+        selectResponses: makeResponsesSelector(responses),
+        responses: responses.switch(),
+        updates
       })) as DriverExecution
   }
 
