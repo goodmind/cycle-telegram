@@ -1,0 +1,156 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 0,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 684515585,
+                    "channel_post": {
+                        "message_id": 15,
+                        "chat": {
+                            "id": -1001096280181,
+                            "title": "cycle-telegram recording channel",
+                            "username": "cycletelegram",
+                            "type": "channel"
+                        },
+                        "date": 1480844725,
+                        "text": "hi"
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 04 Dec 2016 09:45:25 GMT",
+            "content-type": "application/json",
+            "content-length": "226",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 684515586,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 684515586,
+                    "edited_channel_post": {
+                        "message_id": 15,
+                        "chat": {
+                            "id": -1001096280181,
+                            "title": "cycle-telegram recording channel",
+                            "username": "cycletelegram",
+                            "type": "channel"
+                        },
+                        "date": 1480844725,
+                        "edit_date": 1480844731,
+                        "text": "hi no"
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sun, 04 Dec 2016 09:45:31 GMT",
+            "content-type": "application/json",
+            "content-length": "259",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 684515587,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
+            "content-type": "application/json",
+            "content-length": "261",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
+        "body": {
+            "chat_id": -1001096280181,
+            "reply_to_message_id": 15,
+            "text": "Cycle.js"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 16,
+                "chat": {
+                    "id": -1001096280181,
+                    "title": "cycle-telegram recording channel",
+                    "username": "cycletelegram",
+                    "type": "channel"
+                },
+                "date": 1480844731,
+                "reply_to_message": {
+                    "message_id": 15,
+                    "chat": {
+                        "id": -1001096280181,
+                        "title": "cycle-telegram recording channel",
+                        "username": "cycletelegram",
+                        "type": "channel"
+                    },
+                    "date": 1480844725,
+                    "edit_date": 1480844731,
+                    "text": "hi no"
+                },
+                "text": "Cycle.js"
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.1",
+            "date": "Sun, 04 Dec 2016 09:45:33 GMT",
+            "content-type": "application/json",
+            "content-length": "399",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

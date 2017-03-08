@@ -1,5 +1,7 @@
 node_modules/
 .idea/
+lib/
+.vscode/
 typings/
 test/record.js
 test/record-fixtures/

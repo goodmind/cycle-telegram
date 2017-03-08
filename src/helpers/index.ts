@@ -1,7 +1,12 @@
 import { StreamAdapter } from '@cycle/base'
 import RxJSAdapter from '@cycle/rxjs-adapter'
 import { Observable } from 'rxjs'
-import { TcombWebhookResponse } from '../runtime-types'
+import {
+  TcombWebhookResponse,
+  // tslint:disable-next-line 
+  TcombUpdate
+} from '../runtime-types'
+import { PartialUpdate } from '../interfaces'
 import {
   identity, curryN, compose, evolve,
   pickAll, chain, keys, ifElse, is
@@ -46,6 +51,19 @@ export function adapter (runSA: StreamAdapter) {
   }
 
   return adapt
+}
+
+export function messageCase (update: PartialUpdate) {
+  if (update.channel_post) {
+    return { ...update, message: update.channel_post }
+  }
+  if (update.edited_channel_post) {
+    return { ...update, message: update.edited_channel_post }
+  }
+  if (update.edited_message) {
+    return { ...update, message: update.edited_message }
+  }
+  return update
 }
 
 export let defaults = curryN(2, (transformations, obj) => compose<any, any, any, any>(

@@ -17,10 +17,21 @@ import { TcombUpdate, TcombUpdatesState, TcombWebhookResponse } from '.'
 import { adapter, isWebhookResponse, convertStream } from '../helpers'
 
 let makeEventsSelector =
-  ({message, inlineQuery, chosenInlineResult, callbackQuery}: DriverSources) =>
+  ({
+    message,
+    channelPost,
+    editedMessage,
+    editedChannelPost,
+    inlineQuery,
+    chosenInlineResult,
+    callbackQuery
+  }: DriverSources) =>
     (eventName: EventNames): Observable<TcombUpdate> =>
       ({
         'message': message.share(),
+        'channel_post': channelPost.share(),
+        'edited_channel_post': editedChannelPost.share(),
+        'edited_message': editedMessage.share(),
         'inline_query': inlineQuery.share(),
         'chosen_inline_result': chosenInlineResult.share(),
         'callback_query': callbackQuery.share()

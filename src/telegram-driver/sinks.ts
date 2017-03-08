@@ -2,6 +2,7 @@ import { Request, WebhookResponse } from '../runtime-types'
 /* tslint:disable */
 import { TcombRequest, TcombWebhookResponse, TcombUpdate } from '../runtime-types/types'
 /* tslint:enable */
+import { PartialUpdate as Update } from '../interfaces'
 import {
   map, assoc,
   curry, path,
@@ -10,10 +11,9 @@ import {
   // tslint:disable-next-line
   CurriedFunction2
 } from 'ramda'
-import { defaults } from '../helpers'
+import { defaults, messageCase } from '../helpers'
 
 export interface SinkPayload { [s: string]: any }
-type Update = TcombUpdate | {}
 
 const curryN = <T1, T2, R>(n: number, func: (a: T1, b: T2) => R) => curry(func)
 
@@ -48,7 +48,7 @@ export let broadcast = curryN(2, (options: SinkPayload = {}, update: Update) => 
   method: 'sendMessage',
   options: defaults(
     {
-      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+      chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
       text: defaultTo('Null-catch: no text provided'),
       reply_markup: JSON.stringify
     },
@@ -60,8 +60,8 @@ export let reply = curryN(2, (options: SinkPayload | string = {}, update: Update
   method: 'sendMessage',
   options: defaults(
     {
-      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-      reply_to_message_id: defaultTo(path(['message', 'message_id'], update)),
+      chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
+      reply_to_message_id: defaultTo(path(['message', 'message_id'], messageCase(update))),
       text: defaultTo('Null-catch: no text provided'),
       reply_markup: JSON.stringify
     },
@@ -73,8 +73,8 @@ export let forwardMessage = curryN(2, (options: SinkPayload | number = {}, updat
   method: 'forwardMessage',
   options: defaults(
     {
-      from_chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-      message_id: defaultTo(path(['message', 'message_id'], update))
+      from_chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
+      message_id: defaultTo(path(['message', 'message_id'], messageCase(update)))
     },
     is(Number, options) ? {chat_id: options} : options)
 }))
@@ -103,7 +103,7 @@ export let sendPhoto = curryN(2, ({
     method: 'sendPhoto',
     options: defaults(
       {
-        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
         reply_markup: JSON.stringify
       },
       options)
