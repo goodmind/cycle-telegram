@@ -14,7 +14,7 @@ import {
 
 let messageLife =
   ([update, startDate]: [TcombUpdate, number]) =>
-    (startDate - (update.message || update.channel_post).date * 1000) <= 30000
+    (startDate - (update.message || update.channel_post || update.edited_channel_post).date * 1000) <= 30000
 
 let max =
   curryN(3, (property: any, acc: any, current: any) =>
@@ -71,18 +71,18 @@ export function makeSources (state: Observable<TcombUpdatesState>): DriverSource
     .pluck('startDate')
     .share()
 
-  return {
-    message: $.zip(updates, startDate)
-      .filter(pipe(head, propIs(Message, 'message')))
-      .filter(messageLife)
-      .map<TcombUpdate>(head)
-      .share(),
+  let messageLike =
+    (kind: 'message' | 'edited_message' | 'channel_post' | 'edited_channel_post') =>
+      $.zip(updates, startDate)
+        .filter(pipe(head, propIs(Message, kind)))
+        .filter(messageLife)
+        .map<TcombUpdate>(head)
+        .share()
 
-    channelPost: $.zip(updates, startDate)
-      .filter(pipe(head, propIs(Message, 'channel_post')))
-      .filter(messageLife)
-      .map<TcombUpdate>(head)
-      .share(),
+  return {
+    message: messageLike('message'),
+    channelPost: messageLike('channel_post'),
+    editedChannelPost: messageLike('edited_channel_post'),
 
     inlineQuery: updates
       .filter(propIs(InlineQuery, 'inline_query'))
