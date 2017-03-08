@@ -1,6 +1,6 @@
 import { map, when, isEmpty, curryN, match, find, filter, not, isNil, compose, merge, prop, last, test } from 'ramda'
 import { StreamAdapter } from '@cycle/base'
-import RxAdapter from '@cycle/rx-adapter'
+import RxJSAdapter from '@cycle/rxjs-adapter'
 import isolate from '@cycle/isolate'
 import * as t from 'tcomb'
 
@@ -133,7 +133,7 @@ let toComponent: (u: TcombUpdate) =>
   (query: string, plugins: Plugin[]) =>
     [find(testPattern(query), plugins)])
 
-export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExecution {
+export function makePlugins (externalSA: StreamAdapter = RxJSAdapter): PluginsExecution {
   function matchWith (
     this: GenericStream<TcombUpdate>,
     plugins: Plugin[],
@@ -141,16 +141,16 @@ export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExec
     {dupe = true} = {dupe: true}
   ) {
     return convertStream(
-      convertStream(this, externalSA, RxAdapter)
+      convertStream(this, externalSA, RxJSAdapter)
         .map((u: TcombUpdate) => dupe ? toComponents(u) : toComponent(u))
         .flatMap((f: CurriedToComponent) => f(plugins, sources))
         .filter(prop('bot')),
-      RxAdapter,
+      RxJSAdapter,
       externalSA)
   }
 
   function matchStream (sourceObservable: GenericStream<TcombUpdate>, ...args: any[]) {
-    return matchWith.apply(convertStream(sourceObservable, externalSA, RxAdapter), args)
+    return matchWith.apply(convertStream(sourceObservable, externalSA, RxJSAdapter), args)
   }
 
   return { matchWith, matchStream }
