@@ -16,8 +16,8 @@ let fromSuperagent =
       obs.complete()
     })
 
-  return () => request.abort()
-})
+    return () => request.abort()
+  })
 
 let transformReq = curryN(2, (req: Request, multipart: boolean) => ifElse(
   () => multipart,
