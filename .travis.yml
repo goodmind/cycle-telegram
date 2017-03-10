@@ -21,7 +21,7 @@ after_script:
       exitCode=$?
       if [ "$exitCode" -eq 0 ]; then
         if [[ ($TRAVIS_PULL_REQUEST == false) ]] ; then
-          sh ./.scripts/trigger-travis.sh goodmind check-types $TRAVIS_TOKEN
+          sh ./.scripts/trigger-travis.sh --branch docker goodmind check-types $TRAVIS_TOKEN
         fi
       fi
 after_success:
