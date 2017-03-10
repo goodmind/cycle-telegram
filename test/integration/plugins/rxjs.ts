@@ -19,7 +19,7 @@ import * as path from 'path'
 import * as tape from 'tape'
 import * as tapeNock from 'tape-nock'
 
-import Cycle from '@cycle/rxjs-run'
+import { setup as Cycle } from '@cycle/rxjs-run'
 import { Observable as $ } from 'rxjs'
 
 interface Sources {
@@ -77,7 +77,7 @@ test('should reply to command `/help` with basic driver', t => {
         .mergeAll()
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {

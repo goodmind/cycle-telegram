@@ -18,15 +18,14 @@ import * as path from 'path'
 import * as tape from 'tape'
 import * as tapeNock from 'tape-nock'
 
-import Cycle from '@cycle/xstream-run'
-import XsAdapter from '@cycle/xstream-adapter'
+import { setup as Cycle } from '@cycle/run'
 import xs from 'xstream'
 
 interface Sources {
   bot: DriverExecution
 }
 
-const { matchStream } = makePlugins(XsAdapter)
+const { matchStream } = makePlugins()
 const isRecord = process.env['NOCK_BACK_MODE'] === 'record'
 const FIXTURES_WRITE_PATH = path.join(__dirname, '..', isRecord ? 'record-fixtures' : 'fixtures')
 const test = tapeNock(tape, {
@@ -80,7 +79,7 @@ test('should reply to command `/help` with basic driver', t => {
         .flatten()
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
