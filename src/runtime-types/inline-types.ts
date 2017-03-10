@@ -59,8 +59,8 @@ export type TcombInputMessageContent =
   TcombInputVenueMessageContent |
   TcombInputContactMessageContent
 
-const BaseInlineQuery = function <T>(props: any, name: string = 'Unknown') {
-  return t.struct<T>(
+const BaseInlineQuery = <T>(props: any, name: string = 'Unknown') =>
+  t.struct<T>(
     Object.assign(
       {},
       {
@@ -71,7 +71,6 @@ const BaseInlineQuery = function <T>(props: any, name: string = 'Unknown') {
       },
       props),
     name)
-}
 export interface BaseInlineQueryResult {
   type: string
   id: string
