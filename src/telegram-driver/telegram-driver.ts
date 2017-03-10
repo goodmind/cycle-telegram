@@ -1,5 +1,3 @@
-import RxJSAdapter from '@cycle/rxjs-adapter'
-import { StreamAdapter } from '@cycle/base'
 import { Observable, Subject, Observable as $ } from 'rxjs'
 import { mapObjIndexed } from 'ramda'
 
@@ -14,7 +12,7 @@ import { makeSources, makeUpdates, makeWebHook } from './sources'
 import { makeAPIRequest } from './api-request'
 import { Request, WebhookResponse } from '.'
 import { TcombUpdate, TcombUpdatesState, TcombWebhookResponse } from '.'
-import { adapter, isWebhookResponse, convertStream } from '../helpers'
+import { isWebhookResponse, adapt } from '../helpers'
 
 let makeEventsSelector =
   ({
@@ -87,10 +85,7 @@ export function makeTelegramDriver (
   let sources = makeSources(updates)
   let disposable = updates.connect()
 
-  function telegramDriver (sourceRequest: Observable<Observable<DriverSink>>, runSA: StreamAdapter): DriverExecution {
-    let adapt = adapter(runSA)
-    let request = sourceRequest.map(x => convertStream(x, runSA, RxJSAdapter))
-
+  function telegramDriver (request: Observable<Observable<DriverSink>>): DriverExecution {
     if (isWebhookResponse(request, options)) {
       handleWebhook(token, request, proxyWebHook)
     }
@@ -110,7 +105,5 @@ export function makeTelegramDriver (
       })) as DriverExecution
   }
 
-  (telegramDriver as any).streamAdapter = RxJSAdapter
-
-  return telegramDriver
+  return (req: any) => telegramDriver($.from(req))
 }
