@@ -1,9 +1,9 @@
-import { StreamAdapter } from '@cycle/base'
-import RxJSAdapter from '@cycle/rxjs-adapter'
 import { Observable } from 'rxjs'
+import xs from 'xstream'
+import { adapt as _adapt } from '@cycle/run/lib/adapt'
 import {
   TcombWebhookResponse,
-  // tslint:disable-next-line 
+  // tslint:disable-next-line
   TcombUpdate
 } from '../runtime-types'
 import { PartialUpdate } from '../interfaces'
@@ -27,31 +27,16 @@ export function isObservable<T> (o: any): o is Observable<T> {
 
 export type StreamFunction = (...args: any[]) => Observable<any>
 
-export function convertStream (stream: any, sourceSA: StreamAdapter, targetSA: StreamAdapter) {
-  return targetSA.isValidStream(stream)
-    ? stream
-    : targetSA.adapt(stream, sourceSA.streamSubscribe)
-}
+export const convertStream =
+  (stream: any) => _adapt(xs.from(stream) as any)
 
-export function adapter (runSA: StreamAdapter) {
-  let adapt: (streamOrFunc: Observable<any> | StreamFunction) => any = ifElse(
-    isObservable,
-    adaptStream,
-    ifElse(
-      is(Function),
-      adaptFunction,
-      identity))
-
-  function adaptStream (stream: Observable<any>) {
-    return convertStream(stream, RxJSAdapter, runSA)
-  }
-
-  function adaptFunction (func: StreamFunction) {
-    return (...args: any[]) => adaptStream(func(...args))
-  }
-
-  return adapt
-}
+export const adapt: (streamOrFunc: Observable<any> | StreamFunction) => any = ifElse(
+  isObservable,
+  convertStream,
+  ifElse(
+    is(Function),
+    func => (...args: any[]) => convertStream(func(...args)),
+    identity))
 
 export function messageCase (update: PartialUpdate) {
   if (update.channel_post) {
