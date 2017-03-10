@@ -1,1 +1,1 @@
-require(`./index/${process.env['STREAM_MODE'] || 'rx'}`)
+require(`./index/${process.env['STREAM_MODE'] || 'rxjs'}`)

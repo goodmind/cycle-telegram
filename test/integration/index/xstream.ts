@@ -66,7 +66,7 @@ import * as tapeNock from 'tape-nock'
 import * as fs from 'fs'
 import * as tc from 'tcomb'
 
-import Cycle from '@cycle/xstream-run'
+import { setup as Cycle } from '@cycle/run'
 import xs from 'xstream'
 import { prop, is } from 'ramda'
 
@@ -127,7 +127,7 @@ test('should get me with basic driver', t => {
       xs.of(getMe())
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombUser>(t, sources, (user) => {
@@ -146,7 +146,7 @@ test('should get webhook info with basic driver', t => {
       xs.of(getWebhookInfo())
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombWebhookInfo>(t, sources, (info) => {
@@ -162,7 +162,7 @@ test('should reply to channel posts with basic driver', t => {
       bot.events('channel_post').map(reply('Cycle.js'))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -179,7 +179,7 @@ test('should reply to edited channel posts with basic driver', t => {
       bot.events('edited_channel_post').map(reply('Cycle.js'))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -196,7 +196,7 @@ test('should reply to edited messages with basic driver', t => {
       bot.events('edited_message').map(reply('Cycle.js'))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -213,7 +213,7 @@ test('should reply to messages with basic driver', t => {
       bot.events('message').map(reply('Cycle.js'))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -232,7 +232,7 @@ test('should forward message with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -251,7 +251,7 @@ test('should send photo with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -275,7 +275,7 @@ test('should send audio with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -294,7 +294,7 @@ test.skip('should send document with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -313,7 +313,7 @@ test.skip('should send sticker with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -332,7 +332,7 @@ test.skip('should send video with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -351,7 +351,7 @@ test.skip('should send voice with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -370,7 +370,7 @@ test('should send location with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -395,7 +395,7 @@ test('should send venue with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -416,7 +416,7 @@ test('should send contact with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -437,7 +437,7 @@ test('should send chat action with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<boolean>(t, sources, (bool) => {
@@ -455,7 +455,7 @@ test('should get user profile photos with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombUserProfilePhotos>(t, sources, (userProfilePhotos) => {
@@ -477,7 +477,7 @@ test('should get file with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombFile>(t, sources, (file) => {
@@ -496,7 +496,7 @@ test('should kick chat member with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<boolean>(t, sources, (bool) => {
@@ -514,7 +514,7 @@ test('should unban chat member with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<boolean>(t, sources, (bool) => {
@@ -530,7 +530,7 @@ test('should get chat with basic driver', t => {
       xs.of(getChat({ chat_id: GROUP_ID }, {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombChat>(t, sources, (chat) => {
@@ -547,7 +547,7 @@ test('should get chat administrators with basic driver', t => {
       xs.of(getChatAdministrators({ chat_id: GROUP_ID }, {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombChatMember[]>(t, sources, (chatMembers) => {
@@ -567,7 +567,7 @@ test('should get chat members count with basic driver', t => {
       xs.of(getChatMembersCount({ chat_id: GROUP_ID }, {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<number>(t, sources, (chatMembersCount) => {
@@ -583,7 +583,7 @@ test('should get chat member with basic driver', t => {
       xs.of(getChatMember({ chat_id: GROUP_ID, user_id: 39759851 }, {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombChatMember>(t, sources, (chatMember) => {
@@ -618,7 +618,7 @@ test.skip('should answer callback query with basic driver', t => {
         })
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake(t, sources, console.log.bind(console))
@@ -639,7 +639,7 @@ test('should edit message text with basic driver', t => {
         .map(message => editMessageText({ text: 'Cycle Telegram' }, { message }))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okDrop<TcombMessage | boolean>(t, sources, (message) => {
@@ -667,7 +667,7 @@ test('should edit message caption with basic driver', t => {
         .map(message => editMessageCaption({ caption: 'Cycle Telegram' }, { message }))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okDrop<TcombMessage | boolean>(t, sources, (message) => {
@@ -710,7 +710,7 @@ test('should edit message reply markup with basic driver', t => {
           { message }))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okDrop<TcombMessage | boolean>(t, sources, (message) => {
@@ -741,7 +741,7 @@ test('should reply to inline query with basic driver', t => {
         .map(answerInlineQuery(results))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<boolean>(t, sources, (bool) => {
@@ -757,7 +757,7 @@ test('should leave chat with basic driver', t => {
       xs.of(leaveChat({ chat_id: GROUP_ID }, {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<boolean>(t, sources, (bool) => {
@@ -778,7 +778,7 @@ test('should send game with basic driver', t => {
         {}))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okTake<TcombMessage>(t, sources, (message) => {
@@ -848,7 +848,7 @@ test('should set game score with basic driver', t => {
         })
     ])
   })
-  let { run } = Cycle(main, { bot: basicDriver })
+  let { run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
 })
@@ -879,7 +879,7 @@ test('should get game high scores with basic driver', t => {
             { message }))
     ])
   })
-  let { sources, run } = Cycle(main, { bot: basicDriver })
+  let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
 
   run()
   okDrop<TcombGameHighScore[]>(t, sources, (gameHighScores) => {
