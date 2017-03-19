@@ -1,9 +1,11 @@
-import { Observable, IDisposable } from 'rx'
+import { Observable } from 'rxjs'
 import { TcombWebhookResponse, TcombRequest, TcombUpdate, TcombUpdatesState } from './runtime-types/types'
+import * as t from 'tcomb'
 
 export type Token = string
 export type GenericStream<T> = any
 export type DriverSink = TcombRequest | TcombWebhookResponse
+export type PartialUpdate = Partial<TcombUpdate>
 export type EventNames =
   | 'message'
   | 'channel_post'
@@ -29,30 +31,41 @@ export interface DriverSources {
   callbackQuery: Observable<TcombUpdate>
 }
 
-export interface DriverExecution extends IDisposable {
+export interface DriverExecution {
   token: Token
   updates: GenericStream<TcombUpdatesState>
   responses: GenericStream<any>
+  selectResponses<T, R> (query: Partial<{ responseType: t.Type<R>, method: string }>): GenericStream<T>
   events (eventName: string): GenericStream<TcombUpdate>
+  dispose (): void
 }
 
-export interface TelegramAPIRequest {
-  token: Token
-  method: string
-  query: any
-  httpMethod?: string
-}
+export namespace TelegramAPI {
+  export interface Request {
+    token: Token
+    method: string
+    query: any
+    httpMethod?: string
+    returnType?: t.Type<any>
+  }
 
-export interface TelegramAPIError {
-  ok: boolean
-  description: string
-  error_code: number
-}
+  export interface ResponseParameters {
+    migrate_to_chat_id: string
+    retry_after: number
+  }
 
-export interface TelegramAPIResponseResult {}
+  export interface Error {
+    ok: boolean
+    description: string
+    error_code: number
+    parameters?: ResponseParameters
+  }
 
-export interface TelegramAPIResponse {
-  ok: boolean
-  description?: string
-  result: TelegramAPIResponseResult
+  export interface ResponseResult {}
+
+  export interface Response {
+    ok: boolean
+    description?: string
+    result: ResponseResult
+  }
 }

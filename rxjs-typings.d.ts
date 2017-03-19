@@ -1,12 +1,14 @@
 import { TcombUpdate, TcombUpdatesState, Token } from './lib'
+import { ComponentSinks, ComponentSources } from './lib/plugins'
 import { Observable } from 'rxjs'
-import { ComponentSinks, ComponentSources } from './lib/plugins';
+import * as t from 'tcomb'
 
 declare module './lib' {
   interface DriverExecution {
     token: Token
     updates: Observable<TcombUpdatesState>
     responses: Observable<any>
+    selectResponses<T, R> (query: Partial<{ responseType: t.Type<R>, method: string }>): Observable<T>
     events (eventName: string): Observable<TcombUpdate>
     dispose (): void
   }

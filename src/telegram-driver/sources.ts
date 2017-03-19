@@ -1,4 +1,4 @@
-import { Observable, Subject, Observable as $ } from 'rx'
+import { Observable, Subject, Observable as $ } from 'rxjs'
 import { unary, curryN, reduce, propIs, pipe, head } from 'ramda'
 import { makeAPIRequest } from './api-request'
 import { Token, DriverSources } from '../interfaces'
@@ -29,14 +29,14 @@ let makeUpdatesResolver =
     token,
     method: 'getUpdates',
     query: { offset, timeout: 60000 }
-  }))
+  }).switch())
 
 export function makeUpdates (initialState: TcombUpdatesState, token: Token): Observable<TcombUpdatesState> {
   UpdatesState(initialState)
 
   let resolve = makeUpdatesResolver(token)
 
-  return $.return(initialState).expand(({offset}) => resolve(offset)
+  return $.of(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
       $.interval(500).take(1),
       (updates: TcombUpdate[], _: any) => UpdatesState({
@@ -55,7 +55,7 @@ export function makeWebHook (
   let webHookUpdates = action.share()
 
   return $.concat<TcombUpdatesState>(
-    $.just(initialState),
+    $.of(initialState),
     webHookUpdates.map((updates: TcombUpdate[]) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
@@ -66,21 +66,20 @@ export function makeWebHook (
 
 export function makeSources (state: Observable<TcombUpdatesState>): DriverSources {
   let updates = state
-    .pluck<TcombUpdate[]>('updates')
-    .map(unary($.from))
-    .switch()
+    .pluck('updates')
+    .flatMap<TcombUpdate[], TcombUpdate>(unary($.from))
     .share()
 
   let startDate = state
-    .pluck('startDate')
+    .pluck<TcombUpdatesState, number>('startDate')
     .share()
 
   let messageLike =
     (kind: 'message' | 'edited_message' | 'channel_post' | 'edited_channel_post') =>
       $.zip(updates, startDate)
-        .filter(pipe(head, propIs(Message, kind)))
+        .filter(pipe<[TcombUpdate, number], TcombUpdate, boolean>(head, propIs(Message, kind)))
         .filter(messageLife)
-        .map<TcombUpdate>(head)
+        .map<[TcombUpdate, number], TcombUpdate>(head)
         .share()
 
   return {

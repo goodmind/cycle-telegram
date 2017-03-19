@@ -10,9 +10,20 @@ node_js:
   - '4'
 before_install:
   - npm i -g npm@^3.0.0
+  - npm i --save-dev travis-after-all
 before_script:
   - npm prune
 after_success:
+  - |
+      set +e
+      declare exitCode;
+      $(npm bin)/travis-after-all
+      exitCode=$?
+      if [ "$exitCode" -eq 0 ]; then
+        if [[ ($TRAVIS_PULL_REQUEST == false) ]] ; then
+          sh ./.scripts/trigger-travis.sh --branch docker goodmind check-types $TRAVIS_TOKEN
+        fi
+      fi
   - npm run semantic-release
 branches:
   except:

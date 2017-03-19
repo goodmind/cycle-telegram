@@ -335,14 +335,15 @@ export const Request = t.struct<TcombRequest>({
   type: t.enums.of(['sink']),
   multipart: t.maybe(t.Boolean),
   method: t.String,
-  returnType: t.maybe(t.String),
+  // TODO: stricter types
+  returnType: t.maybe((t as any).Type),
   options: t.Object
 })
 export interface TcombRequest {
   type: 'sink',
   multipart?: boolean,
   method: string,
-  returnType?: string
+  returnType?: t.Type<any>
   options: any
 }
 
