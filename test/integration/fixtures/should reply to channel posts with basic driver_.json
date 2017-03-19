@@ -1,0 +1,114 @@
+[
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 0,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": [
+                {
+                    "update_id": 684515584,
+                    "channel_post": {
+                        "message_id": 13,
+                        "chat": {
+                            "id": -1001096280181,
+                            "title": "cycle-telegram recording channel",
+                            "username": "cycletelegram",
+                            "type": "channel"
+                        },
+                        "date": 1480790772,
+                        "text": "hi"
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Dec 2016 18:46:12 GMT",
+            "content-type": "application/json",
+            "content-length": "226",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getUpdates",
+        "body": {
+            "offset": 684515585,
+            "timeout": 60000
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": []
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Sep 2016 09:34:43 GMT",
+            "content-type": "application/json",
+            "content-length": "261",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    },
+    {
+        "scope": "https://api.telegram.org:443",
+        "method": "POST",
+        "path": "/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/sendMessage",
+        "body": {
+            "chat_id": -1001096280181,
+            "reply_to_message_id": 13,
+            "text": "Cycle.js"
+        },
+        "status": 200,
+        "response": {
+            "ok": true,
+            "result": {
+                "message_id": 14,
+                "chat": {
+                    "id": -1001096280181,
+                    "title": "cycle-telegram recording channel",
+                    "username": "cycletelegram",
+                    "type": "channel"
+                },
+                "date": 1480790773,
+                "reply_to_message": {
+                    "message_id": 13,
+                    "chat": {
+                        "id": -1001096280181,
+                        "title": "cycle-telegram recording channel",
+                        "username": "cycletelegram",
+                        "type": "channel"
+                    },
+                    "date": 1480790772,
+                    "text": "hi"
+                },
+                "text": "Cycle.js"
+            }
+        },
+        "headers": {
+            "server": "nginx/1.10.0",
+            "date": "Sat, 03 Dec 2016 18:46:13 GMT",
+            "content-type": "application/json",
+            "content-length": "373",
+            "connection": "close",
+            "access-control-allow-origin": "*",
+            "access-control-allow-methods": "GET, POST, OPTIONS",
+            "access-control-expose-headers": "Content-Length,Content-Type,Date,Server,Connection",
+            "strict-transport-security": "max-age=31536000; includeSubdomains"
+        }
+    }
+]

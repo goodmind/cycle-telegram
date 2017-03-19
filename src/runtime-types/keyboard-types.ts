@@ -25,11 +25,11 @@ export interface TcombReplyKeyboardMarkup {
   selective?: boolean
 }
 
-export const ReplyKeyboardHide = t.struct<TcombReplyKeyboardHide>({
+export const ReplyKeyboardRemove = t.struct<TcombReplyKeyboardRemove>({
   hide_keyboard: t.Boolean,
   selective: t.maybe(t.Boolean)
 })
-export interface TcombReplyKeyboardHide {
+export interface TcombReplyKeyboardRemove {
   hide_keyboard: boolean
   selective?: boolean
 }

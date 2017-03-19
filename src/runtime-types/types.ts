@@ -1,6 +1,9 @@
 import * as t from 'tcomb'
 import * as m from './multimedia-types'
 
+export const InputFile = t.Any
+export interface TcombInputFile {}
+
 export const User = t.struct<TcombUser>({
   id: t.Number,
   first_name: t.String,
@@ -39,7 +42,8 @@ export const Chat = t.struct<TcombChat>({
   title: t.maybe(t.String),
   username: t.maybe(t.String),
   first_name: t.maybe(t.String),
-  last_name: t.maybe(t.String)
+  last_name: t.maybe(t.String),
+  all_members_are_administrators: t.maybe(t.Boolean)
 })
 export interface TcombChat {
   id: number
@@ -47,7 +51,8 @@ export interface TcombChat {
   title?: string
   username?: string
   first_name?: string
-  last_name?: string
+  last_name?: string,
+  all_members_are_administrators: boolean
 }
 
 export const MessageEntity = t.struct<TcombMessageEntity>({
@@ -243,16 +248,20 @@ export const Update = t.struct<TcombUpdate>({
   update_id: t.Number,
   message: t.maybe(Message),
   edited_message: t.maybe(Message),
+  channel_post: t.maybe(Message),
+  edited_channel_post: t.maybe(Message),
   inline_query: t.maybe(InlineQuery),
   chosen_inline_result: t.maybe(ChosenInlineResult),
   callback_query: t.maybe(CallbackQuery)
 })
 export interface TcombUpdate {
-  update_id: number,
-  message?: TcombMessage,
-  edited_message?: TcombMessage,
-  inline_query?: TcombInlineQuery,
-  chosen_inline_result?: TcombChosenInlineResult,
+  update_id: number
+  message?: TcombMessage
+  edited_message?: TcombMessage
+  channel_post?: TcombMessage
+  edited_channel_post?: TcombMessage
+  inline_query?: TcombInlineQuery
+  chosen_inline_result?: TcombChosenInlineResult
   callback_query?: TcombCallbackQuery
 }
 

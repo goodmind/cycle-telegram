@@ -1,72 +1,80 @@
 import { Request, Chat, WebhookResponse } from '../runtime-types'
 /* tslint:disable */
-import { TcombRequest, TcombWebhookResponse, TcombUpdate as Update } from '../runtime-types/types'
+import { TcombRequest, TcombWebhookResponse, TcombUpdate } from '../runtime-types/types'
 /* tslint:enable */
+import { PartialUpdate as Update } from '../interfaces'
 import {
   map, assoc,
-  curryN, path,
+  curry, path,
   defaultTo, compose,
-  is, isArrayLike
+  is, isArrayLike,
+  // tslint:disable-next-line
+  CurriedFunction2
 } from 'ramda'
-import { defaults } from '../helpers'
+import { defaults, messageCase } from '../helpers'
 
-interface SinkPayload { [s: string]: any }
+export interface SinkPayload { [s: string]: any }
 
-export let webhook = (update: Update) => WebhookResponse({
+const curryN = <T1, T2, R>(n: number, func: (a: T1, b: T2) => R) => curry(func)
+
+export let webhook = (update: TcombUpdate) => WebhookResponse({
   type: 'webhook',
   update
 })
 
-export let setWebhook = (options = {}) => Request({
+// TODO: stricter types
+export let setWebhook = (options: any = {}) => Request({
   type: 'sink',
   method: 'setWebhook',
   options
 })
 
-export let getWebhookInfo = (options = {}) => Request({
+// TODO: stricter types
+export let getWebhookInfo = (options: any = {}) => Request({
   type: 'sink',
   method: 'getWebhookInfo',
   options
 })
 
-export let getMe = (options = {}) => Request({
+// TODO: stricter types
+export let getMe = (options: any = {}) => Request({
   type: 'sink',
   method: 'getMe',
   options
 })
 
-export let broadcast = curryN(2, (options = {}, update: Update) => Request({
+export let broadcast = curryN(2, (options: SinkPayload = {}, update: Update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: defaults(
     {
-      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+      chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
       text: defaultTo('Null-catch: no text provided'),
       reply_markup: JSON.stringify
     },
     options)
 }))
 
-export let reply = curryN(2, (options = {}, update: Update) => Request({
+export let reply = curryN(2, (options: SinkPayload | string = {}, update: Update) => Request({
   type: 'sink',
   method: 'sendMessage',
   options: defaults(
     {
-      chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-      reply_to_message_id: defaultTo(path(['message', 'message_id'], update)),
+      chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
+      reply_to_message_id: defaultTo(path(['message', 'message_id'], messageCase(update))),
       text: defaultTo('Null-catch: no text provided'),
       reply_markup: JSON.stringify
     },
     is(String, options) ? {text: options} : options)
 }))
 
-export let forwardMessage = curryN(2, (options = {}, update: Update) => Request({
+export let forwardMessage = curryN(2, (options: SinkPayload | number = {}, update: Update) => Request({
   type: 'sink',
   method: 'forwardMessage',
   options: defaults(
     {
-      from_chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
-      message_id: defaultTo(path(['message', 'message_id'], update))
+      from_chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
+      message_id: defaultTo(path(['message', 'message_id'], messageCase(update)))
     },
     is(Number, options) ? {chat_id: options} : options)
 }))
@@ -95,7 +103,7 @@ export let sendPhoto = curryN(2, ({
     method: 'sendPhoto',
     options: defaults(
       {
-        chat_id: defaultTo(path(['message', 'chat', 'id'], update)),
+        chat_id: defaultTo(path(['message', 'chat', 'id'], messageCase(update))),
         reply_markup: JSON.stringify
       },
       options)
@@ -428,7 +436,8 @@ export let getChatMember = curryN(2, ({ chat_id, user_id }: SinkPayload, update:
   })
 })
 
-export let answerCallbackQuery = curryN(2, (options = {}, update: Update) => Request({
+// TODO: stricter types
+export let answerCallbackQuery = curryN(2, (options: any = {}, update: Update) => Request({
   type: 'sink',
   method: 'answerCallbackQuery',
   options: defaults(
@@ -436,7 +445,8 @@ export let answerCallbackQuery = curryN(2, (options = {}, update: Update) => Req
     options)
 }))
 
-export let editMessageText = curryN(2, (options = {}, update: Update) => Request({
+// TODO: stricter types
+export let editMessageText = curryN(2, (options: any = {}, update: Update) => Request({
   type: 'sink',
   method: 'editMessageText',
   options: defaults(
@@ -489,7 +499,8 @@ export let editMessageReplyMarkup = curryN(2, ({
   })
 })
 
-export let answerInlineQuery = curryN(2, (options = {}, update: Update) => {
+// TODO: stricter types
+export let answerInlineQuery = curryN(2, (options: any = {}, update: Update) => {
   let updateResults = (results: any[]) => results[0].id ? results : map(
     answer => assoc('id', Math.random().toString(36).substring(2), answer),
     results || [])

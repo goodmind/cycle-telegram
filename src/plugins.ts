@@ -1,15 +1,15 @@
 import { map, when, isEmpty, curryN, match, find, filter, not, isNil, compose, merge, prop, last, test } from 'ramda'
-import { StreamAdapter } from '@cycle/base'
-import RxAdapter from '@cycle/rx-adapter'
 import isolate from '@cycle/isolate'
 import * as t from 'tcomb'
+
+import { Observable as $ } from 'rxjs'
+import { adapt } from './helpers'
 
 import {
   UpdateMessage,
   UpdateInlineQuery,
   getEntityFirst
 } from './telegram-driver'
-import { convertStream } from './helpers'
 import { GenericStream } from './interfaces'
 import { TcombUpdate, TcombUpdateMessage, TcombUpdateInlineQuery } from './runtime-types/types'
 
@@ -133,28 +133,25 @@ let toComponent: (u: TcombUpdate) =>
   (query: string, plugins: Plugin[]) =>
     [find(testPattern(query), plugins)])
 
-export function makePlugins (externalSA: StreamAdapter = RxAdapter): PluginsExecution {
+export function makePlugins (): PluginsExecution {
   function matchWith (
     this: GenericStream<TcombUpdate>,
     plugins: Plugin[],
     sources: ComponentSources,
     {dupe = true} = {dupe: true}
   ) {
-    return convertStream(
-      convertStream(this, externalSA, RxAdapter)
+    return adapt(
+      $.from(this)
         .map((u: TcombUpdate) => dupe ? toComponents(u) : toComponent(u))
         .flatMap((f: CurriedToComponent) => f(plugins, sources))
-        .filter(prop('bot')),
-      RxAdapter,
-      externalSA)
+        .filter(prop('bot')))
   }
 
   function matchStream (sourceObservable: GenericStream<TcombUpdate>, ...args: any[]) {
-    return matchWith.apply(convertStream(sourceObservable, externalSA, RxAdapter), args)
+    return matchWith.apply($.from(sourceObservable), args)
   }
 
   return { matchWith, matchStream }
 }
 
-let { matchWith, matchStream } = makePlugins()
-export { matchWith, matchStream }
+export let { matchWith, matchStream } = makePlugins()

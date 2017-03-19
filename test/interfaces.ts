@@ -1,23 +1,23 @@
 import tape from 'tape'
+import X = require('../lib')
 
-export interface OnErrorFn<T> {
-  (sources: T, t: tape.Test): (err: any) => void
-}
+export type OnErrorFn<T> =
+  (dispose: T, t: tape.Test) => (err: any) => void
 
-export interface OkTakeFn<T> {
+export type OkTakeFn<Dispose> =
   <U>(
     t: tape.Test,
-    sources: T,
+    source: X.GenericStream<U>,
+    dispose: Dispose,
     next: (m: U) => void,
     error?: (e: any) => void
-  ): void
-}
+  ) => void
 
-export interface OkDropFn<T> {
+export type OkDropFn<Dispose> =
   <U>(
     t: tape.Test,
-    sources: T,
+    source: X.GenericStream<U>,
+    dispose: Dispose,
     next: (m: U) => void,
     error?: (e: any) => void
-  ): void
-}
+  ) => void

@@ -1,8 +1,16 @@
-import { StreamAdapter } from '@cycle/base'
-import RxAdapter from '@cycle/rx-adapter'
-import { identity, curryN, compose, evolve, pickAll, chain, keys, ifElse, is } from 'ramda'
-import { Observable, Observable as $ } from 'rx'
-import { TcombWebhookResponse } from '../runtime-types'
+import { Observable } from 'rxjs'
+import xs from 'xstream'
+import { adapt as _adapt } from '@cycle/run/lib/adapt'
+import {
+  TcombWebhookResponse,
+  // tslint:disable-next-line
+  TcombUpdate
+} from '../runtime-types'
+import { PartialUpdate } from '../interfaces'
+import {
+  identity, curryN, compose, evolve,
+  pickAll, chain, keys, ifElse, is
+} from 'ramda'
 
 export * from './entities'
 
@@ -14,38 +22,36 @@ export function isWebhookResponse (
 }
 
 export function isObservable<T> (o: any): o is Observable<T> {
-  return $.isObservable(o)
+  return o && is(Function, o.subscribe)
 }
 
 export type StreamFunction = (...args: any[]) => Observable<any>
 
-export function convertStream (stream: any, sourceSA: StreamAdapter, targetSA: StreamAdapter) {
-  return targetSA.isValidStream(stream)
-    ? stream
-    : targetSA.adapt(stream, sourceSA.streamSubscribe)
+export const convertStream =
+  (stream: any) => _adapt(xs.from(stream) as any)
+
+export const adapt: (streamOrFunc: Observable<any> | StreamFunction) => any = ifElse(
+  isObservable,
+  convertStream,
+  ifElse(
+    is(Function),
+    func => (...args: any[]) => convertStream(func(...args)),
+    identity))
+
+export function messageCase (update: PartialUpdate) {
+  if (update.channel_post) {
+    return { ...update, message: update.channel_post }
+  }
+  if (update.edited_channel_post) {
+    return { ...update, message: update.edited_channel_post }
+  }
+  if (update.edited_message) {
+    return { ...update, message: update.edited_message }
+  }
+  return update
 }
 
-export function adapter (runSA: StreamAdapter) {
-  let adapt: (streamOrFunc: Observable<any> | StreamFunction) => any = ifElse(
-    isObservable,
-    adaptStream,
-    ifElse(
-      is(Function),
-      adaptFunction,
-      identity))
-
-  function adaptStream (stream: Observable<any>) {
-    return convertStream(stream, RxAdapter, runSA)
-  }
-
-  function adaptFunction (func: StreamFunction) {
-    return (...args: any[]) => adaptStream(func(...args))
-  }
-
-  return adapt
-}
-
-export let defaults = curryN(2, (transformations, obj) => compose<any, any, any, () => any>(
+export let defaults = curryN(2, (transformations, obj) => compose<any, any, any, any>(
   evolve(transformations),
   pickAll)(
     chain(keys, [transformations, obj]),

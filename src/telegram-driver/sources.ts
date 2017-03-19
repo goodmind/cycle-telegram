@@ -1,5 +1,5 @@
-import { Observable, Subject, Observable as $ } from 'rx'
-import { curryN, reduce, propIs } from 'ramda'
+import { Observable, Subject, Observable as $ } from 'rxjs'
+import { unary, curryN, reduce, propIs, pipe, head } from 'ramda'
 import { makeAPIRequest } from './api-request'
 import { Token, DriverSources } from '../interfaces'
 import {
@@ -11,6 +11,14 @@ import {
   TcombUpdate,
   TcombUpdatesState
 } from '../runtime-types/types'
+
+let messageLife =
+  ([update, startDate]: [TcombUpdate, number]) =>
+    (startDate -
+        (update.message
+      || update.edited_message
+      || update.channel_post
+      || update.edited_channel_post).date * 1000) <= 30000
 
 let max =
   curryN(3, (property: any, acc: any, current: any) =>
@@ -28,7 +36,7 @@ export function makeUpdates (initialState: TcombUpdatesState, token: Token): Obs
 
   let resolve = makeUpdatesResolver(token)
 
-  return $.return(initialState).expand(({offset}) => resolve(offset)
+  return $.of(initialState).expand(({offset}) => resolve(offset)
     .combineLatest(
       $.interval(500).take(1),
       (updates: TcombUpdate[], _: any) => UpdatesState({
@@ -47,7 +55,7 @@ export function makeWebHook (
   let webHookUpdates = action.share()
 
   return $.concat<TcombUpdatesState>(
-    $.just(initialState),
+    $.of(initialState),
     webHookUpdates.map((updates: TcombUpdate[]) => UpdatesState({
       startDate: initialState.startDate,
       offset: reduce(max('update_id'), 0, updates) + 1,
@@ -58,21 +66,27 @@ export function makeWebHook (
 
 export function makeSources (state: Observable<TcombUpdatesState>): DriverSources {
   let updates = state
-    .pluck<TcombUpdate[]>('updates')
-    .map((u: TcombUpdate[]) => $.from(u))
-    .switch()
+    .pluck('updates')
+    .flatMap<TcombUpdate[], TcombUpdate>(unary($.from))
     .share()
 
   let startDate = state
-    .pluck('startDate')
+    .pluck<TcombUpdatesState, number>('startDate')
     .share()
 
+  let messageLike =
+    (kind: 'message' | 'edited_message' | 'channel_post' | 'edited_channel_post') =>
+      $.zip(updates, startDate)
+        .filter(pipe<[TcombUpdate, number], TcombUpdate, boolean>(head, propIs(Message, kind)))
+        .filter(messageLife)
+        .map<[TcombUpdate, number], TcombUpdate>(head)
+        .share()
+
   return {
-    message: $.zip(updates, startDate)
-      .filter(([update]) => Message.is(update.message))
-      .filter(([update, startDate]) => (startDate - update.message.date * 1000) <= 30000)
-      .map(([update]) => update)
-      .share(),
+    message: messageLike('message'),
+    channelPost: messageLike('channel_post'),
+    editedMessage: messageLike('edited_message'),
+    editedChannelPost: messageLike('edited_channel_post'),
 
     inlineQuery: updates
       .filter(propIs(InlineQuery, 'inline_query'))
