@@ -34,18 +34,20 @@ const test = tapeNock(tape, {
 })
 const ACCESS_TOKEN = isRecord ? process.env['ACCESS_TOKEN'] : '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
 
-const onError: OnErrorFn<Sources> = (sources, t) => (err) => {
-  sources.bot.dispose()
+type Dispose = Sources['bot']['dispose']
+
+const onError: OnErrorFn<Dispose> = (dispose, t) => (err) => {
+  dispose()
   console.error('test error: ', err)
   t.fail(err)
   t.end()
 }
-const okTake: OkTakeFn<Sources> = <T>(t, sources, next, error = onError(sources, t)) => {
-  sources.bot.responses
+const okTake: OkTakeFn<Dispose> = <T>(t, source, dispose, next, error = onError(dispose, t)) => {
+  source
     .take(1)
     .subscribe(
       (m: T) => {
-        sources.bot.dispose()
+        dispose()
         next(m)
       },
       error,
@@ -78,10 +80,10 @@ test('should reply to command `/help` with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.ok(
       /\/(help)(?:@goodmind_test_bot)?(\s+(.+))?/.test(message.reply_to_message.text),
       'reply to message text should match `/help` command pattern')

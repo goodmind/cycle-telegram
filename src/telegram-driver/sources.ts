@@ -29,7 +29,7 @@ let makeUpdatesResolver =
     token,
     method: 'getUpdates',
     query: { offset, timeout: 60000 }
-  }))
+  }).switch())
 
 export function makeUpdates (initialState: TcombUpdatesState, token: Token): Observable<TcombUpdatesState> {
   UpdatesState(initialState)

@@ -89,30 +89,32 @@ if (isRecord) {
   console.log('Recording mode')
 }
 
-const onError: OnErrorFn<Sources> = (sources, t) => (err) => {
-  sources.bot.dispose()
+type Dispose = Sources['bot']['dispose']
+
+const onError: OnErrorFn<Dispose> = (dispose, t) => (err) => {
+  dispose()
   console.error('test error: ', err)
   t.fail(err)
   t.end()
 }
-const okTake: OkTakeFn<Sources> = <T>(t, sources, next, error = onError(sources, t)) => {
-  sources.bot.responses
+const okTake: OkTakeFn<Dispose> = <T>(t, source, dispose, next, error = onError(dispose, t)) => {
+  source
     .take(1)
     .subscribe({
       next (m: T) {
-        sources.bot.dispose()
+        dispose()
         next(m)
       },
       error,
       complete: () => undefined
     })
 }
-const okDrop: OkDropFn<Sources> = <T>(t, sources, next, error = onError(sources, t)) => {
-  sources.bot.responses
+const okDrop: OkDropFn<Dispose> = <T>(t, source, dispose, next, error = onError(dispose, t)) => {
+  source
     .skip(1)
     .subscribe({
       next (m: T) {
-        sources.bot.dispose()
+        dispose()
         next(m)
       },
       error,
@@ -128,10 +130,10 @@ test('should get me with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombUser>(t, sources, (user) => {
-    t.ok(User.is(User(user)), 'user satisfies typecheck')
+  okTake<TcombUser>(t, selectResponses({ responseType: User }), dispose, (user) => {
     t.ok(user.hasOwnProperty('id'), 'user object has property id')
     t.ok(user.hasOwnProperty('first_name'), 'user object has property first_name')
     t.ok(user.hasOwnProperty('username'), 'user object has property username')
@@ -147,10 +149,10 @@ test('should get webhook info with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombWebhookInfo>(t, sources, (info) => {
-    t.ok(WebhookInfo.is(WebhookInfo(info)), 'webhook info satisfies typecheck')
+  okTake<TcombWebhookInfo>(t, selectResponses({ responseType: WebhookInfo }), dispose, (info) => {
     t.end()
   })
 })
@@ -163,10 +165,10 @@ test('should reply to channel posts with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.equal(message.text, 'Cycle.js', 'message text should be equal to `Cycle.js`')
     t.end()
   })
@@ -180,10 +182,10 @@ test('should reply to edited channel posts with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.equal(message.text, 'Cycle.js', 'message text should be equal to `Cycle.js`')
     t.end()
   })
@@ -197,10 +199,10 @@ test('should reply to edited messages with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.equal(message.text, 'Cycle.js', 'message text should be equal to `Cycle.js`')
     t.end()
   })
@@ -214,10 +216,10 @@ test('should reply to messages with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.equal(message.text, 'Cycle.js', 'message text should be equal to `Cycle.js`')
     t.end()
   })
@@ -233,10 +235,10 @@ test('should forward message with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.ok(is(Object, message), 'message is object')
     t.end()
   })
@@ -252,10 +254,10 @@ test('should send photo with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.ok(message.hasOwnProperty('photo'), 'message has property photo')
     t.end()
   })
@@ -276,10 +278,10 @@ test('should send audio with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.equal(message.voice.mime_type, 'audio/ogg', 'mime type should be audio/ogg')
     t.end()
   })
@@ -295,10 +297,10 @@ test.skip('should send document with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.equal(message.document.file_name, 'test.jpg', 'file name should be test.jpg')
     t.end()
   })
@@ -314,10 +316,10 @@ test.skip('should send sticker with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     console.log(message)
     t.end()
   })
@@ -333,10 +335,10 @@ test.skip('should send video with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     console.log(message)
     t.end()
   })
@@ -352,10 +354,10 @@ test.skip('should send voice with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     console.log(message)
     t.end()
   })
@@ -371,10 +373,10 @@ test('should send location with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.ok(message.hasOwnProperty('location'), 'message has property location')
     t.end()
   })
@@ -396,10 +398,10 @@ test('should send venue with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.ok(message.hasOwnProperty('venue'), 'message has property venue')
     t.equal(message.venue.title, 'Red Square', 'venue title should be Red Square')
     t.equal(message.venue.address, 'Moscow, Russia', 'venue title should be Moscow, Russia')
@@ -417,10 +419,10 @@ test('should send contact with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.ok(message.hasOwnProperty('contact'), 'message has property contact')
     t.equal(message.contact.phone_number, '+42470', 'contact phone number should be +42470')
     t.equal(message.contact.first_name, 'Telegram', 'contact first name should be Telegram')
@@ -438,9 +440,10 @@ test('should send chat action with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake<boolean>(t, sources, (bool) => {
+  okTake<boolean>(t, responses, dispose, (bool) => {
     t.equal(bool, true, 'bool should be true')
     t.end()
   })
@@ -456,10 +459,10 @@ test('should get user profile photos with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombUserProfilePhotos>(t, sources, (userProfilePhotos) => {
-    t.ok(UserProfilePhotos.is(UserProfilePhotos(userProfilePhotos)), 'user profile photos satisfies typecheck')
+  okTake<TcombUserProfilePhotos>(t, selectResponses({ responseType: UserProfilePhotos }), dispose, (userProfilePhotos) => {
     t.ok(userProfilePhotos.hasOwnProperty('total_count'), 'user profile photos has property total_count')
     t.equal(typeof userProfilePhotos.total_count, 'number', 'total_count should be number')
     t.ok(userProfilePhotos.hasOwnProperty('photos'), 'user profile photos has property photos')
@@ -478,10 +481,10 @@ test('should get file with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombFile>(t, sources, (file) => {
-    t.ok(File.is(File(file)), 'file satisfies typecheck')
+  okTake<TcombFile>(t, selectResponses({ responseType: File }), dispose, (file) => {
     t.equal(file.file_id, FILE_ID, 'file ids should be equal')
     t.end()
   })
@@ -497,9 +500,10 @@ test('should kick chat member with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake<boolean>(t, sources, (bool) => {
+  okTake<boolean>(t, responses, dispose, (bool) => {
     t.equal(bool, true, 'bool should be true')
     t.end()
   })
@@ -515,9 +519,10 @@ test('should unban chat member with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake<boolean>(t, sources, (bool) => {
+  okTake<boolean>(t, responses, dispose, (bool) => {
     t.equal(bool, true, 'bool should be true')
     t.end()
   })
@@ -531,10 +536,10 @@ test('should get chat with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombChat>(t, sources, (chat) => {
-    t.ok(Chat.is(Chat(chat)), 'chat satisfies typecheck')
+  okTake<TcombChat>(t, selectResponses({ responseType: Chat }), dispose, (chat) => {
     t.equal(chat.id, GROUP_ID)
     t.end()
   })
@@ -548,10 +553,10 @@ test('should get chat administrators with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombChatMember[]>(t, sources, (chatMembers) => {
-    t.ok(tc.list(ChatMember).is(tc.list(ChatMember)(chatMembers)), 'chat members satisfies typecheck')
+  okTake<TcombChatMember[]>(t, selectResponses({ responseType: tc.list(ChatMember) }), dispose, (chatMembers) => {
     chatMembers.forEach((chatMember: any) => {
       t.ok(chatMember.hasOwnProperty('user'), 'chat member has property user')
       t.ok(chatMember.hasOwnProperty('status'), 'chat member has property status')
@@ -568,9 +573,10 @@ test('should get chat members count with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake<number>(t, sources, (chatMembersCount) => {
+  okTake<number>(t, responses, dispose, (chatMembersCount) => {
     t.equal(typeof chatMembersCount, 'number')
     t.end()
   })
@@ -584,10 +590,10 @@ test('should get chat member with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombChatMember>(t, sources, (chatMember) => {
-    t.ok(ChatMember.is(ChatMember(chatMember)), 'chat member satisfies typecheck')
+  okTake<TcombChatMember>(t, selectResponses({ responseType: ChatMember }), dispose, (chatMember) => {
     t.ok(chatMember.hasOwnProperty('user'), 'chat member has property user')
     t.ok(chatMember.hasOwnProperty('status'), 'chat member has property status')
     t.equal(chatMember.user.id, 39759851, 'chat member id equals 39759851')
@@ -619,9 +625,10 @@ test.skip('should answer callback query with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake(t, sources, console.log.bind(console))
+  okTake(t, responses, dispose, console.log.bind(console))
 })
 
 // Inline mode
@@ -641,9 +648,10 @@ test('should edit message text with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okDrop<TcombMessage | boolean>(t, sources, (message) => {
+  okDrop<TcombMessage | boolean>(t, responses, dispose, (message) => {
     if (typeof message !== 'boolean') {
       t.ok(Message.is(Message(message)), 'message satisfies typecheck')
       t.equal(message.text, 'Cycle.js')
@@ -670,9 +678,10 @@ test('should edit message caption with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okDrop<TcombMessage | boolean>(t, sources, (message) => {
+  okDrop<TcombMessage | boolean>(t, responses, dispose,(message) => {
     if (typeof message !== 'boolean') {
       t.ok(Message.is(Message(message)), 'message satisfies typecheck')
       t.equal(message.caption, 'Cycle.js')
@@ -714,9 +723,10 @@ test('should edit message reply markup with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okDrop<TcombMessage | boolean>(t, sources, (message) => {
+  okDrop<TcombMessage | boolean>(t, responses, dispose, (message) => {
     if (typeof message !== 'boolean') {
       t.ok(Message.is(Message(message)), 'message satisfies typecheck')
       t.equal(message.text, 'Message with reply_markup')
@@ -746,9 +756,10 @@ test('should reply to inline query with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake<boolean>(t, sources, (bool) => {
+  okTake<boolean>(t, responses, dispose, (bool) => {
     t.ok(bool, 'response should be truthy')
     t.end()
   })
@@ -762,9 +773,10 @@ test('should leave chat with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { responses, dispose } } = sources
 
   run()
-  okTake<boolean>(t, sources, (bool) => {
+  okTake<boolean>(t, responses, dispose, (bool) => {
     t.equal(bool, true, 'bool should be true')
     t.end()
   })
@@ -783,10 +795,10 @@ test('should send game with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okTake<TcombMessage>(t, sources, (message) => {
-    t.ok(Message.is(Message(message)), 'message satisfies typecheck')
+  okTake<TcombMessage>(t, selectResponses({ responseType: Message }), dispose, (message) => {
     t.end()
   })
 })
@@ -878,10 +890,10 @@ test('should get game high scores with basic driver', t => {
     ])
   })
   let { sources, run } = Cycle<Sources, any>(main, { bot: basicDriver })
+  let { bot: { selectResponses, dispose } } = sources
 
   run()
-  okDrop<TcombGameHighScore[]>(t, sources, (gameHighScores) => {
-    t.ok(tc.list(GameHighScore).is(tc.list(GameHighScore)(gameHighScores)), 'game high scores satisfies typecheck')
+  okTake<TcombGameHighScore[]>(t, selectResponses({ responseType: tc.list(GameHighScore) }), dispose, (gameHighScores) => {
     t.end()
   })
 })
